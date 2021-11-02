@@ -15,9 +15,9 @@ from requests.structures import CaseInsensitiveDict
 
 
 class Bot:
-    def __init__(self, username="", password="", host="irc.ppy.sh", port=6667, verbose=False):
+    def __init__(self, username="", password="", host="irc.ppy.sh", port=6667, server_ip="localhost", verbose=False):
         self.__sock = Sock()
-        self.__controller = Controller(self)
+        self.__controller = Controller(self, host=server_ip)
         self.__host = host
         self.__port = port
         self.__username = username
@@ -123,7 +123,7 @@ class Bot:
                                 self.__channels[channel].get_existing_attributes()
                             self.__controller.update()
 
-    # attempts to connect to osu using the provided credentials.txt
+    # attempts to connect to osu using the provided credentials
     def start(self):
         try:
             # grab logic options
@@ -135,6 +135,7 @@ class Bot:
                     for name, obj in inspect.getmembers(m):
                         if inspect.isclass(obj):
                             self.__logic_profiles[obj.__name__] = obj
+
 
             self.__sock.get_socket().connect((self.__host, self.__port))
             self.__sock.sendall(("PASS " + self.__password + "\n").encode())
@@ -266,8 +267,37 @@ class Bot:
     def get_personal_message_log(self):
         return self.__personal_message_log
 
-    #clones attributes and logic from channel1 to channel2
+    #clones attributes and logic from channel1 to channel2 (strings)
     def clone_channel(self, channel1, channel2):
         attributes = self.__channels[channel1].get_attributes()
-        logic = self.__channels[channel1].get_logic()
-        pass
+        logic = self.__channels[channel1].get_logic_profile()
+        self.__channels[channel2].implement_logic_profile(logic)
+        self.__channels[channel2].import_attributes(attributes)
+
+    # fetches beatmap from ppy.sh
+    def fetch_beatmap(self, beatmapID):
+        url = "https://osu.ppy.sh/b/" + str(beatmapID)
+        r = requests.get(url)
+        beatmapset = {}
+        try:
+            beatmapset = json.loads(
+                r.text.split('<script id="json-beatmapset" type="application/json">\n        ', 1)[1].split(
+                    "\n", 1)[0])
+        except:
+            return {}
+        if "beatmaps" in beatmapset:
+            for beatmap in beatmapset["beatmaps"]:
+                if beatmap["id"] == int(r.url.split("/")[-1]):
+                    return beatmap
+        return {}
+
+    # fetches a beatmapset associated with a beatmapID from ppy.sh
+    def fetch_beatmapset(self, beatmapID):
+        url = "https://osu.ppy.sh/b/" + str(beatmapID)
+        r = requests.get(url)
+        try:
+            return json.loads(
+                r.text.split('<script id="json-beatmapset" type="application/json">\n        ', 1)[1].split(
+                    "\n", 1)[0])
+        except:
+            return {}

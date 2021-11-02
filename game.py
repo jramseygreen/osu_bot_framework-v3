@@ -22,7 +22,7 @@ class Game(Channel):
         self.__password = ""
         self.__title = ""
         self.__welcome_message = ""
-        self.__commands = {"!info": {"response": "Created with osu_bot_framework v3", "description": "Created with osu_bot_framework v3"}}
+        self.__commands = {"!info": {"response": "built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "built with osu_bot_framework v3"}}
         self.__referees = [bot.get_username()]
         self.__config_link = ""
         self.__config_text = ""
@@ -201,39 +201,20 @@ class Game(Channel):
                 return event["game"]
         return {}
 
+    # fetches beatmap from ppy.sh
     def fetch_beatmap(self, beatmapID):
         if self.__beatmap:
             if beatmapID == self.__beatmap["id"]:
                 return self.__beatmap
         if int(beatmapID) == 0:
             return {}
-        url = "https://osu.ppy.sh/b/" + str(beatmapID)
-        r = requests.get(url)
-        beatmapset = {}
-        try:
-            beatmapset = json.loads(
-                r.text.split('<script id="json-beatmapset" type="application/json">\n        ', 1)[1].split(
-                    "\n", 1)[0])
-        except:
-            return {}
-        if "beatmaps" in beatmapset:
-            for beatmap in beatmapset["beatmaps"]:
-                if beatmap["id"] == int(r.url.split("/")[-1]):
-                    return beatmap
-        return {}
+        return self._bot.fetch_beatmap()
 
     # fetches a beatmapset associated with a beatmapID from ppy.sh
     def fetch_beatmapset(self, beatmapID):
         if int(beatmapID) == 0:
             return {}
-        url = "https://osu.ppy.sh/b/" + str(beatmapID)
-        r = requests.get(url)
-        try:
-            return json.loads(
-                r.text.split('<script id="json-beatmapset" type="application/json">\n        ', 1)[1].split(
-                    "\n", 1)[0])
-        except:
-            return {}
+        return self._bot.fetch_beatmapset()
 
     def __fetch_scores(self):
         self.__match_history = self.fetch_match_history()
@@ -663,16 +644,8 @@ class Game(Channel):
         self.__on_clear_host_method = method
         
     def implement_logic_profile(self, profile):
-        profile = self._bot.get_logic_profile(profile)(self._bot, self)
-        if hasattr(profile, "on_personal_message") and callable(getattr(profile, "on_personal_message")):
-            self.on_personal_message(profile.on_personal_message)
-        if hasattr(profile, "on_join") and callable(getattr(profile, "on_join")):
-            self.on_join(profile.on_join)
-        if hasattr(profile, "on_part") and callable(getattr(profile, "on_part")):
-            self.on_part(profile.on_part)
-        if hasattr(profile, "on_message") and callable(getattr(profile, "on_message")):
-            self.on_message(profile.on_message)
-            
+        self.clear_commands()
+        profile = super().implement_logic_profile(profile)
         if hasattr(profile, "on_match_start") and callable(getattr(profile, "on_match_start")):
             self.on_match_start(profile.on_match_start)
         if hasattr(profile, "on_match_finish") and callable(getattr(profile, "on_match_finish")):
@@ -709,6 +682,7 @@ class Game(Channel):
         data["title"] = self.__title
         data["welcome_message"] = self.__welcome_message
         data["commands"] = self.__commands
+        data["command_descriptions"] = {command: self.__commands[command]["description"] for command in self.__commands}
         data["referees"] = self.__referees
         data["config_link"] = self.__config_link
 
@@ -729,3 +703,47 @@ class Game(Channel):
         data["game_mode"] = self.__game_mode
 
         return data
+
+    def clear_logic(self):
+        super().clear_logic()
+        self.on_match_start(None)
+        self.on_match_finish(None)
+        self.on_host_change(None)
+        self.on_beatmap_change(None)
+        self.on_changing_beatmap(None)
+        self.on_all_players_ready(None)
+        self.on_room_close(None)
+        self.on_slot_change(None)
+        self.on_team_change(None)
+        self.on_team_addition(None)
+        self.on_clear_host(None)
+
+    def clear_commands(self):
+        self.__commands = {"!info": {"response": "built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "built with osu_bot_framework v3"}}
+
+    # overwrites certain room attributes
+    def import_attributes(self, data):
+        self.set_beatmap(data["beatmap"])
+        self.set_size(data["size"])
+        self.set_password(data["password"])
+        self.set_welcome_message(data["welcome_message"])
+        self.__commands = data["commands"]
+
+        # limits and ranges (done)
+        self.set_ar_range(data["ar_range"])
+        self.set_od_range(data["od_range"])
+        self.set_cs_range(data["cs_range"])
+        self.set_hp_range(data["hp_range"])
+        self.set_diff_range(data["diff_range"])
+        self.set_bpm_range(data["bpm_range"])
+        self.set_length_range(data["length_range"])
+        self.set_map_status(data["map_status"])
+
+        # game attributes
+        self.set_mods(data["mods"])
+        self.set_scoring_type(data["scoring_type"])
+        self.set_team_type(data["team_type"])
+        self.set_game_mode(data["game_mode"])
+
+    def invite_user(self, username):
+        self._bot.send_personal_message(username.replace(" ", "_"), "Come join my multiplayer match: '[" + self.get_invite_link() + " " + self.get_title() + "]'")

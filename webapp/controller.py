@@ -55,7 +55,9 @@ class Controller:
         data = {}
         for channel in self.bot.get_channels():
             data[channel] = self.bot.get_channel(channel).get_attributes()
+            del data[channel]["commands"]
         data["pm"] = self.bot.get_personal_message_log()
+        data["logic_profiles"] = list(self.bot.get_logic_profiles().keys())
         self.send_message(json.dumps(data))
 
     def set_ws_port(self, port):

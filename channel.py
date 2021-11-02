@@ -10,6 +10,7 @@ class Channel:
         self._message_log_length = 50
         self._users = []
         self.verbose = verbose
+        self.__logic_profile = ""
 
         # on_event methods
         self.__on_personal_message_method = None
@@ -82,6 +83,8 @@ class Channel:
         self.__on_message_method = method
         
     def implement_logic_profile(self, profile):
+        self.clear_logic()
+        self.__logic_profile = profile
         profile = self._bot.get_logic_profile(profile)(self._bot, self)
         if hasattr(profile, "on_personal_message") and callable(getattr(profile, "on_personal_message")):
             self.on_personal_message(profile.on_personal_message)
@@ -91,9 +94,24 @@ class Channel:
             self.on_part(profile.on_part)
         if hasattr(profile, "on_message") and callable(getattr(profile, "on_message")):
             self.on_message(profile.on_message)
+        return profile
+
+    def get_logic_profile(self):
+        return self.__logic_profile
 
     def get_attributes(self):
         return {"users": self._users, "messages": self._message_log}
 
+    def import_attributes(self, data):
+        pass
+
     def get_logic(self):
         return {"on_message": self.__on_message_method, "on_personal_message": self.__on_personal_message_method, "on_join": self.__on_join_method, "on_part": self.__on_part_method}
+
+    # clear all on_event_methods
+    def clear_logic(self):
+        self.__logic_profile = ""
+        self.on_personal_message(None)
+        self.on_join(None)
+        self.on_part(None)
+        self.on_message(None)

@@ -2,6 +2,7 @@ class Template:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
+        channel.implement_logic_profile("CommonCommands")
         channel.add_command("!command", self.on_command, "!command description")
 
     def on_command(self, message):
