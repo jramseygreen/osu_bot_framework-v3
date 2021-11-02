@@ -123,7 +123,7 @@ class Bot:
                                 self.__channels[channel].get_existing_attributes()
                             self.__controller.update()
 
-    # attempts to connect to osu using the provided credentials
+    # attempts to connect to osu using the provided credentials.txt
     def start(self):
         try:
             # grab logic options
@@ -170,7 +170,7 @@ class Bot:
 
     # sends a personal message to a username
     def send_personal_message(self, username, message):
-        self.__sock.sendall(("PRIVMSG " + username + " :" + message + "\n").encode())
+        self.__sock.sendall(("PRIVMSG " + username.replace(" ", "_") + " :" + message + "\n").encode())
         if self.verbose:
             print("-- sent personal message to " + username + ": '" + message + "' --")
 
@@ -260,8 +260,14 @@ class Bot:
         if hasattr(profile, "on_personal_message") and callable(getattr(profile, "on_personal_message")):
             self.on_personal_message(profile.on_personal_message)
 
-    def pack_username(self, username):
+    def format_username(self, username):
         return username.replace(" ", "_")
 
     def get_personal_message_log(self):
         return self.__personal_message_log
+
+    #clones attributes and logic from channel1 to channel2
+    def clone_channel(self, channel1, channel2):
+        attributes = self.__channels[channel1].get_attributes()
+        logic = self.__channels[channel1].get_logic()
+        pass

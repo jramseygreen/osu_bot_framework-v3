@@ -253,7 +253,7 @@ class SessionRedirectMixin(object):
 
     def rebuild_auth(self, prepared_request, response):
         """When being redirected we may want to strip authentication from the
-        request to avoid leaking credentials. This method intelligently removes
+        request to avoid leaking credentials.txt. This method intelligently removes
         and reapplies authentication where possible to avoid credential loss.
         """
         headers = prepared_request.headers
