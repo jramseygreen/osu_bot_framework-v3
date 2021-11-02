@@ -91,7 +91,6 @@ class Bot:
                                         self.__personal_message_log = self.__personal_message_log[1:]
                                     self.__personal_message_log.append(message)
                                     # pass data to front end
-                                    self.__controller.update_channel(channel, self.__personal_message_log)
                                     if message["username"] == "BanchoBot":
                                         if message["content"] == "You cannot create any more tournament matches. Please close any previous tournament matches you have open.":
                                             self.__room_limit_reached = True
@@ -100,6 +99,7 @@ class Bot:
                                             threading.Thread(target=self.__channels[channel].get_on_personal_message_method(), args=(message,)).start()
                                     if self.__on_personal_message_method:
                                         threading.Thread(target=self.__on_personal_message_method, args=(message,)).start()
+                            self.__controller.update()
                     # functional information
                     else:
                         # users already in channel
@@ -121,6 +121,7 @@ class Bot:
                             channel = line[3]
                             if channel in self.__channels and self.__channels[channel].is_game():
                                 self.__channels[channel].get_existing_attributes()
+                            self.__controller.update()
 
     # attempts to connect to osu using the provided credentials
     def start(self):
@@ -258,3 +259,9 @@ class Bot:
         profile = self.get_logic_profile(profile)(self)
         if hasattr(profile, "on_personal_message") and callable(getattr(profile, "on_personal_message")):
             self.on_personal_message(profile.on_personal_message)
+
+    def pack_username(self, username):
+        return username.replace(" ", "_")
+
+    def get_personal_message_log(self):
+        return self.__personal_message_log

@@ -16,7 +16,6 @@ class Controller:
         self.__webapp_port = webapp_port
 
     def __on_message(self, conn, msg):
-        print(conn, msg)
         if msg == "button clicked":
             self.__ws.send(conn, "clicked")
 
@@ -52,10 +51,12 @@ class Controller:
         for conn in self.__ws.get_clients():
             self.__ws.send(conn, message)
 
-    def update_channel(self, channel, data):
-        if type(channel) != str:
-            channel = channel.get_channel()
-        self.send_message(json.dumps({channel: data}))
+    def update(self):
+        data = {}
+        for channel in self.bot.get_channels():
+            data[channel] = self.bot.get_channel(channel).get_attributes()
+        data["pm"] = self.bot.get_personal_message_log()
+        self.send_message(json.dumps(data))
 
     def set_ws_port(self, port):
         self.__ws.set_port(port)

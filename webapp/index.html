@@ -1,4 +1,6 @@
 <head>
+    <title>osu_bot_framework v3</title>
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png"/>
     <link rel="stylesheet" href="bootstrap-5.1.3/css/bootstrap.css">
 </head>
 <body>
@@ -7,12 +9,13 @@
 
     <script>
           var sock = new WebSocket("ws://localhost:9876/");
+          var data;
           function buttonClicked() {
             sock.send('button clicked');
           }
           window.onload = function() {
             sock.onopen = function () {
-                sock.send("hello world");
+                //sock.send("hello world");
             };
 
             sock.onerror = function (error) {
@@ -20,21 +23,8 @@
             };
 
             sock.onmessage = function (e) {
-                //console.log('Server: ' + e.data);
-                const data = JSON.parse(e.data);
-                const channelName = Object.keys(data)[0];
-                // game channels
-                if (channelName.includes("#mp_")) {
-
-                // normal channels
-                } else if (channelName.includes("#")) {
-
-                // personal messages
-                } else {
-                  const messages = data[channelName];
-                  console.log(messages)
-                  document.getElementById("test").textContent=messages[0]["content"];
-                }
+                console.log('Server: ' + e.data);
+                data = JSON.parse(e.data);
 
             };
 

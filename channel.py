@@ -91,3 +91,6 @@ class Channel:
             self.on_part(profile.on_part)
         if hasattr(profile, "on_message") and callable(getattr(profile, "on_message")):
             self.on_message(profile.on_message)
+
+    def get_attributes(self):
+        return {"users": self._users, "messages": self._message_log}

@@ -26,7 +26,6 @@ class Game(Channel):
         self.__referees = [bot.get_username()]
         self.__config_link = ""
         self.__config_text = ""
-        self.__scores = []
 
         # limits and ranges (done)
         self.__ar_range = (0.0, 10.0)
@@ -38,7 +37,7 @@ class Game(Channel):
         self.__length_range = (0, -1)
         self.__map_status = ["any"]
 
-        # game attributes (todo)
+        # game attributes
         self.__mods = ["ANY"]
         self.__scoring_type = "any"
         self.__team_type = "any"
@@ -71,14 +70,14 @@ class Game(Channel):
                     team = "red"
                 if self.__on_team_addition_method:
                     threading.Thread(target=self.__on_team_addition_method, args=(username, team,)).start()
-                self.set_slot(int(message["content"].split("slot ", 1)[1].split(".", 1)[0]) - 1, {"username": username, "team": team, "score": {}})
+                self.set_slot(int(message["content"].split("slot ", 1)[1].split(".", 1)[0].split(" ")[0]) - 1, {"username": username, "team": team, "score": {}})
                 self.add_user(username)
             elif "left the game" in message["content"]:
                 username = message["content"][:message["content"].find("left") - 1]
                 self.del_user(username)
             elif "moved to slot" in message["content"]:
                 slot = int(message["content"].split(" ")[-1]) - 1
-                username = message["content"].replace(" moved to slot " + str(slot), "")
+                username = message["content"].replace(" moved to slot " + str(slot + 1), "")
                 team = self.get_team(username)
                 score = self.get_score(username)
                 self.set_slot(slot, {"username": username, "team": team, "score": score})
@@ -86,14 +85,14 @@ class Game(Channel):
                     threading.Thread(target=self.__on_slot_change_method, args=(username, slot,)).start()
             elif "changed to Blue" in message["content"]:
                 username = message["content"].replace(" changed to Blue", "")
-                slot = self.get_slot(username)
-                self.set_slot(slot, {"username": username, "team": "blue"})
+                slot = self.get_slot_num(username)
+                self.set_slot(slot, {"username": username, "team": "blue", "score": {}})
                 if self.__on_team_change_method:
                     threading.Thread(target=self.__on_team_change_method, args=(username, "blue",)).start()
             elif "changed to Red" in message["content"]:
                 username = message["content"].replace(" changed to Red", "")
-                slot = self.get_slot(username)
-                self.set_slot(slot, {"username": username, "team": "red"})
+                slot = self.get_slot_num(username)
+                self.set_slot(slot, {"username": username, "team": "red", "score": {}})
                 if self.__on_team_change_method:
                     threading.Thread(target=self.__on_team_change_method, args=(username, "red",)).start()
             elif "became the host" in message["content"]:
@@ -367,15 +366,20 @@ class Game(Channel):
         return self.__slots
 
     def set_slot(self, slot, data):
-        for slot in self.__slots:
-            if self.__slots[slot] == data:
-                self.__slots[slot] = {"username": "", "team": "", "score": {}}
+        for s in self.__slots:
+            if self.__slots[s] == data:
+                self.__slots[s] = {"username": "", "team": "", "score": {}}
         self.__slots[slot] = data
 
     def get_slot(self, username):
         for slot in self.__slots:
             if self.__slots[slot]["username"] == username:
-                return slot
+                return self.__slots[slot]
+
+    def get_slot_num(self, username):
+        for i in range(16):
+            if self.__slots[i]["username"] == username:
+                return i
 
     def get_red_team(self):
         users = []
@@ -691,3 +695,37 @@ class Game(Channel):
             self.on_room_close(profile.on_room_close)
         if hasattr(profile, "on_clear_host") and callable(getattr(profile, "on_clear_host")):
             self.on_clear_host(profile.on_clear_host)
+
+    def get_attributes(self):
+        data = super().get_attributes()
+        data["creator"] = self.__creator
+        data["invite_link"] = self.__invite_link
+        data["slots"] = self.__slots
+        data["host"] = self.__host
+        data["in_progress"] = self.__in_progress
+        data["beatmap"] = self.__beatmap
+        data["size"] = self.__size
+        data["password"] = self.__password
+        data["title"] = self.__title
+        data["welcome_message"] = self.__welcome_message
+        data["commands"] = self.__commands
+        data["referees"] = self.__referees
+        data["config_link"] = self.__config_link
+
+        # limits and ranges (done)
+        data["ar_range"] = self.__ar_range
+        data["od_range"] = self.__od_range
+        data["cs_range"] = self.__cs_range
+        data["hp_range"] = self.__hp_range
+        data["diff_range"] = self.__diff_range
+        data["bpm_range"] = self.__bpm_range
+        data["length_range"] = self.__length_range
+        data["map_status"] = self.__map_status
+
+        # game attributes
+        data["mods"] = self.__mods
+        data["scoring_type"] = self.__scoring_type
+        data["team_type"] = self.__team_type
+        data["game_mode"] = self.__game_mode
+
+        return data

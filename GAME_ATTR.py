@@ -12,7 +12,7 @@ GAME_ATTR = {
     "FL": "FL",
     "HD": "HD",
     "FI": "FI",
-    "Freemod": "Freemod",
+    "FREEMOD": "FREEMOD",
     "osu": 0,
     "taiko": 1,
     "fruits": 2,
