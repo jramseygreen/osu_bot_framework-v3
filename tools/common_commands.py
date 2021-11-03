@@ -288,3 +288,19 @@ class CommonCommands:
             self.channel.send_message("Available logic profiles: " + ", ".join(self.bot.get_logic_profiles().keys()))
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
+
+    def enable_beatmap_checker(self, message):
+        if message["username"] in self.channel.get_formatted_referees():
+            command = message["content"].split(" ", 1)[0]
+            self.channel.set_beatmap_checker(True)
+            self.channel.send_message("Command '" + command + "' executed successfully")
+        else:
+            self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
+
+    def disable_beatmap_checker(self, message):
+        if message["username"] in self.channel.get_formatted_referees():
+            command = message["content"].split(" ", 1)[0]
+            self.channel.set_beatmap_checker(False)
+            self.channel.send_message("Command '" + command + "' executed successfully")
+        else:
+            self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")

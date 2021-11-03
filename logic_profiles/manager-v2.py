@@ -1,4 +1,4 @@
-# implements all common commands
+# implements all common commands & enables map checker
 class Manager:
     def __init__(self, bot, channel):
         self.bot = bot
@@ -24,3 +24,6 @@ class Manager:
         channel.set_command("*start_broadcast", channel.common_commands.add_broadcast, "Starts a broadcast in the channel. e.g. *start_broadcast 5 message sent every 5min")
         channel.set_command("*stop_broadcast", channel.common_commands.del_broadcast, "Stops a broadcast in the channel given it's ID. e.g. *stop_broadcast 0")
         channel.set_command("*welcome", channel.common_commands.welcome_message, "Sets the welcome message for the room. e.g. *welcome welcome to my osu room!")
+        channel.set_command("*disable_beatmap_checker", channel.common_commands.disable_beatmap_checker, "Disables beatmap checker")
+        channel.set_command("*enable_beatmap_checker", channel.common_commands.disable_beatmap_checker, "Enables beatmap checker")
+

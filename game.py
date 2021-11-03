@@ -171,6 +171,8 @@ class Game(Channel):
                 threading.Thread(target=self.__commands[command]["response"], args=(message,)).start()
             else:
                 self.send_message(self.__commands[command]["response"])
+            if self.verbose:
+                print("-- Command '" + command + "' Executed --")
 
     def send_message(self, message):
         super().send_message(message)
