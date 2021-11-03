@@ -26,6 +26,7 @@ class Game(Channel):
         self.__referees = [bot.get_username()]
         self.__config_link = ""
         self.__config_text = ""
+        self.__beatmap_checker = True
 
         # limits and ranges (done)
         self.__ar_range = (0.0, 10.0)
@@ -111,9 +112,10 @@ class Game(Channel):
                 beatmapID = message["content"].split("/b/", 1)[1].split(" ", 1)[0].replace(")", "")
                 beatmap = self.__fetch_beatmap(beatmapID)
                 if beatmap:
+                    beatmap["unsubmitted"] = False
                     self.__check_beatmap(beatmap)
                 else:
-                    self.__check_beatmap({"id": beatmapID})
+                    self.__check_beatmap({"id": beatmapID, "unsubmitted": True})
             elif "Host is changing map..." == message["content"]:
                 if self.__on_changing_beatmap_method:
                     threading.Thread(target=self.__on_changing_beatmap_method).start()
@@ -129,7 +131,7 @@ class Game(Channel):
                     threading.Thread(target=self.__on_clear_host_method, args=(self.__host,)).start()
                 self.__host = ""
 
-        elif message["username"] in [x.replace(" ", "_") for x in self.__referees] or message["username"] == self.__creator.replace(" ", "_"):
+        elif message["username"] in [x.replace(" ", "_") for x in self.__referees]:
             message_arr = message["content"].lower().split(" ")
             if len(message_arr) >= 2:
                 command = " ".join(message_arr[:2]).strip()
@@ -137,10 +139,15 @@ class Game(Channel):
                 if message["username"] == self.__creator.replace(" ", "_"):
                     if command == "!mp addref":
                         print(args)
-                        self.__referees += args
+                        for arg in args:
+                            if arg not in self.__referees:
+                                self.__referees.append(arg)
                     elif command == "!mp removeref":
                         for username in args:
-                            self.__referees.remove(username)
+                            if username != self.__creator.replace(" ", "_"):
+                                self.__referees.remove(username)
+                                if username == self._bot.get_username():
+                                    self._bot.part(self._channel)
                 if command == "!mp password":
                     self.__invite_link = self.__invite_link.replace(self.__password, "")
                     if args:
@@ -258,51 +265,52 @@ class Game(Channel):
             if self.verbose:
                 print("-- Beatmap checker started --")
             revert = False
-            if len(beatmap) <= 1:
-                self.send_message("The selected beatmap is not submitted! Can't check attributes.")
-                self.send_message("An alternate download link is available [" + self._bot.chimu.fetch_download_link(beatmap["id"]) + " here]")
-                revert = False
-            elif beatmap["id"] == 22538:
-                revert = False
-            elif beatmap == self.__beatmap:
-                return
-            elif self.__od_range[0] > beatmap["accuracy"] > self.__od_range[1]:
-                self.send_message(
-                    self.__host + " the selected beatmap is outside the overall difficulty range: " + str(
-                        self.__od_range))
-                revert = True
-            elif self.__ar_range[0] > beatmap["ar"] > self.__ar_range[1]:
-                self.send_message(self.__host + " the selected beatmap is outside the approach rate range: " + str(
-                    self.__ar_range))
-                revert = True
-            elif self.__bpm_range[0] > beatmap["bpm"] or (
-                        self.__bpm_range[1] != -1 and self.__bpm_range[1] < beatmap["bpm"]):
-                self.send_message(
-                    self.__host + " the selected beatmap is outside the BPM range: " + str(self.__bpm_range).replace("-1.0", "unlimited"))
-                revert = True
-            elif self.__cs_range[0] > beatmap["cs"] > self.__cs_range[1]:
-                self.send_message(
-                    self.__host + " the selected beatmap is outside the circle size range: " + str(self.__cs_range))
-                revert = True
-            elif self.__hp_range[0] > beatmap["drain"] > self.__hp_range[1]:
-                self.send_message(
-                    self.__host + " the selected beatmap is outside the HP range: " + str(self.__hp_range))
-                revert = True
-            elif self.__length_range[0] > beatmap["hit_length"] or (
-                    self.__length_range[1] != -1 and self.__length_range[1] < beatmap["hit_length"]):
-                if self.__length_range[1] == -1:
-                    self.send_message(self.__host + " the selected beatmap is outside the length range: " + str(
-                        [str(x // 60) + "min, " + str(x % 60) + "sec" for x in [self.__length_range[0]]] + ["unlimited"]))
-                else:
-                    self.send_message(self.__host + " the selected beatmap is outside the length range: " + str(
-                        [str(x // 60) + "min, " + str(x % 60) + "sec" for x in self.__length_range]))
-                revert = True
-            elif self.__map_status != ["any"] and beatmap["status"] not in self.__map_status:
-                self.send_message(self.__host + " the selected beatmap must be: " + " or ".join(self.__map_status))
-                revert = True
-            elif beatmap["difficulty_rating"] < self.__diff_range[0] or (beatmap["difficulty_rating"] > self.__diff_range[1] != -1):
-                self.send_message(self.__host + " the selected beatmap is outside the difficulty range: " + str(self.__diff_range).replace("-1.0", "unlimited") + "*")
-                revert = True
+            if self.__beatmap_checker:
+                if beatmap["unsubmitted"]:
+                    self.send_message("The selected beatmap is not submitted! Can't check attributes.")
+                    self.send_message("An alternate download link is available [" + self._bot.chimu.fetch_download_link(beatmap["id"]) + " here]")
+                    revert = False
+                elif beatmap["id"] == 22538:
+                    revert = False
+                elif beatmap == self.__beatmap:
+                    return
+                elif self.__od_range[0] > beatmap["accuracy"] > self.__od_range[1]:
+                    self.send_message(
+                        self.__host + " the selected beatmap is outside the overall difficulty range: " + str(
+                            self.__od_range))
+                    revert = True
+                elif self.__ar_range[0] > beatmap["ar"] > self.__ar_range[1]:
+                    self.send_message(self.__host + " the selected beatmap is outside the approach rate range: " + str(
+                        self.__ar_range))
+                    revert = True
+                elif self.__bpm_range[0] > beatmap["bpm"] or (
+                            self.__bpm_range[1] != -1 and self.__bpm_range[1] < beatmap["bpm"]):
+                    self.send_message(
+                        self.__host + " the selected beatmap is outside the BPM range: " + str(self.__bpm_range).replace("-1.0", "unlimited"))
+                    revert = True
+                elif self.__cs_range[0] > beatmap["cs"] > self.__cs_range[1]:
+                    self.send_message(
+                        self.__host + " the selected beatmap is outside the circle size range: " + str(self.__cs_range))
+                    revert = True
+                elif self.__hp_range[0] > beatmap["drain"] > self.__hp_range[1]:
+                    self.send_message(
+                        self.__host + " the selected beatmap is outside the HP range: " + str(self.__hp_range))
+                    revert = True
+                elif self.__length_range[0] > beatmap["hit_length"] or (
+                        self.__length_range[1] != -1 and self.__length_range[1] < beatmap["hit_length"]):
+                    if self.__length_range[1] == -1:
+                        self.send_message(self.__host + " the selected beatmap is outside the length range: " + str(
+                            [str(x // 60) + "min, " + str(x % 60) + "sec" for x in [self.__length_range[0]]] + ["unlimited"]))
+                    else:
+                        self.send_message(self.__host + " the selected beatmap is outside the length range: " + str(
+                            [str(x // 60) + "min, " + str(x % 60) + "sec" for x in self.__length_range]))
+                    revert = True
+                elif self.__map_status != ["any"] and beatmap["status"] not in self.__map_status:
+                    self.send_message(self.__host + " the selected beatmap must be: " + " or ".join(self.__map_status))
+                    revert = True
+                elif beatmap["difficulty_rating"] < self.__diff_range[0] or (beatmap["difficulty_rating"] > self.__diff_range[1] != -1):
+                    self.send_message(self.__host + " the selected beatmap is outside the difficulty range: " + str(self.__diff_range).replace("-1.0", "unlimited") + "*")
+                    revert = True
 
             if revert:
                 self.set_beatmap(self.__beatmap)
@@ -735,6 +743,7 @@ class Game(Channel):
         data["command_descriptions"] = {command: self.__commands[command]["description"] for command in self.__commands}
         data["referees"] = self.__referees
         data["config_link"] = self.__config_link
+        data["beatmap_checker"] = self.__beatmap_checker
 
         # limits and ranges (done)
         data["ar_range"] = self.__ar_range
@@ -797,3 +806,9 @@ class Game(Channel):
 
     def invite_user(self, username):
         self._bot.send_personal_message(username.replace(" ", "_"), "Come join my multiplayer match: '[" + self.get_invite_link() + " " + self.get_title() + "]'")
+
+    def set_beatmap_checker(self, switch):
+        self.__beatmap_checker = switch
+
+    def beatmap_checker_on(self):
+        return self.__beatmap_checker
