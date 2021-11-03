@@ -1,4 +1,3 @@
-import copy
 import importlib
 import inspect
 import json
@@ -7,13 +6,11 @@ import threading
 
 from broadcast_controller import BroadcastController
 from channel import Channel
-from chimu_wrapper import Chimu
-from common_commands import CommonCommands
+from tools.chimu_wrapper import Chimu
 from game import Game
 from socket_wrapper import Sock
 from webapp.controller import Controller
 import requests
-from requests.structures import CaseInsensitiveDict
 
 
 class Bot:

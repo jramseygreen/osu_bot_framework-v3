@@ -183,6 +183,9 @@ class Game(Channel):
         if self.__welcome_message:
             self._bot.send_personal_message(username.replace(" ", "_"), self.__welcome_message)
 
+    def get_formatted_users(self):
+        return [user.replace(" ", "_") for user in self._users]
+
     def close(self):
         self.send_message("!mp close")
         self._bot.part(self._channel)

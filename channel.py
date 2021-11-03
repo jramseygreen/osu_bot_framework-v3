@@ -1,7 +1,7 @@
 import copy
 import threading
 
-from common_commands import CommonCommands
+from tools.common_commands import CommonCommands
 
 
 class Channel:
@@ -58,7 +58,7 @@ class Channel:
         return self._users
 
     def get_formatted_users(self):
-        return [user.replace(" ", "_") for user in self._users]
+        return self._users
 
     def set_message_log_length(self, length):
         self._message_log_length = length
