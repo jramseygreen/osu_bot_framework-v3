@@ -11,8 +11,16 @@ class CommonCommands:
     def on_randmap(self, message):
         if message["content"] == "!randmap":
             self.channel.send_message("Searching for beatmap...")
-            self.channel.change_beatmap(self.bot.chimu.fetch_random_beatmap(self.channel)["BeatmapId"])
+            beatmap = self.bot.chimu.fetch_random_beatmap(self.channel)
+            if beatmap:
+                self.channel.change_beatmap(beatmap["BeatmapId"])
+            else:
+                self.channel.send_message("No beatmaps found!")
         else:
             query = message["content"].replace("!randmap", "").strip()
             self.channel.send_message("Searching for '" + query + "'...")
-            self.channel.change_beatmap(self.bot.chimu.fetch_random_beatmap(self.channel, query=query)["BeatmapId"])
+            beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query)
+            if beatmap:
+                self.channel.change_beatmap(beatmap["BeatmapId"])
+            else:
+                self.channel.send_message("No beatmaps found!")

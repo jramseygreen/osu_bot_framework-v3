@@ -14,7 +14,7 @@ class Chimu:
     # fetches a beatmapset dictionary object from chimu.moe
     def fetch_beatmapset(self, beatmapsetID):
         if beatmapsetID:
-            url = self.url + str(beatmapsetID)
+            url = self.url + "set/" + str(beatmapsetID)
             r = requests.get(url)
             data = json.loads(r.text)
             if data["data"]:
@@ -24,7 +24,7 @@ class Chimu:
     # fetches a beatmap dictionary object from chimu.moe
     def fetch_beatmap(self, beatmapID):
         if beatmapID:
-            url = self.url + str(beatmapID)
+            url = self.url + "map/" + str(beatmapID)
             r = requests.get(url)
             data = json.loads(r.text)
             if data["data"]:
@@ -36,9 +36,9 @@ class Chimu:
         # construct url
         url = self.url + "search?query=" + query.replace(" ", "%20")
         for attribute in attributes:
-            if attribute != "status" and attributes[attribute] != -1:
+            if attributes[attribute] != -1:
                 url += "&" + attribute + "=" + str(attributes[attribute])
-
+        # print(url)
         r = requests.get(url)
         data = json.loads(r.text)
 
@@ -89,6 +89,7 @@ class Chimu:
             self.download_beatmapset(beatmapsetID, path, with_video, open_on_complete, blocking)
 
     def fetch_random_beatmap(self, channel=None, **attributes):
+        # grab attributes from channel object
         if channel:
             if channel.get_map_status() != ["any"]:
                 attributes["status"] = [GAME_ATTR[status] for status in channel.get_map_status()]
@@ -122,9 +123,15 @@ class Chimu:
             if type(attributes["status"]) == str:
                 attributes["status"] = [attributes["status"]]
             status = attributes["status"]
-            del attributes["status"]
+            if len(status) == 1:
+                attributes["status"] = attributes["status"][0]
+            else:
+                del attributes["status"]
 
+        # fetch beatmap set search results
         beatmapsets = self.search(query, **attributes)
+
+        # extract beatmaps
         beatmaps = []
         for beatmapset in beatmapsets:
             for beatmap in beatmapset["ChildrenBeatmaps"]:
@@ -164,5 +171,5 @@ class Chimu:
                 elif query and query not in str(beatmap).lower():
                     continue
                 beatmaps.append(beatmap)
-
-        return random.choice(beatmaps)
+        if beatmaps:
+            return random.choice(beatmaps)

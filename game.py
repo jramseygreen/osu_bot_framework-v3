@@ -109,7 +109,11 @@ class Game(Channel):
                 self.__in_progress = False
             elif "Beatmap changed to" in message["content"] or "Changed beatmap to" in message["content"]:
                 beatmapID = message["content"].split("/b/", 1)[1].split(" ", 1)[0].replace(")", "")
-                self.__check_beatmap(self.__fetch_beatmap(beatmapID))
+                beatmap = self.__fetch_beatmap(beatmapID)
+                if beatmap:
+                    self.__check_beatmap(beatmap)
+                else:
+                    self.__check_beatmap({"id": beatmapID})
             elif "Host is changing map..." == message["content"]:
                 if self.__on_changing_beatmap_method:
                     threading.Thread(target=self.__on_changing_beatmap_method).start()
@@ -228,8 +232,19 @@ class Game(Channel):
         scores = []
         for slot in self.__slots:
             if self.__slots[slot]["score"]:
+                self.__slots[slot]["score"]["username"] = self.__slots[slot]["username"]
                 scores.append(self.__slots[slot]["score"])
         return scores
+
+    def get_ordered_scores(self):
+        passed = []
+        failed = []
+        for score in self.get_scores():
+            if score["passed"]:
+                passed.append(score)
+            else:
+                failed.append(score)
+        return sorted(passed, key=lambda x: x["score"], reverse=True) + sorted(failed, key=lambda x: x["score"], reverse=True)
 
     def __check_beatmap(self, beatmap, running=False):
         if not running:
@@ -238,8 +253,9 @@ class Game(Channel):
             if self.verbose:
                 print("-- Beatmap checker started --")
             revert = False
-            if not beatmap:
+            if len(beatmap) <= 1:
                 self.send_message("The selected beatmap is not submitted! Can't check attributes.")
+                self.send_message("An alternate download link is available [" + self._bot.chimu.fetch_download_link(beatmap["id"]) + " here]")
                 revert = False
             elif beatmap["id"] == 22538:
                 revert = False

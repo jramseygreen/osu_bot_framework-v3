@@ -1,7 +1,7 @@
 import json
 
 from framework import Bot
-from config.startup import Startup
+from config.startup import startup
 
 # inititalisation + grab credentials
 f = open("config/bot_config.conf", "r")
@@ -21,4 +21,4 @@ bot = Bot(username=config["username"], password=config["password"], host=config[
 bot.set_webapp_port(config["server_port"])
 bot.set_websocket_port(config["websocket_port"])
 bot.start()
-Startup(bot)
+startup(bot)
