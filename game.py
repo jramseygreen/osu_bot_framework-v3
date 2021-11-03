@@ -129,13 +129,14 @@ class Game(Channel):
                     threading.Thread(target=self.__on_clear_host_method, args=(self.__host,)).start()
                 self.__host = ""
 
-        elif message["username"] in [x.replace(" ", "_") for x in self.__referees]:
+        elif message["username"] in [x.replace(" ", "_") for x in self.__referees] or message["username"] == self.__creator.replace(" ", "_"):
             message_arr = message["content"].lower().split(" ")
             if len(message_arr) >= 2:
                 command = " ".join(message_arr[:2]).strip()
                 args = message_arr[2:]
                 if message["username"] == self.__creator.replace(" ", "_"):
                     if command == "!mp addref":
+                        print(args)
                         self.__referees += args
                     elif command == "!mp removeref":
                         for username in args:
@@ -403,6 +404,9 @@ class Game(Channel):
     def get_host(self):
         return self.__host
 
+    def get_formatted_host(self):
+        return self.__host.replace(" ", "_")
+
     def set_host(self, username):
         if self.__on_host_change_method:
             threading.Thread(target=self.__on_host_change_method, args=(self.__host, username,)).start()
@@ -440,8 +444,17 @@ class Game(Channel):
     def get_referees(self):
         return self.__referees
 
+    def get_formatted_referees(self):
+        return [ref.replace(" ", "_") for ref in self.__referees]
+
     def is_referee(self, username):
         return username in self.__referees
+
+    def get_creator(self):
+        return self.__creator
+
+    def get_formatted_creator(self):
+        return self.__creator.replace(" ", "_")
 
     # grabs existing users, the room creator, and adds creator to referee list
     def get_existing_attributes(self):

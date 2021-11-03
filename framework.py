@@ -8,6 +8,7 @@ import threading
 from broadcast_controller import BroadcastController
 from channel import Channel
 from chimu_wrapper import Chimu
+from common_commands import CommonCommands
 from game import Game
 from socket_wrapper import Sock
 from webapp.controller import Controller
@@ -188,6 +189,7 @@ class Bot:
     def del_broadcast(self, id):
         self.__broadcast_controller.del_broadcast(id)
 
+    # makes a tournament lobby and returns the channel object
     def make_room(self, title="game room", password="", size=8, beatmapID=22538, mods=["ANY"], game_mode="any", team_type="any", scoring_type="any"):
         self.__make_room_lock.acquire()
         self.__room_limit_reached = False

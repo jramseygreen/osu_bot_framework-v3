@@ -1,6 +1,8 @@
 import copy
 import threading
 
+from common_commands import CommonCommands
+
 
 class Channel:
     def __init__(self, bot, channel, verbose):
@@ -11,6 +13,7 @@ class Channel:
         self._users = []
         self.verbose = verbose
         self.__logic_profile = ""
+        self.common_commands = CommonCommands(bot, self)
 
         # on_event methods
         self.__on_personal_message_method = None
@@ -53,6 +56,9 @@ class Channel:
 
     def get_users(self):
         return self._users
+
+    def get_formatted_users(self):
+        return [user.replace(" ", "_") for user in self._users]
 
     def set_message_log_length(self, length):
         self._message_log_length = length
