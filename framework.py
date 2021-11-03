@@ -126,18 +126,17 @@ class Bot:
 
     # attempts to connect to osu using the provided credentials
     def start(self):
+        # grab logic options
+        location = os.path.dirname(os.path.realpath(__file__)) + os.sep + "logic_profiles"
+        os.path.isdir(location)
+        for file in os.listdir(location):
+            if file[-3:] == ".py":
+                m = importlib.import_module("logic_profiles." + file[:-3])
+                for name, obj in inspect.getmembers(m):
+                    if inspect.isclass(obj):
+                        self.__logic_profiles[obj.__name__] = obj
+
         try:
-            # grab logic options
-            location = os.path.dirname(os.path.realpath(__file__)) + os.sep + "logic_profiles"
-            os.path.isdir(location)
-            for file in os.listdir(location):
-                if file[-3:] == ".py":
-                    m = importlib.import_module("logic_profiles." + file[:-3])
-                    for name, obj in inspect.getmembers(m):
-                        if inspect.isclass(obj):
-                            self.__logic_profiles[obj.__name__] = obj
-
-
             self.__sock.get_socket().connect((self.__host, self.__port))
             self.__sock.sendall(("PASS " + self.__password + "\n").encode())
             self.__sock.sendall(("USER " + self.__username + "\n").encode())

@@ -7,6 +7,8 @@ class Manager:
         channel.set_command("!config", channel.common_commands.config_link, "returns a link to the game room configuration page")
         channel.set_command("!randmap", channel.common_commands.randmap, "searches for a random beatmap matching the room's limits and ranges")
         channel.set_command("!altlink", channel.common_commands.altlink, "returns an alternate link for the current beatmap from chimu.moe")
+        channel.set_command("!start", channel.common_commands.start, "Starts the game with optional countdown timer")
+        channel.set_command("!aborttimer", channel.common_commands.aborttimer, "Aborts start timer")
         channel.set_command("*implement", channel.common_commands.implement_logic_profile, "Implements a logic profile")
         channel.set_command("*logic_profiles", channel.common_commands.get_logic_profiles, "Shows available logic profiles")
         channel.set_command("*ar_range", channel.common_commands.ar_range, "Sets the ar range for the room. e.g. *ar_range 5.5 8")

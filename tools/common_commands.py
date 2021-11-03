@@ -1,3 +1,6 @@
+import time
+
+
 def is_number(string):
     try:
         float(string)
@@ -11,6 +14,7 @@ class CommonCommands:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
+        self.start_timer = False
 
     def config_link(self, message):
         self.channel.send_message("The configuration of the game room and available commands can be viewed [" + self.channel.get_config_link() + " here]")
@@ -308,3 +312,32 @@ class CommonCommands:
             self.channel.send_message("Command '" + command + "' executed successfully")
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
+
+    def start(self, message):
+        if message["username"] == self.channel.get_formatted_host() or message["username"] in self.channel.get_formatted_referees():
+            if not self.start_timer:
+                command = message["content"].split(" ", 1)[0]
+                args = message["content"].replace(command, "", 1).strip().split(" ")
+                if args and args[0].isnumeric():
+                    self.start_timer = True
+                    self.channel.send_message("Match starts in " + args[0] + " seconds...")
+                    for i in reversed(range(int(args[0]))):
+                        if i == 10:
+                            self.channel.send_message("Match starts in 10 seconds...")
+                        if i < 5:
+                            self.channel.send_message("Match starts in " + str(i + 1) + "...")
+                        if self.start_timer:
+                            time.sleep(1)
+                        else:
+                            return
+                    self.channel.start_match()
+                    self.start_timer = False
+                else:
+                    self.channel.start_match()
+            else:
+                self.channel.start_match()
+
+    def aborttimer(self, message):
+        if message["username"] == self.channel.get_formatted_host() or message["username"] in self.channel.get_formatted_referees():
+            self.channel.send_message("Timer aborted.")
+            self.start_timer = False
