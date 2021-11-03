@@ -168,7 +168,7 @@ class Chimu:
                     continue
                 elif "max_length" in attributes and beatmap["HitLength"] > attributes["max_length"]:
                     continue
-                elif query and query not in str(beatmap).lower():
+                elif query and query.lower() not in str(beatmap).lower():
                     continue
                 beatmaps.append(beatmap)
         if beatmaps:

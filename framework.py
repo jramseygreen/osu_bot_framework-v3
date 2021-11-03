@@ -14,7 +14,7 @@ import requests
 
 
 class Bot:
-    def __init__(self, username="", password="", host="irc.ppy.sh", port=6667, server_ip="localhost", verbose=False):
+    def __init__(self, username="", password="", host="irc.ppy.sh", port=6667, server_ip="localhost", message_log_length=50, verbose=False):
         self.__sock = Sock()
         self.__controller = Controller(self, host=server_ip)
         self.__host = host
@@ -23,8 +23,9 @@ class Bot:
         self.__password = password
         self.__started = False
         self.__channels = {}
+        self.__default_message_log_length = message_log_length
         self.__personal_message_log = []
-        self.__personal_message_log_length = 50
+        self.__personal_message_log_length = self.__default_message_log_length
         self.__room_limit_reached = False
         self.__make_room_lock = threading.Lock()
         self.__new_tournament = ""
@@ -275,6 +276,15 @@ class Bot:
 
     def get_personal_message_log(self):
         return self.__personal_message_log
+
+    def get_personal_message_log_length(self):
+        return self.__personal_message_log_length
+
+    def set_default_message_log_length(self, length):
+        self.__default_message_log_length = length
+
+    def get_default_personal_message_log_length(self):
+        return self.__default_message_log_length
 
     #clones attributes and logic from channel1 to channel2 (strings)
     def clone_channel(self, channel1, channel2):

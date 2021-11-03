@@ -9,7 +9,7 @@ class Channel:
         self._bot = bot
         self._channel = channel
         self._message_log = []
-        self._message_log_length = 50
+        self._message_log_length = bot.get_default_message_log_length()
         self._users = []
         self.verbose = verbose
         self.__logic_profile = ""
