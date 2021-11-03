@@ -144,7 +144,7 @@ class Game(Channel):
                                 self.__referees.append(arg)
                     elif command == "!mp removeref":
                         for username in args:
-                            if username != self.__creator.replace(" ", "_"):
+                            if username != self.__creator.replace(" ", "_") and username in self.__referees:
                                 self.__referees.remove(username)
                                 if username == self._bot.get_username():
                                     self._bot.part(self._channel)
@@ -262,10 +262,10 @@ class Game(Channel):
         if not running:
             threading.Thread(target=self.__check_beatmap, args=(beatmap, True,)).start()
         else:
-            if self.verbose:
-                print("-- Beatmap checker started --")
             revert = False
             if self.__beatmap_checker:
+                if self.verbose:
+                    print("-- Beatmap checker started --")
                 if beatmap["unsubmitted"]:
                     self.send_message("The selected beatmap is not submitted! Can't check attributes.")
                     self.send_message("An alternate download link is available [" + self._bot.chimu.fetch_download_link(beatmap["id"]) + " here]")
@@ -435,7 +435,7 @@ class Game(Channel):
     def get_password(self):
         return self.__password
 
-    def add_command(self, command, response, description=""):
+    def set_command(self, command, response, description=""):
         self.__commands[command] = {"response": response, "description": description}
 
     def del_command(self, command):
@@ -632,6 +632,7 @@ class Game(Channel):
         text += "\n     • Invite link: " + self.__invite_link
         text += "\n     • Referees: " + ", ".join(self.__referees)
         text += "\n     • Welcome message: " + self.__welcome_message
+        text += "\n     • Beatmap checker: " + str(self.__beatmap_checker)
         text += "\n\n 𝙶̲𝚊̲𝚖̲𝚎̲ ̲𝚛̲𝚘̲𝚘̲𝚖̲ ̲𝚊̲𝚝̲𝚝̲𝚛̲𝚒̲𝚋̲𝚞̲𝚝̲𝚎̲𝚜̲:"
         text += "\n     • Room size: " + str(self.__size)
         text += "\n     • game mode: " + self.__game_mode

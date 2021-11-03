@@ -19,7 +19,7 @@ class BroadcastController:
     # adds a new active broadcast and returns its id
     def add_broadcast(self, channel, message, secs):
         id = self.__gen_id()
-        broadcast = {"id": id, "channel": channel, "message": message, "secs": secs}
+        broadcast = {"id": id, "channel": channel, "message": message, "secs": int(secs)}
         if channel not in self.__channels:
             self.__channels[channel] = []
         self.__channels[channel].append(broadcast)
@@ -29,12 +29,16 @@ class BroadcastController:
     # deletes a broadcast given its id
     def del_broadcast(self, id):
         for channel in self.__channels:
-            for broadcast in channel:
+            for broadcast in self.__channels[channel]:
                 if broadcast["id"] == int(id):
-                    channel.remove(broadcast)
-                    if channel == []:
+                    self.__channels[channel].remove(broadcast)
+                    if self.__channels[channel] == []:
                         del self.__channels[channel]
                     return
+
+    # returns true if id is currently broadcasting
+    def has_id(self, id):
+        return self.get_broadcast(id) is not None
 
     # gets a broadcast based on its id
     def get_broadcast(self, id):

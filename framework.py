@@ -187,6 +187,10 @@ class Bot:
     def del_broadcast(self, id):
         self.__broadcast_controller.del_broadcast(id)
 
+    # returns true if broadcast id is in use
+    def has_broadcast_id(self, id):
+        return self.__broadcast_controller.has_id(id)
+
     # makes a tournament lobby and returns the channel object
     def make_room(self, title="game room", password="", size=8, beatmapID=22538, mods=["ANY"], game_mode="any", team_type="any", scoring_type="any"):
         self.__make_room_lock.acquire()
@@ -283,7 +287,7 @@ class Bot:
     def set_default_message_log_length(self, length):
         self.__default_message_log_length = length
 
-    def get_default_personal_message_log_length(self):
+    def get_default_message_log_length(self):
         return self.__default_message_log_length
 
     #clones attributes and logic from channel1 to channel2 (strings)
