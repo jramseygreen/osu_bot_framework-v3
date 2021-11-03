@@ -142,10 +142,10 @@ class CommonCommands:
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 2:
-                if all([is_number(arg) for arg in args]):
-                    self.channel.set_length_range((float(args[0]), float(args[1])))
+                if all([arg.isnumeric() for arg in args]):
+                    self.channel.set_length_range((int(args[0]), int(args[1])))
                 else:
-                    self.channel.send_message(message["username"] + " you can only send numbers with this command.")
+                    self.channel.send_message(message["username"] + " you can only send integers with this command.")
                     return
             else:
                 self.channel.send_message(message["username"] + " you must send 2 arguments with this command.")

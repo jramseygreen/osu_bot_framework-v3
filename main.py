@@ -20,4 +20,6 @@ if not config["password"] or config["password"] == "password":
 bot = Bot(username=config["username"], password=config["password"], host=config["irc_host"], port=config["irc_port"], server_ip=config["server_ip"], message_log_length=config["message_log_length"], verbose=config["verbose"])
 bot.set_webapp_port(config["server_port"])
 bot.set_websocket_port(config["websocket_port"])
+bot.get_sock().set_period(config["send_period"])
+bot.get_sock().set_msg_num(config["send_cap"])
 startup(bot)
