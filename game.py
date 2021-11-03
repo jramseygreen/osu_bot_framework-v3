@@ -232,7 +232,8 @@ class Game(Channel):
         scores = []
         for slot in self.__slots:
             if self.__slots[slot]["score"]:
-                self.__slots[slot]["score"]["username"] = self.__slots[slot]["username"]
+                if "username" not in self.__slots[slot]["score"]:
+                    self.__slots[slot]["score"]["username"] = self.__slots[slot]["username"]
                 scores.append(self.__slots[slot]["score"])
         return scores
 
@@ -407,6 +408,9 @@ class Game(Channel):
             threading.Thread(target=self.__on_host_change_method, args=(self.__host, username,)).start()
         self.__host = username
 
+    def change_host(self, username):
+        self.send_message("!mp host " + username.replace(" ", "_"))
+
     def set_password(self, password):
         self.__invite_link = self.__invite_link.replace(self.__password, "")
         self.__password = password
@@ -432,6 +436,12 @@ class Game(Channel):
     def add_referee(self, username):
         if username not in self.__referees:
             self.__referees.append(username)
+
+    def get_referees(self):
+        return self.__referees
+
+    def is_referee(self, username):
+        return username in self.__referees
 
     # grabs existing users, the room creator, and adds creator to referee list
     def get_existing_attributes(self):
