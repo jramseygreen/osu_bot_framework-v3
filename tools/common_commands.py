@@ -255,7 +255,11 @@ class CommonCommands:
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 1:
                 if self.bot.has_broadcast_id(args[0]):
-                    self.bot.del_broadcast(args[0])
+                    if self.bot.get_broadcast(args[0]) in self.bot.get_broadcasts(self.channel.get_channel()):
+                        self.bot.del_broadcast(args[0])
+                    else:
+                        self.channel.send_message(message["username"] + " broadcast id does not belong to this channel.")
+                        return
                 else:
                     self.channel.send_message(message["username"] + " broadcast id not recognised.")
                     return
