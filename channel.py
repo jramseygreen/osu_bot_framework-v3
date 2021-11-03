@@ -39,6 +39,9 @@ class Channel:
 
     def send_message(self, message):
         self._bot.get_sock().sendall(("PRIVMSG " + self._channel + " :" + str(message) + "\n").encode())
+        if len(self._message_log) == self._message_log_length:
+            self._message_log = self._message_log[1:]
+        self._message_log.append(message)
         if self.verbose:
             print("-- sent message to " + self._channel + ": '" + str(message) + "' --")
 

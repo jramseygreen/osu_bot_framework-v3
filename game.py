@@ -109,7 +109,7 @@ class Game(Channel):
                 self.__in_progress = False
             elif "Beatmap changed to" in message["content"] or "Changed beatmap to" in message["content"]:
                 beatmapID = message["content"].split("/b/", 1)[1].split(" ", 1)[0].replace(")", "")
-                self.__check_beatmap(self.fetch_beatmap(beatmapID))
+                self.__check_beatmap(self.__fetch_beatmap(beatmapID))
             elif "Host is changing map..." == message["content"]:
                 if self.__on_changing_beatmap_method:
                     threading.Thread(target=self.__on_changing_beatmap_method).start()
@@ -202,19 +202,19 @@ class Game(Channel):
         return {}
 
     # fetches beatmap from ppy.sh
-    def fetch_beatmap(self, beatmapID):
+    def __fetch_beatmap(self, beatmapID):
         if self.__beatmap:
             if beatmapID == self.__beatmap["id"]:
                 return self.__beatmap
         if int(beatmapID) == 0:
             return {}
-        return self._bot.fetch_beatmap()
+        return self._bot.fetch_beatmap(beatmapID)
 
     # fetches a beatmapset associated with a beatmapID from ppy.sh
-    def fetch_beatmapset(self, beatmapID):
+    def __fetch_beatmapset(self, beatmapID):
         if int(beatmapID) == 0:
             return {}
-        return self._bot.fetch_beatmapset()
+        return self._bot.fetch_beatmapset(beatmapID)
 
     def __fetch_scores(self):
         self.__match_history = self.fetch_match_history()
@@ -435,6 +435,9 @@ class Game(Channel):
     def get_beatmap(self):
         return self.__beatmap
 
+    def change_beatmap(self, beatmapID):
+        self.send_message("!mp map " + str(beatmapID))
+
     # getters and setters for limits and ranges
     # sets the allowed map statuses
     def set_map_status(self, status):
@@ -462,7 +465,8 @@ class Game(Channel):
         else:
             mods = [mods.upper()]
         self.__mods = mods
-        self.send_message("!mp mods " + " ".join(self.__mods))
+        if self.__mods != ["ANY"]:
+            self.send_message("!mp mods " + " ".join(self.__mods))
 
     # gets the allowed mods
     def get_mods(self):
@@ -520,7 +524,8 @@ class Game(Channel):
     # sets the allowed room scoring types
     def set_scoring_type(self, scoring_type):
         self.__scoring_type = scoring_type.lower()
-        self.send_message("!mp set scoremode " + str(GAME_ATTR[self.__scoring_type]))
+        if scoring_type != "any":
+            self.send_message("!mp set scoremode " + str(GAME_ATTR[self.__scoring_type]))
 
     # returns the scoring type of the room
     def get_scoring_type(self):
@@ -540,7 +545,10 @@ class Game(Channel):
     def set_game_mode(self, mode):
         self.__game_mode = mode.lower()
         if self.__game_mode != "any":
-            self.send_message("!mp map " + str(self.__beatmap["id"]) + " " + str(GAME_ATTR[self.__game_mode]))
+            if self.__beatmap:
+                self.send_message("!mp map " + str(self.__beatmap["id"]) + " " + str(GAME_ATTR[self.__game_mode]))
+            else:
+                self.send_message("!mp map 22538 " + str(GAME_ATTR[self.__game_mode]))
 
     # returns the game mode of the room
     def get_game_mode(self):
@@ -572,7 +580,7 @@ class Game(Channel):
         text += "\n     • Channel: " + self._channel
         text += "\n     • Match history: https://osu.ppy.sh/mp/" + self._channel.replace("#mp_", "", 1) + "/"
         text += "\n     • Invite link: " + self.__invite_link
-        text += "\n     • Admins/Refs: " + ", ".join(self.__referees)
+        text += "\n     • Referees: " + ", ".join(self.__referees)
         text += "\n     • Welcome message: " + self.__welcome_message
         text += "\n\n 𝙶̲𝚊̲𝚖̲𝚎̲ ̲𝚛̲𝚘̲𝚘̲𝚖̲ ̲𝚊̲𝚝̲𝚝̲𝚛̲𝚒̲𝚋̲𝚞̲𝚝̲𝚎̲𝚜̲:"
         text += "\n     • Room size: " + str(self.__size)

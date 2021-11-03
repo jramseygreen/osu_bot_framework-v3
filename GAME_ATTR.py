@@ -1,3 +1,5 @@
+import random
+
 GAME_ATTR = {
     "head-to-head": 0,
     "tag-coop": 1,
@@ -17,7 +19,7 @@ GAME_ATTR = {
     "taiko": 1,
     "fruits": 2,
     "mania": 3,
-    "any": 0,
+    "any": random.randint(0, 3),
     "ranked": 1,
     "approved": 2,
     "qualified": 3,

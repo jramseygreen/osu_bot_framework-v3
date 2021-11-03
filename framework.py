@@ -7,6 +7,7 @@ import threading
 
 from broadcast_controller import BroadcastController
 from channel import Channel
+from chimu_wrapper import Chimu
 from game import Game
 from socket_wrapper import Sock
 from webapp.controller import Controller
@@ -32,6 +33,7 @@ class Bot:
         self.__broadcast_controller = BroadcastController(self)
         self.__on_personal_message_method = None
         self.__logic_profiles = {}
+        self.chimu = Chimu()
         self.verbose = verbose
 
     def __listen(self, running=False):
@@ -172,6 +174,9 @@ class Bot:
     # sends a personal message to a username
     def send_personal_message(self, username, message):
         self.__sock.sendall(("PRIVMSG " + username.replace(" ", "_") + " :" + message + "\n").encode())
+        if len(self.__personal_message_log) == self.__personal_message_log_length:
+            self.__personal_message_log = self.__personal_message_log[1:]
+        self.__personal_message_log.append(message)
         if self.verbose:
             print("-- sent personal message to " + username + ": '" + message + "' --")
 
@@ -183,7 +188,7 @@ class Bot:
     def del_broadcast(self, id):
         self.__broadcast_controller.del_broadcast(id)
 
-    def make_room(self, title="game room", password="", size=8):
+    def make_room(self, title="game room", password="", size=8, beatmapID=22538, mods=["ANY"], game_mode="any", team_type="any", scoring_type="any"):
         self.__make_room_lock.acquire()
         self.__room_limit_reached = False
         self.send_personal_message("BanchoBot", "!mp make " + title)
@@ -197,6 +202,11 @@ class Bot:
             pass
         channel.set_password(password)
         channel.set_size(size)
+        channel.change_beatmap(beatmapID)
+        channel.set_mods(mods)
+        channel.set_game_mode(game_mode)
+        channel.set_team_type(team_type)
+        channel.set_scoring_type(scoring_type)
         self.send_personal_message(self.__username, self.__username + " a game room was created: [" + channel.get_invite_link() + " " + title + "]")
         return channel
 
