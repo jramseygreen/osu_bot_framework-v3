@@ -274,6 +274,70 @@ class CommonCommands:
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
+    def add_beatmap_creator_whitelist(self, message):
+        if message["username"] in self.channel.get_formatted_referees():
+            command = message["content"].split(" ", 1)[0]
+            creator = message["content"].replace(command, "", 1).strip()
+            if creator:
+                self.channel.add_beatmap_creator_whitelist(creator)
+                self.channel.send_message("Command '" + command + "' executed successfully")
+
+    def del_beatmap_creator_whitelist(self, message):
+        if message["username"] in self.channel.get_formatted_referees():
+            command = message["content"].split(" ", 1)[0]
+            creator = message["content"].replace(command, "", 1).strip()
+            if creator:
+                self.channel.del_beatmap_creator_whitelist(creator)
+                self.channel.send_message("Command '" + command + "' executed successfully")
+
+    def add_beatmap_creator_blacklist(self, message):
+        if message["username"] in self.channel.get_formatted_referees():
+            command = message["content"].split(" ", 1)[0]
+            creator = message["content"].replace(command, "", 1).strip()
+            if creator:
+                self.channel.add_beatmap_creator_blacklist(creator)
+                self.channel.send_message("Command '" + command + "' executed successfully")
+
+    def del_beatmap_creator_blacklist(self, message):
+        if message["username"] in self.channel.get_formatted_referees():
+            command = message["content"].split(" ", 1)[0]
+            creator = message["content"].replace(command, "", 1).strip()
+            if creator:
+                self.channel.del_beatmap_creator_blacklist(creator)
+                self.channel.send_message("Command '" + command + "' executed successfully")
+
+    def add_artist_whitelist(self, message):
+        if message["username"] in self.channel.get_formatted_referees():
+            command = message["content"].split(" ", 1)[0]
+            artist = message["content"].replace(command, "", 1).strip()
+            if artist:
+                self.channel.add_artist_whitelist(artist)
+                self.channel.send_message("Command '" + command + "' executed successfully")
+
+    def del_artist_whitelist(self, message):
+        if message["username"] in self.channel.get_formatted_referees():
+            command = message["content"].split(" ", 1)[0]
+            artist = message["content"].replace(command, "", 1).strip()
+            if artist:
+                self.channel.del_artist_whitelist(artist)
+                self.channel.send_message("Command '" + command + "' executed successfully")
+
+    def add_artist_blacklist(self, message):
+        if message["username"] in self.channel.get_formatted_referees():
+            command = message["content"].split(" ", 1)[0]
+            creator = message["content"].replace(command, "", 1).strip()
+            if creator:
+                self.channel.add_artist_blacklist(creator)
+                self.channel.send_message("Command '" + command + "' executed successfully")
+
+    def del_artist_blacklist(self, message):
+        if message["username"] in self.channel.get_formatted_referees():
+            command = message["content"].split(" ", 1)[0]
+            creator = message["content"].replace(command, "", 1).strip()
+            if creator:
+                self.channel.del_artist_blacklist(creator)
+                self.channel.send_message("Command '" + command + "' executed successfully")
+
     def implement_logic_profile(self, message):
         if message["username"] in self.channel.get_formatted_referees():
             command = message["content"].split(" ", 1)[0]
@@ -341,3 +405,4 @@ class CommonCommands:
         if message["username"] == self.channel.get_formatted_host() or message["username"] in self.channel.get_formatted_referees():
             self.channel.send_message("Timer aborted.")
             self.start_timer = False
+

@@ -2,6 +2,8 @@ import os
 import threading
 import random
 import json
+from itertools import product
+
 import requests
 
 from GAME_ATTR import GAME_ATTR
@@ -115,6 +117,7 @@ class Chimu:
 
         attributes["amount"] = 1000
         query = ""
+
         if "query" in attributes:
             query = attributes["query"]
             del attributes["query"]
@@ -129,7 +132,21 @@ class Chimu:
                 del attributes["status"]
 
         # fetch beatmap set search results
-        beatmapsets = self.search(query, **attributes)
+        beatmapsets = []
+        if channel:
+            args = [[query], channel.get_artist_whitelist(), channel.get_beatmap_creator_whitelist()]
+            if [] in args:
+                args.remove([])
+            if [""] in args:
+                args.remove([""])
+            queries = list(product(*args))
+            if queries:
+                for q in queries:
+                    beatmapsets += self.search(" ".join(q).strip(), **attributes)
+            else:
+                beatmapsets = self.search(query, **attributes)
+        else:
+            beatmapsets = self.search(query, **attributes)
 
         # extract beatmaps
         beatmaps = []
@@ -170,6 +187,16 @@ class Chimu:
                     continue
                 elif query and query.lower() not in str(beatmap).lower():
                     continue
+                elif channel:
+                    if channel.get_beatmap_creator_whitelist() and beatmapset["Creator"].lower() not in channel.get_beatmap_creator_whitelist():
+                        continue
+                    elif channel.get_beatmap_creator_blacklist() and beatmapset["Creator"].lower() in channel.get_beatmap_creator_blacklist():
+                        continue
+                    elif channel.get_artist_whitelist() and beatmapset["Artist"].lower() not in channel.get_artist_whitelist():
+                        continue
+                    elif channel.get_artist_blacklist() and beatmapset["Artist"].lower() in channel.get_artist_blacklist():
+                        continue
+
                 beatmaps.append(beatmap)
         if beatmaps:
             return random.choice(beatmaps)
