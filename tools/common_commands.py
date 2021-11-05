@@ -52,7 +52,7 @@ class CommonCommands:
             else:
                 self.channel.send_message(message["username"] + " you must send 2 arguments with this command.")
                 return
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("The ar range was set to " + str(self.channel.get_ar_range()))
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
@@ -69,7 +69,7 @@ class CommonCommands:
             else:
                 self.channel.send_message(message["username"] + " you must send 2 arguments with this command.")
                 return
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("The od range was set to " + str(self.channel.get_od_range()))
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
@@ -86,7 +86,7 @@ class CommonCommands:
             else:
                 self.channel.send_message(message["username"] + " you must send 2 arguments with this command.")
                 return
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("The hp range was set to " + str(self.channel.get_hp_range()))
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
@@ -103,7 +103,7 @@ class CommonCommands:
             else:
                 self.channel.send_message(message["username"] + " you must send 2 arguments with this command.")
                 return
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("The cs range was set to " + str(self.channel.get_cs_range()))
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
@@ -120,7 +120,7 @@ class CommonCommands:
             else:
                 self.channel.send_message(message["username"] + " you must send 2 arguments with this command.")
                 return
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("The bpm range was set to " + str(self.channel.get_bpm_range()))
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
@@ -137,7 +137,7 @@ class CommonCommands:
             else:
                 self.channel.send_message(message["username"] + " you must send 2 arguments with this command.")
                 return
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("The difficulty range was set to " + str(self.channel.get_diff_range()))
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
@@ -154,7 +154,12 @@ class CommonCommands:
             else:
                 self.channel.send_message(message["username"] + " you must send 2 arguments with this command.")
                 return
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            length_range = []
+            if int(args[1]) < 0:
+                length_range = [str(int(args[0]) // 60) + "min, " + str(int(args[0]) % 60) + "sec", "unlimited"]
+            else:
+                length_range = [str(int(x) // 60) + "min, " + str(int(x) % 60) + "sec" for x in self.channel.get_length_range()]
+            self.channel.send_message("The length range was set to " + str(self.channel.get_length_range()) + " - " + str(length_range))
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
@@ -166,7 +171,7 @@ class CommonCommands:
                 self.channel.set_map_status(args)
             else:
                 self.channel.set_map_status("any")
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("The map status was set to " + str(self.channel.get_map_status()))
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
@@ -178,7 +183,7 @@ class CommonCommands:
                 self.channel.set_mods(args)
             else:
                 self.channel.set_mods("any")
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("Allowed mods set to " + str(self.channel.get_mods()))
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
@@ -193,7 +198,7 @@ class CommonCommands:
             else:
                 self.channel.send_message(message["username"] + " you must send 1 argument with this command.")
                 return
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("Allowed scoring type set to: " + self.channel.get_scoring_type())
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
@@ -208,7 +213,7 @@ class CommonCommands:
             else:
                 self.channel.send_message(message["username"] + " you must send 1 argument with this command.")
                 return
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("Allowed team type set to: " + self.channel.get_team_type())
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
@@ -223,7 +228,7 @@ class CommonCommands:
             else:
                 self.channel.send_message(message["username"] + " you must send 1 argument with this command.")
                 return
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("Allowed game mode set to: " + self.channel.get_game_mode())
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
@@ -235,7 +240,7 @@ class CommonCommands:
                 self.channel.set_welcome_message(msg)
             else:
                 self.channel.set_welcome_message("")
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("Set the welcome message to " + msg)
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
@@ -280,7 +285,7 @@ class CommonCommands:
             creator = message["content"].replace(command, "", 1).strip()
             if creator:
                 self.channel.add_beatmap_creator_whitelist(creator)
-                self.channel.send_message("Command '" + command + "' executed successfully")
+                self.channel.send_message("'" + creator + "'" + " added to the creator whitelist")
 
     def del_beatmap_creator_whitelist(self, message):
         if message["username"] in self.channel.get_formatted_referees():
@@ -288,7 +293,7 @@ class CommonCommands:
             creator = message["content"].replace(command, "", 1).strip()
             if creator:
                 self.channel.del_beatmap_creator_whitelist(creator)
-                self.channel.send_message("Command '" + command + "' executed successfully")
+                self.channel.send_message("'" + creator + "'" + " removed from the creator whitelist")
 
     def add_beatmap_creator_blacklist(self, message):
         if message["username"] in self.channel.get_formatted_referees():
@@ -296,7 +301,7 @@ class CommonCommands:
             creator = message["content"].replace(command, "", 1).strip()
             if creator:
                 self.channel.add_beatmap_creator_blacklist(creator)
-                self.channel.send_message("Command '" + command + "' executed successfully")
+                self.channel.send_message("'" + creator + "'" + " added to the creator blacklist")
 
     def del_beatmap_creator_blacklist(self, message):
         if message["username"] in self.channel.get_formatted_referees():
@@ -304,7 +309,7 @@ class CommonCommands:
             creator = message["content"].replace(command, "", 1).strip()
             if creator:
                 self.channel.del_beatmap_creator_blacklist(creator)
-                self.channel.send_message("Command '" + command + "' executed successfully")
+                self.channel.send_message("'" + creator + "'" + " removed from the creator blacklist")
 
     def add_artist_whitelist(self, message):
         if message["username"] in self.channel.get_formatted_referees():
@@ -312,7 +317,7 @@ class CommonCommands:
             artist = message["content"].replace(command, "", 1).strip()
             if artist:
                 self.channel.add_artist_whitelist(artist)
-                self.channel.send_message("Command '" + command + "' executed successfully")
+                self.channel.send_message("'" + artist + "'" + " added to the artist whitelist")
 
     def del_artist_whitelist(self, message):
         if message["username"] in self.channel.get_formatted_referees():
@@ -320,23 +325,23 @@ class CommonCommands:
             artist = message["content"].replace(command, "", 1).strip()
             if artist:
                 self.channel.del_artist_whitelist(artist)
-                self.channel.send_message("Command '" + command + "' executed successfully")
+                self.channel.send_message("'" + artist + "'" + " removed from the artist whitelist")
 
     def add_artist_blacklist(self, message):
         if message["username"] in self.channel.get_formatted_referees():
             command = message["content"].split(" ", 1)[0]
-            creator = message["content"].replace(command, "", 1).strip()
-            if creator:
-                self.channel.add_artist_blacklist(creator)
-                self.channel.send_message("Command '" + command + "' executed successfully")
+            artist = message["content"].replace(command, "", 1).strip()
+            if artist:
+                self.channel.add_artist_blacklist(artist)
+                self.channel.send_message("'" + artist + "'" + " added to the artist blacklist")
 
     def del_artist_blacklist(self, message):
         if message["username"] in self.channel.get_formatted_referees():
             command = message["content"].split(" ", 1)[0]
-            creator = message["content"].replace(command, "", 1).strip()
-            if creator:
-                self.channel.del_artist_blacklist(creator)
-                self.channel.send_message("Command '" + command + "' executed successfully")
+            artist = message["content"].replace(command, "", 1).strip()
+            if artist:
+                self.channel.del_artist_blacklist(artist)
+                self.channel.send_message("'" + artist + "'" + " removed from the artist blacklist")
 
     def implement_logic_profile(self, message):
         if message["username"] in self.channel.get_formatted_referees():

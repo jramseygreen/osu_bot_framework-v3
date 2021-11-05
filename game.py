@@ -654,8 +654,8 @@ class Game(Channel):
         text += "\n     • Match history: https://osu.ppy.sh/mp/" + self._channel.replace("#mp_", "", 1) + "/"
         text += "\n     • Invite link: " + self.__invite_link
         text += "\n     • Referees: " + ", ".join(self.__referees)
-        text += "\n     • Welcome message: " + self.__welcome_message
         text += "\n     • Beatmap checker: " + str(self.__beatmap_checker)
+        text += "\n     • Welcome message: " + self.__welcome_message
         text += "\n\n 𝙶̲𝚊̲𝚖̲𝚎̲ ̲𝚛̲𝚘̲𝚘̲𝚖̲ ̲𝚊̲𝚝̲𝚝̲𝚛̲𝚒̲𝚋̲𝚞̲𝚝̲𝚎̲𝚜̲:"
         text += "\n     • Room size: " + str(self.__size)
         text += "\n     • game mode: " + self.__game_mode

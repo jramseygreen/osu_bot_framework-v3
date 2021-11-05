@@ -93,27 +93,7 @@ class Chimu:
     def fetch_random_beatmap(self, channel=None, **attributes):
         # grab attributes from channel object
         if channel:
-            if channel.get_map_status() != ["any"]:
-                attributes["status"] = [GAME_ATTR[status] for status in channel.get_map_status()]
-            if channel.get_game_mode() != "any":
-                attributes["mode"] = GAME_ATTR[channel.get_game_mode()]
-            attributes["min_ar"] = channel.get_ar_range()[0]
-            attributes["max_ar"] = channel.get_ar_range()[1]
-            attributes["min_od"] = channel.get_od_range()[0]
-            attributes["max_od"] = channel.get_od_range()[1]
-            attributes["min_cs"] = channel.get_cs_range()[0]
-            attributes["max_cs"] = channel.get_cs_range()[1]
-            attributes["min_hp"] = channel.get_hp_range()[0]
-            attributes["max_hp"] = channel.get_hp_range()[1]
-            attributes["min_diff"] = channel.get_diff_range()[0]
-            if channel.get_diff_range()[1] != -1:
-                attributes["max_diff"] = channel.get_diff_range()[1]
-            attributes["min_bpm"] = channel.get_bpm_range()[0]
-            if channel.get_bpm_range()[1] != -1:
-                attributes["max_bpm"] = channel.get_bpm_range()[1]
-            attributes["min_length"] = channel.get_length_range()[0]
-            if channel.get_length_range()[1] != -1:
-                attributes["max_length"] = channel.get_length_range()[1]
+            attributes = self.channel_to_attributes(channel)
 
         attributes["amount"] = 1000
         query = ""
@@ -130,11 +110,27 @@ class Chimu:
                 attributes["status"] = attributes["status"][0]
             else:
                 del attributes["status"]
+        beatmap_creator_whitelist = []
+        beatmap_creator_blacklist = []
+        artist_whitelist = []
+        artist_blacklist = []
+        if "beatmap_creator_whitelist" in attributes:
+            beatmap_creator_whitelist = attributes["beatmap_creator_whitelist"]
+            del attributes["beatmap_creator_whitelist"]
+        if "beatmap_creator_blacklist" in attributes:
+            beatmap_creator_blacklist = attributes["beatmap_creator_blacklist"]
+            del attributes["beatmap_creator_blacklist"]
+        if "artist_whitelist" in attributes:
+            artist_whitelist = attributes["artist_whitelist"]
+            del attributes["artist_whitelist"]
+        if "artist_blacklist" in attributes:
+            artist_blacklist = attributes["artist_blacklist"]
+            del attributes["artist_blacklist"]
 
         # fetch beatmap set search results
         beatmapsets = []
         if channel:
-            args = [[query], channel.get_artist_whitelist(), channel.get_beatmap_creator_whitelist()]
+            args = [[query], artist_whitelist, beatmap_creator_whitelist]
             if [] in args:
                 args.remove([])
             if [""] in args:
@@ -192,15 +188,46 @@ class Chimu:
                 elif query and query.lower() not in str(beatmap).lower():
                     continue
                 elif channel:
-                    if channel.get_beatmap_creator_whitelist() and beatmapset["Creator"].lower() not in channel.get_beatmap_creator_whitelist() and all([x not in beatmap["DiffName"].lower() for x in channel.__beatmap_creator_whitelist]):
+                    if beatmap_creator_whitelist and beatmapset["Creator"].lower() not in beatmap_creator_whitelist and all([x not in beatmap["DiffName"].lower() for x in beatmap_creator_whitelist]):
                         continue
-                    elif channel.get_beatmap_creator_blacklist() and beatmapset["Creator"].lower() in channel.get_beatmap_creator_blacklist():
+                    elif beatmap_creator_blacklist and beatmapset["Creator"].lower() in beatmap_creator_blacklist:
                         continue
-                    elif channel.get_artist_whitelist() and beatmapset["Artist"].lower() not in channel.get_artist_whitelist():
+                    elif artist_whitelist and beatmapset["Artist"].lower() not in artist_whitelist:
                         continue
-                    elif channel.get_artist_blacklist() and beatmapset["Artist"].lower() in channel.get_artist_blacklist():
+                    elif artist_blacklist and beatmapset["Artist"].lower() in artist_blacklist:
                         continue
 
                 beatmaps.append(beatmap)
         if beatmaps:
             return random.choice(beatmaps)
+
+    def channel_to_attributes(self, channel):
+        attributes = {}
+        if channel.get_map_status() != ["any"]:
+            attributes["status"] = [GAME_ATTR[status] for status in channel.get_map_status()]
+        if channel.get_game_mode() != "any":
+            attributes["mode"] = GAME_ATTR[channel.get_game_mode()]
+        attributes["min_ar"] = channel.get_ar_range()[0]
+        attributes["max_ar"] = channel.get_ar_range()[1]
+        attributes["min_od"] = channel.get_od_range()[0]
+        attributes["max_od"] = channel.get_od_range()[1]
+        attributes["min_cs"] = channel.get_cs_range()[0]
+        attributes["max_cs"] = channel.get_cs_range()[1]
+        attributes["min_hp"] = channel.get_hp_range()[0]
+        attributes["max_hp"] = channel.get_hp_range()[1]
+        attributes["min_diff"] = channel.get_diff_range()[0]
+        if channel.get_diff_range()[1] != -1:
+            attributes["max_diff"] = channel.get_diff_range()[1]
+        attributes["min_bpm"] = channel.get_bpm_range()[0]
+        if channel.get_bpm_range()[1] != -1:
+            attributes["max_bpm"] = channel.get_bpm_range()[1]
+        attributes["min_length"] = channel.get_length_range()[0]
+        if channel.get_length_range()[1] != -1:
+            attributes["max_length"] = channel.get_length_range()[1]
+        attributes["beatmap_creator_whitelist"] = channel.get_beatmap_creator_whitelist()
+        attributes["beatmap_creator_blacklist"] = channel.get_beatmap_creator_blacklist()
+        attributes["artist_whitelist"] = channel.get_artist_whitelist()
+        attributes["artist_blacklist"] = channel.get_artist_blacklist()
+        return attributes
+
+

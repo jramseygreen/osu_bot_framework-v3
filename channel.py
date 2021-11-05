@@ -22,7 +22,6 @@ class Channel:
         self.__on_message_method = None
 
     def add_user(self, username):
-        print("added user:" + username)
         if username not in self._users:
             self._users.append(username)
         if self.__on_join_method:
