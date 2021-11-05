@@ -28,6 +28,8 @@ class AutoHostRotate:
         if self.queue[0] == username and len(self.queue) > 1 and not self.channel.in_progress():
             self.queue.remove(username)
             self.channel.change_host(self.queue[0])
+        else:
+            self.queue.remove(username)
 
     def on_match_start(self):
         self.queue.append(self.queue.pop(0))
