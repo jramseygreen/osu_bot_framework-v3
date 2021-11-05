@@ -22,6 +22,7 @@ class Channel:
         self.__on_message_method = None
 
     def add_user(self, username):
+        print("added user:" + username)
         if username not in self._users:
             self._users.append(username)
         if self.__on_join_method:
@@ -124,3 +125,9 @@ class Channel:
         self.on_join(None)
         self.on_part(None)
         self.on_message(None)
+
+    def has_users(self):
+        return self._users != []
+
+    def has_user(self, username):
+        return username.replace(" ", "_") in self.get_formatted_users()

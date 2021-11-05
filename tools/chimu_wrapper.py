@@ -150,7 +150,11 @@ class Chimu:
 
         # extract beatmaps
         beatmaps = []
+        processed = []
         for beatmapset in beatmapsets:
+            if beatmapset in processed:
+                continue
+            processed.append(beatmapset)
             for beatmap in beatmapset["ChildrenBeatmaps"]:
 
                 if status and beatmapset["RankedStatus"] not in status:
@@ -188,7 +192,7 @@ class Chimu:
                 elif query and query.lower() not in str(beatmap).lower():
                     continue
                 elif channel:
-                    if channel.get_beatmap_creator_whitelist() and beatmapset["Creator"].lower() not in channel.get_beatmap_creator_whitelist():
+                    if channel.get_beatmap_creator_whitelist() and beatmapset["Creator"].lower() not in channel.get_beatmap_creator_whitelist() and all([x not in beatmap["DiffName"].lower() for x in channel.__beatmap_creator_whitelist]):
                         continue
                     elif channel.get_beatmap_creator_blacklist() and beatmapset["Creator"].lower() in channel.get_beatmap_creator_blacklist():
                         continue

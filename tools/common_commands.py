@@ -377,7 +377,7 @@ class CommonCommands:
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
-    def start(self, message):
+    def starttimer(self, message):
         if message["username"] == self.channel.get_formatted_host() or message["username"] in self.channel.get_formatted_referees():
             if not self.start_timer:
                 command = message["content"].split(" ", 1)[0]
@@ -406,3 +406,8 @@ class CommonCommands:
             self.channel.send_message("Timer aborted.")
             self.start_timer = False
 
+    # todo
+    def topdiff(self, message):
+        beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap["id"])
+        for beatmap in beatmapset["beatmaps"]:
+            pass

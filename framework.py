@@ -3,6 +3,7 @@ import inspect
 import json
 import os
 import threading
+import time
 
 from broadcast_controller import BroadcastController
 from channel import Channel
@@ -73,13 +74,14 @@ class Bot:
                                 if username == self.__username and channel not in self.__channels and "#mp_" in channel:
                                     self.join(channel)
                                     self.__new_tournament = channel
-                                if channel in self.__channels:
+                                if channel in self.__channels and not self.__channels[channel].is_game():
                                     self.__channels[channel].add_user(username)
                             elif command == "PART":
                                 if channel in self.__channels:
-                                    self.__channels[channel].del_user(username)
                                     if self.__channels[channel].is_game():
                                         del self.__channels[channel]
+                                    elif username in self.__channels[channel].get_formatted_users():
+                                        self.__channels[channel].del_user(username)
                             elif command == "PRIVMSG":
                                 content = " ".join(line[3:]).replace(":", "", 1)
                                 message = {"username": username, "channel": channel, "content": content}
@@ -106,12 +108,13 @@ class Bot:
                         # users already in channel
                         if command == "353":
                             channel = line[4]
-                            if channel in self.__channels and not self.__channels[channel].is_game():
+                            if channel in self.__channels:
                                 users = line[5:]
                                 users[0] = users[0][1:]
                                 for username in users:
-                                    if username != "" and username[0] != "+" and username[0] != "@" and username != "BanchoBot":
+                                    if username != "" and username[0] != "+" and username[0] != "@":
                                         self.__channels[channel].add_user(username)
+
                         # invite link
                         elif command == "332":
                             channel = line[3]
@@ -214,6 +217,8 @@ class Bot:
         channel.set_password(password)
         channel.set_size(size)
         channel.change_beatmap(beatmapID)
+        while not channel.get_beatmap():
+            pass
         channel.set_mods(mods)
         channel.set_game_mode(game_mode)
         channel.set_team_type(team_type)

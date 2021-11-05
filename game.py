@@ -57,6 +57,7 @@ class Game(Channel):
         self.__on_team_change_method = None
         self.__on_team_addition_method = None
         self.__on_clear_host_method = None
+        self.__on_rule_violation_method = None
 
         # whitelists + blacklists
         self.__beatmap_creator_whitelist = []
@@ -176,7 +177,7 @@ class Game(Channel):
             if callable(self.__commands[command]["response"]):
                 threading.Thread(target=self.__commands[command]["response"], args=(message,)).start()
             else:
-                self.send_message(self.__commands[command]["response"])
+                self.send_message(str(self.__commands[command]["response"]))
             if self.verbose:
                 print("-- Command '" + command + "' Executed --")
 
@@ -270,7 +271,6 @@ class Game(Channel):
         if not running:
             threading.Thread(target=self.__check_beatmap, args=(beatmap, True,)).start()
         else:
-            beatmapset = self.__fetch_beatmapset(beatmap["id"])
             revert = False
             if self.__beatmap_checker:
                 if self.verbose:
@@ -283,58 +283,55 @@ class Game(Channel):
                     revert = False
                 elif beatmap == self.__beatmap:
                     return
-                elif self.__od_range[0] > beatmap["accuracy"] > self.__od_range[1]:
-                    self.send_message(
-                        self.__host + " the selected beatmap is outside the overall difficulty range: " + str(
-                            self.__od_range))
+
+                message = ""
+                if self.__od_range[0] > beatmap["accuracy"] > self.__od_range[1]:
+                    self.send_message("Rule violation: OD - " + self.__host + " the selected beatmap is outside the overall difficulty range: " + str(self.__od_range))
                     revert = True
                 elif self.__ar_range[0] > beatmap["ar"] > self.__ar_range[1]:
-                    self.send_message(self.__host + " the selected beatmap is outside the approach rate range: " + str(
-                        self.__ar_range))
+                    message = ("Rule violation: AR - " + self.__host + " the selected beatmap is outside the approach rate range: " + str(self.__ar_range))
                     revert = True
-                elif self.__bpm_range[0] > beatmap["bpm"] or (
-                            self.__bpm_range[1] != -1 and self.__bpm_range[1] < beatmap["bpm"]):
-                    self.send_message(
-                        self.__host + " the selected beatmap is outside the BPM range: " + str(self.__bpm_range).replace("-1.0", "unlimited"))
+                elif self.__bpm_range[0] > beatmap["bpm"] or (self.__bpm_range[1] != -1 and self.__bpm_range[1] < beatmap["bpm"]):
+                    message = ("Rule violation: BPM - " + self.__host + " the selected beatmap is outside the BPM range: " + str(self.__bpm_range).replace("-1.0", "unlimited"))
                     revert = True
                 elif self.__cs_range[0] > beatmap["cs"] > self.__cs_range[1]:
-                    self.send_message(
-                        self.__host + " the selected beatmap is outside the circle size range: " + str(self.__cs_range))
+                    message = ("Rule violation: CS - " + self.__host + " the selected beatmap is outside the circle size range: " + str(self.__cs_range))
                     revert = True
                 elif self.__hp_range[0] > beatmap["drain"] > self.__hp_range[1]:
-                    self.send_message(
-                        self.__host + " the selected beatmap is outside the HP range: " + str(self.__hp_range))
+                    message = ("Rule violation: HP - " + self.__host + " the selected beatmap is outside the HP range: " + str(self.__hp_range))
                     revert = True
                 elif self.__length_range[0] > beatmap["hit_length"] or (
                         self.__length_range[1] != -1 and self.__length_range[1] < beatmap["hit_length"]):
                     if self.__length_range[1] == -1:
-                        self.send_message(self.__host + " the selected beatmap is outside the length range: " + str(
-                            [str(x // 60) + "min, " + str(x % 60) + "sec" for x in [self.__length_range[0]]] + ["unlimited"]))
+                        message = ("Rule violation: Length - " + self.__host + " the selected beatmap is outside the length range: " + str([str(x // 60) + "min, " + str(x % 60) + "sec" for x in [self.__length_range[0]]] + ["unlimited"]))
                     else:
-                        self.send_message(self.__host + " the selected beatmap is outside the length range: " + str(
-                            [str(x // 60) + "min, " + str(x % 60) + "sec" for x in self.__length_range]))
+                        message = ("Rule violation: Length - " + self.__host + " the selected beatmap is outside the length range: " + str([str(x // 60) + "min, " + str(x % 60) + "sec" for x in self.__length_range]))
                     revert = True
                 elif self.__map_status != ["any"] and beatmap["status"] not in self.__map_status:
-                    self.send_message(self.__host + " the selected beatmap must be: " + " or ".join(self.__map_status))
+                    message = ("Rule violation: Map Status - " + self.__host + " the selected beatmap must be: " + " or ".join(self.__map_status))
                     revert = True
                 elif beatmap["difficulty_rating"] < self.__diff_range[0] or (beatmap["difficulty_rating"] > self.__diff_range[1] != -1):
-                    self.send_message(self.__host + " the selected beatmap is outside the difficulty range: " + str(self.__diff_range).replace("-1.0", "unlimited") + "*")
+                    message = ("Rule violation: Difficulty - " + self.__host + " the selected beatmap is outside the difficulty range: " + str(self.__diff_range).replace("-1.0", "unlimited") + "*")
                     revert = True
-                elif self.__beatmap_creator_whitelist and beatmapset["creator"].lower() not in self.__beatmap_creator_whitelist:
-                    self.send_message(self.__host + " the beatmap creator is not whitelisted. The whitelist is: '" + "', '".join(self.__beatmap_creator_whitelist) + "'")
-                    revert = True
-                elif self.__beatmap_creator_blacklist and beatmapset["creator"].lower() in self.__beatmap_creator_blacklist:
-                    self.send_message(self.__host + " the beatmap creator is blacklisted. The blacklist is: '" + "', '".join(self.__beatmap_creator_blacklist) + "'")
-                    revert = True
-                elif self.__artist_whitelist and beatmapset["artist"].lower() not in self.__artist_whitelist:
-                    self.send_message(self.__host + " the beatmap artist is not whitelisted. The whitelist is: '" + "', '".join(self.__artist_whitelist) + "'")
-                    revert = True
-                elif self.__artist_blacklist and beatmapset["artist"].lower() in self.__artist_blacklist:
-                    self.send_message(self.__host + " the beatmap artist is blacklisted. The blacklist is: '" + "', '".join(self.__artist_blacklist) + "'")
-                    revert = True
+                elif self.__beatmap_creator_blacklist or self.__beatmap_creator_whitelist or self.__artist_blacklist or self.__artist_whitelist:
+                    beatmapset = self.__fetch_beatmapset(beatmap["id"])
+                    if self.__beatmap_creator_whitelist and beatmapset["creator"].lower() not in self.__beatmap_creator_whitelist and all([x not in beatmap["version"].lower() for x in self.__beatmap_creator_whitelist]):
+                        message = ("Rule violation: Creator Whitelist - " + self.__host + " the beatmap creator is not whitelisted. The whitelist is: '" + "', '".join(self.__beatmap_creator_whitelist) + "'")
+                        revert = True
+                    elif self.__beatmap_creator_blacklist and beatmapset["creator"].lower() in self.__beatmap_creator_blacklist:
+                        message = ("Rule violation: Creator Blacklist - " + self.__host + " the beatmap creator is blacklisted. The blacklist is: '" + "', '".join(self.__beatmap_creator_blacklist) + "'")
+                        revert = True
+                    elif self.__artist_whitelist and beatmapset["artist"].lower() not in self.__artist_whitelist:
+                        message = ("Rule violation: Artist Whitelist - " + self.__host + " the beatmap artist is not whitelisted. The whitelist is: '" + "', '".join(self.__artist_whitelist) + "'")
+                        revert = True
+                    elif self.__artist_blacklist and beatmapset["artist"].lower() in self.__artist_blacklist:
+                        message = ("Rule violation: Artist Blacklist - " + self.__host + " the beatmap artist is blacklisted. The blacklist is: '" + "', '".join(self.__artist_blacklist) + "'")
+                        revert = True
 
             if revert:
                 self.set_beatmap(self.__beatmap)
+                self.send_message(message)
+                threading.Thread(target=self.__on_rule_violation_method, args=({"username": self._bot.get_username(), "channel": self._channel, "content": message},)).start()
             else:
                 if self.__on_beatmap_change_method:
                     threading.Thread(target=self.__on_beatmap_change_method, args=(self.__beatmap, beatmap,)).start()
@@ -349,19 +346,20 @@ class Game(Channel):
             self.__match_history = self.fetch_match_history()
             match = self.get_match_data()
             abort = False
+            message = ""
 
             if self.__scoring_type.lower() != "any" and match["scoring_type"] != self.__scoring_type.lower():
-                self.send_message(self.__host + " the allowed scoring type is: " + self.__scoring_type)
+                message = ("Rule violation: Scoring Type - " + self.__host + " the allowed scoring type is: " + self.__scoring_type)
                 abort = True
             elif self.__mods != ["ANY"]:
                 if "FREEMOD" in self.__mods and match["mods"] != []:
-                    self.send_message(self.__host + " the allowed mods are: " + ", ".join(self.__mods))
+                    message = ("Rule violation: Mods - " + self.__host + " the allowed mods are: " + ", ".join(self.__mods))
                     abort = True
                 elif self.__mods != ["FREEMOD"] and (not all([mod in self.__mods for mod in match["mods"]]) or not all([mod in match["mods"] for mod in self.__mods])):
-                    self.send_message(self.__host + " the allowed mods are: " + ", ".join(self.__mods))
+                    message = ("Rule violation: Mods - " + self.__host + " the allowed mods are: " + ", ".join(self.__mods))
                     abort = True
             elif self.__team_type != "any" and self.__team_type.lower() != match["team_type"]:
-                self.send_message(self.__host + " the allowed team type is: " + self.__team_type)
+                message = ("Rule violation: Team Type - " + self.__host + " the allowed team type is: " + self.__team_type)
                 abort = True
 
             if abort:
@@ -373,6 +371,8 @@ class Game(Channel):
                     beatmapID = "22538"
                 self.send_message("!mp map " + beatmapID + " " + str(GAME_ATTR[self.__game_mode]))
                 self.send_message("!mp mods " + " ".join(self.__mods))
+                self.send_message(message)
+                threading.Thread(target=self.__on_rule_violation_method, args=({"username": self._bot.get_username(), "channel": self._channel, "content": message},)).start()
             elif self.__on_match_start_method:
                 threading.Thread(target=self.__on_match_start_method).start()
 
@@ -480,7 +480,7 @@ class Game(Channel):
         return [ref.replace(" ", "_") for ref in self.__referees]
 
     def is_referee(self, username):
-        return username in self.__referees
+        return username.replace(" ", "_") in self.get_formatted_referees()
 
     def get_creator(self):
         return self.__creator
@@ -492,7 +492,9 @@ class Game(Channel):
     def get_existing_attributes(self):
         self.__title = self.__match_history["match"]["name"]
         for user in self.__match_history["users"]:
-            self.add_user(user["username"])
+            if self.has_user(user["username"].replace(" ", "_")):
+                self.del_user(user["username"].replace(" ", "_"))
+                self.add_user(user["username"])
         self.__creator = self._bot.fetch_user_profile(self.__match_history["events"][0]["user_id"])["username"]
         self.add_referee(self.__creator)
 
@@ -726,6 +728,9 @@ class Game(Channel):
 
     def on_clear_host(self, method):
         self.__on_clear_host_method = method
+
+    def on_rule_violation(self, method):
+        self.__on_rule_violation_method = method
         
     def implement_logic_profile(self, profile):
         self.clear_commands()
@@ -752,6 +757,8 @@ class Game(Channel):
             self.on_room_close(profile.on_room_close)
         if hasattr(profile, "on_clear_host") and callable(getattr(profile, "on_clear_host")):
             self.on_clear_host(profile.on_clear_host)
+        if hasattr(profile, "on_rule_violation") and callable(getattr(profile, "on_rule_violation")):
+            self.on_rule_violation(profile.on_rule_violation)
 
     def get_attributes(self):
         data = super().get_attributes()
@@ -806,6 +813,7 @@ class Game(Channel):
         self.on_team_change(None)
         self.on_team_addition(None)
         self.on_clear_host(None)
+        self.on_rule_violation(None)
 
     def clear_commands(self):
         self.__commands = {"!info": {"response": "built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "built with osu_bot_framework v3"}}
