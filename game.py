@@ -271,6 +271,7 @@ class Game(Channel):
         if not running:
             threading.Thread(target=self.__check_beatmap, args=(beatmap, True,)).start()
         else:
+            message = ""
             revert = False
             if self.__beatmap_checker:
                 if self.verbose:
@@ -283,9 +284,7 @@ class Game(Channel):
                     revert = False
                 elif beatmap == self.__beatmap:
                     return
-
-                message = ""
-                if self.__od_range[0] > beatmap["accuracy"] > self.__od_range[1]:
+                elif self.__od_range[0] > beatmap["accuracy"] > self.__od_range[1]:
                     self.send_message("Rule violation: OD - " + self.__host + " the selected beatmap is outside the overall difficulty range: " + str(self.__od_range))
                     revert = True
                 elif self.__ar_range[0] > beatmap["ar"] > self.__ar_range[1]:
@@ -370,7 +369,7 @@ class Game(Channel):
                 if not self.__beatmap:
                     beatmapID = "22538"
                 self.send_message("!mp map " + beatmapID + " " + str(GAME_ATTR[self.__game_mode]))
-                self.send_message("!mp mods " + " ".join(self.__mods))
+                self.send_message("!mp mods " + " ".join(self.__mods).lower())
                 self.send_message(message)
                 threading.Thread(target=self.__on_rule_violation_method, args=({"username": self._bot.get_username(), "channel": self._channel, "content": message},)).start()
             elif self.__on_match_start_method:
