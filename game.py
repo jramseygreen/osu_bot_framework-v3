@@ -480,7 +480,7 @@ class Game(Channel):
         return [ref.replace(" ", "_") for ref in self.__referees]
 
     def is_referee(self, username):
-        return username.replace(" ", "_") in self.get_formatted_referees()
+        return username.replace(" ", "_").lower() in [x.lower() for x in self.get_formatted_referees()]
 
     def get_creator(self):
         return self.__creator
