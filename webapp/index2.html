@@ -1,0 +1,69 @@
+<head>
+    <title>OBFv3</title>
+    <script src="vue.js"></script>
+
+</head>
+<body>
+<div id="app">
+  <sidebar></sidebar>
+  <ul>
+    <li v-for="todo in todos">
+      {{ todo.text }}
+    </li>
+  </ul>
+
+  <input type="text" id="list-input">
+  <input type="submit" id="list-submit" v-on:click="addItem">
+  <span id="error" style="color: #ff0000; display: none;">Please Enter Text</span>
+
+  <ul>
+    <todoitem></todoitem>
+    <todoitem></todoitem>
+    <todoitem></todoitem>
+  </ul>
+
+  <h2 v-if="seen">SEEN</h2>
+  <button id="hide-seen" v-on:click="toggleSeen">{{ button.text }}</button>
+</div>
+
+<script>
+    // components
+    import sidebar from './sidebar.vue'
+    Vue.component('todoitem', {
+      template: "<li>Test Item</li>",
+    })
+    Vue.component('sidebar', sidebar)
+
+    // app code
+    var app = new Vue({
+      el: '#app',
+      data: {
+        todos: [
+          { text: 'Sample Item 1' },
+          { text: 'Sample Item 2' },
+          { text: 'Sample Item 3' }
+        ],
+        button: {
+          text: 'Hide'
+        },
+        seen: true
+      },
+      methods: {
+        addItem: function() {
+          let item = document.getElementById("list-input").value;
+          let error = document.getElementById("error");
+          if (item == "") {
+            error.style.display = "block";
+          } else {
+            app.todos.push({ text: item });
+            error.style.display = "none";
+          }
+        },
+        toggleSeen: function() {
+          app.seen = !app.seen;
+          app.button.text = app.seen ? 'Hide' : 'Show';
+        }
+      }
+    });
+</script>
+</body>

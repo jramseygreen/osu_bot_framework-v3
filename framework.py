@@ -181,7 +181,7 @@ class Bot:
         self.__sock.sendall(("PRIVMSG " + username.replace(" ", "_") + " :" + message + "\n").encode())
         if len(self.__personal_message_log) == self.__personal_message_log_length:
             self.__personal_message_log = self.__personal_message_log[1:]
-        self.__personal_message_log.append(message)
+        self.__personal_message_log.append({"username": self.__username, "channel": username, "content": message})
         if self.verbose:
             print("-- sent personal message to " + username + ": '" + message + "' --")
 
@@ -315,18 +315,13 @@ class Bot:
 
     # fetches beatmap from ppy.sh
     def fetch_beatmap(self, beatmapID):
-        url = "https://osu.ppy.sh/b/" + str(beatmapID)
-        r = requests.get(url)
-        beatmapset = {}
         try:
-            beatmapset = json.loads(
-                r.text.split('<script id="json-beatmapset" type="application/json">\n        ', 1)[1].split(
-                    "\n", 1)[0])
+            beatmapset = self.fetch_beatmapset(beatmapID)
         except:
             return {}
         if "beatmaps" in beatmapset:
             for beatmap in beatmapset["beatmaps"]:
-                if beatmap["id"] == int(r.url.split("/")[-1]):
+                if beatmap["id"] == int(beatmapID):
                     return beatmap
         return {}
 

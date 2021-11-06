@@ -22,11 +22,12 @@ class Game(Channel):
         self.__password = ""
         self.__title = ""
         self.__welcome_message = ""
-        self.__commands = {"!info": {"response": "built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "built with osu_bot_framework v3"}}
+        self.__commands = {"!info": {"response": "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "Built with osu_bot_framework v3"}}
         self.__referees = [bot.get_username()]
         self.__config_link = ""
         self.__config_text = ""
         self.__beatmap_checker = True
+        self.__start_timer = False
 
         # limits and ranges (done)
         self.__ar_range = (0.0, 10.0)
@@ -381,8 +382,31 @@ class Game(Channel):
         if self.__on_match_abort_method:
             threading.Thread(target=self.__on_match_abort_method).start()
 
-    def start_match(self):
-        self.send_message("!mp start")
+    def start_match(self, secs=0, running=False):
+        if not running:
+            threading.Thread(target=self.start_match, args=(secs, True,)).start()
+        else:
+            time.sleep(1.1)
+            self.__start_timer = True
+
+            secs = int(secs)
+            if secs > 0:
+                self.send_message(("Queued the match to start in " + str(secs // 60) + " minutes " + str(secs % 60) + " seconds").replace(" 0 minutes", "").replace(" 0 seconds", "").replace("1 minutes", "1 minute"))
+                while secs > 0:
+                    if not self.__start_timer or not self._bot.has_channel(self._channel):
+                        return
+                    if secs % 30 == 0 or secs == 10 or secs <= 5:
+                        self.send_message(("Match starts in " + str(secs // 60) + " minutes " + str(secs % 60) + " seconds").replace(" 0 minutes", "").replace(" 0 seconds", "").replace("1 minutes", "1 minute"))
+                    if secs == 1:
+                        self.send_message("Good luck & Have fun!")
+                    secs -= 1
+                    time.sleep(1)
+
+            self.send_message("!mp start")
+            self.__start_timer = False
+
+    def abort_start_timer(self):
+        self.__start_timer = False
 
     def in_progress(self):
         return self.__in_progress
@@ -495,6 +519,7 @@ class Game(Channel):
             if self.has_user(user["username"].replace(" ", "_")):
                 self._users.remove(user["username"].replace(" ", "_"))
                 self.add_user(user["username"])
+
         self.__creator = self._bot.fetch_user_profile(self.__match_history["events"][0]["user_id"])["username"]
         self.add_referee(self.__creator)
 
@@ -606,7 +631,7 @@ class Game(Channel):
 
     # sets the team type of the room
     def set_team_type(self, team_type):
-        self.__team_type = team_type.lower()
+        self.__team_type = team_type.lower().replace(" ", "-").replace("co-op", "coop")
         if self.__team_type != "any":
             self.send_message("!mp set " + str(GAME_ATTR[self.__team_type]))
 
@@ -651,6 +676,7 @@ class Game(Channel):
         text = " 𝙶̲𝚊̲𝚖̲𝚎̲ ̲𝚁̲𝚘̲𝚘̲𝚖̲ ̲𝙲̲𝚘̲𝚗̲𝚏̲𝚒̲𝚐̲𝚞̲𝚛̲𝚊̲𝚝̲𝚒̲𝚘̲𝚗̲:"
         text += "\n     • Title: " + self.__title
         text += "\n     • Channel: " + self._channel
+        text += "\n     • Logic profile: " + self._logic_profile
         text += "\n     • Match history: https://osu.ppy.sh/mp/" + self._channel.replace("#mp_", "", 1) + "/"
         text += "\n     • Invite link: " + self.__invite_link
         text += "\n     • Referees: " + ", ".join(self.__referees)
@@ -894,3 +920,6 @@ class Game(Channel):
     def del_artist_blacklist(self, artist):
         if artist.lower() in self.__artist_blacklist:
             self.__artist_blacklist.remove(artist.lower())
+
+    def is_start_timer(self):
+        return self.__start_timer

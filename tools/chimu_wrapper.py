@@ -95,7 +95,7 @@ class Chimu:
         if channel:
             attributes = self.channel_to_attributes(channel)
 
-        attributes["amount"] = 1000
+        attributes["amount"] = 10000
         query = ""
 
         if "query" in attributes:

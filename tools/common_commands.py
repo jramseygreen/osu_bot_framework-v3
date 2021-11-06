@@ -14,7 +14,7 @@ class CommonCommands:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
-        self.start_timer = False
+        self.played = []
 
     def config_link(self, message):
         self.channel.send_message("The configuration of the game room and available commands can be viewed [" + self.channel.get_config_link() + " here]")
@@ -29,6 +29,11 @@ class CommonCommands:
                 self.channel.send_message("Searching for '" + query + "'...")
 
             beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query)
+            while beatmap["BeatmapId"] in self.played:
+                beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query)
+            if len(self.played) >= 50:
+                self.played.pop(0)
+            self.played.append(beatmap["BeatmapId"])
             if beatmap:
                 self.channel.change_beatmap(beatmap["BeatmapId"])
             else:
@@ -382,37 +387,23 @@ class CommonCommands:
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
-    def starttimer(self, message):
+    def start_timer(self, message):
         if message["username"] == self.channel.get_formatted_host() or self.channel.has_referee(message["username"]):
-            if not self.start_timer:
-                command = message["content"].split(" ", 1)[0]
-                args = message["content"].replace(command, "", 1).strip().split(" ")
-                if args and args[0].isnumeric():
-                    self.start_timer = True
-                    self.channel.send_message("Match starts in " + args[0] + " seconds...")
-                    for i in reversed(range(int(args[0]))):
-                        if i == 10:
-                            self.channel.send_message("Match starts in 10 seconds...")
-                        if i < 5:
-                            self.channel.send_message("Match starts in " + str(i + 1) + "...")
-                        if self.start_timer:
-                            time.sleep(1)
-                        else:
-                            return
-                    self.channel.start_match()
-                    self.start_timer = False
-                else:
-                    self.channel.start_match()
+            command = message["content"].split(" ", 1)[0]
+            args = message["content"].replace(command, "", 1).strip().split(" ")
+            if args and args[0].isnumeric():
+                self.channel.start_match(args[0])
             else:
                 self.channel.start_match()
 
-    def aborttimer(self, message):
+    def abort_start_timer(self, message):
         if message["username"] == self.channel.get_formatted_host() or self.channel.has_referee(message["username"]):
-            self.channel.send_message("Timer aborted.")
-            self.start_timer = False
+            self.channel.abort_start_timer()
+            self.channel.send_message("Aborted the match start timer")
 
     # todo
     def topdiff(self, message):
         beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap["id"])
-        for beatmap in beatmapset["beatmaps"]:
-            pass
+        for beatmap in reversed(beatmapset["beatmaps"]):
+            if self.channel.get_ar_range()[0] < beatmap["ar"] < self.channel.get_ar_range()[1]:
+                self.channel.change_beatmap(beatmap["id"])

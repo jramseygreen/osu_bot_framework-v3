@@ -12,7 +12,7 @@ class Channel:
         self._message_log_length = bot.get_default_message_log_length()
         self._users = []
         self.verbose = verbose
-        self.__logic_profile = ""
+        self._logic_profile = ""
         self.common_commands = CommonCommands(bot, self)
 
         # on_event methods
@@ -44,7 +44,7 @@ class Channel:
         self._bot.get_sock().sendall(("PRIVMSG " + self._channel + " :" + str(message) + "\n").encode())
         if len(self._message_log) == self._message_log_length:
             self._message_log = self._message_log[1:]
-        self._message_log.append(message)
+        self._message_log.append({"username": self._bot.get_username(), "channel": self._channel, "content": message})
         if self.verbose:
             print("-- sent message to " + self._channel + ": '" + str(message) + "' --")
 
@@ -93,7 +93,7 @@ class Channel:
         
     def implement_logic_profile(self, profile):
         self.clear_logic()
-        self.__logic_profile = profile
+        self._logic_profile = profile
         profile = self._bot.get_logic_profile(profile)(self._bot, self)
         if hasattr(profile, "on_personal_message") and callable(getattr(profile, "on_personal_message")):
             self.on_personal_message(profile.on_personal_message)
@@ -106,7 +106,7 @@ class Channel:
         return profile
 
     def get_logic_profile(self):
-        return self.__logic_profile
+        return self._logic_profile
 
     def get_attributes(self):
         return {"users": self._users, "messages": self._message_log}
@@ -119,7 +119,7 @@ class Channel:
 
     # clear all on_event_methods
     def clear_logic(self):
-        self.__logic_profile = ""
+        self._logic_profile = ""
         self.on_personal_message(None)
         self.on_join(None)
         self.on_part(None)
