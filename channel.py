@@ -2,6 +2,7 @@ import copy
 import threading
 
 from tools.common_commands import CommonCommands
+from tools.vote_manager import Vote
 
 
 class Channel:
@@ -130,3 +131,6 @@ class Channel:
 
     def has_user(self, username):
         return username.replace(" ", "_") in self.get_formatted_users()
+
+    def make_vote(self, method):
+        return Vote(self._bot, self, method)

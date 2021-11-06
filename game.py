@@ -193,6 +193,8 @@ class Game(Channel):
                 self.__slots[slot] = {"username": "", "team": "", "score": {}}
                 break
         super().del_user(username)
+        if not self.has_users():
+            self.abort_start_timer()
 
     def add_user(self, username):
         super().add_user(username)
@@ -386,13 +388,14 @@ class Game(Channel):
         if not running:
             threading.Thread(target=self.start_match, args=(secs, True,)).start()
         else:
-            time.sleep(1.1)
-            self.__start_timer = True
 
             secs = int(secs)
             if secs > 0:
+                time.sleep(1.1)
+                self.__start_timer = True
                 self.send_message(("Queued the match to start in " + str(secs // 60) + " minutes " + str(secs % 60) + " seconds").replace(" 0 minutes", "").replace(" 0 seconds", "").replace("1 minutes", "1 minute"))
                 while secs > 0:
+                    time.sleep(1)
                     if not self.__start_timer or not self._bot.has_channel(self._channel):
                         return
                     if secs % 30 == 0 or secs == 10 or secs <= 5:
@@ -400,7 +403,6 @@ class Game(Channel):
                     if secs == 1:
                         self.send_message("Good luck & Have fun!")
                     secs -= 1
-                    time.sleep(1)
 
             self.send_message("!mp start")
             self.__start_timer = False
@@ -759,6 +761,7 @@ class Game(Channel):
         self.__on_rule_violation_method = method
         
     def implement_logic_profile(self, profile):
+        self.abort_start_timer()
         self.clear_commands()
         profile = super().implement_logic_profile(profile)
         if hasattr(profile, "on_match_start") and callable(getattr(profile, "on_match_start")):

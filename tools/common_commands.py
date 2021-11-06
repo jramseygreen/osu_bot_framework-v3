@@ -358,7 +358,7 @@ class CommonCommands:
                 else:
                     self.channel.send_message(message["username"] + " this logic profile does not exist.")
                     return
-                self.channel.send_message("Command '" + command + "' executed successfully")
+                self.channel.send_message("Logic Profile: '" + args[0] + "' implemented successfully")
             else:
                 self.channel.send_message(message["username"] + " you must send 1 argument with this command.")
                 return
@@ -403,7 +403,9 @@ class CommonCommands:
 
     # todo
     def topdiff(self, message):
-        beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap["id"])
+        beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap()["id"])
         for beatmap in reversed(beatmapset["beatmaps"]):
-            if self.channel.get_diff_range()[0] < beatmap["difficulty"] < self.channel.get_diff_range()[1]:
+            if self.channel.get_diff_range()[0] < beatmap["difficulty_rating"] < self.channel.get_diff_range()[1]:
                 self.channel.change_beatmap(beatmap["id"])
+                return
+        self.channel.change_beatmap(self.channel.get_beatmap()["id"])

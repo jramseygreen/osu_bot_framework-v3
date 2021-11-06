@@ -10,6 +10,7 @@ class Manager:
         channel.set_command("!topdiff", channel.common_commands.topdiff, "upgrades the beatmap to the highest difficulty within the room limits and ranges")
         channel.set_command("!start", channel.common_commands.start_timer, "Starts the game with optional countdown timer")
         channel.set_command("!aborttimer", channel.common_commands.abort_start_timer, "Aborts start timer")
+        channel.set_command("R̲e̲f̲e̲r̲e̲e̲ C̲o̲m̲m̲a̲n̲d̲s̲", "")
         channel.set_command("*implement", channel.common_commands.implement_logic_profile, "Implements a logic profile")
         channel.set_command("*logic_profiles", channel.common_commands.get_logic_profiles, "Shows available logic profiles")
         channel.set_command("*ar_range", channel.common_commands.ar_range, "Sets the ar range for the room. e.g. *ar_range 5.5 8")
