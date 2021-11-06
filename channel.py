@@ -22,14 +22,14 @@ class Channel:
         self.__on_message_method = None
 
     def add_user(self, username):
-        if username not in self._users:
+        if username.replace(" ", "_") not in self.get_formatted_users():
             self._users.append(username)
         if self.__on_join_method:
             threading.Thread(target=self.__on_join_method, args=(username,)).start()
 
     def del_user(self, username):
-        if username in self._users:
-            self._users.remove(username)
+        if username.replace(" ", "_") in self.get_formatted_users():
+            del self._users[self.get_formatted_users().index(username.replace(" ", "_"))]
         if self.__on_part_method:
             threading.Thread(target=self.__on_part_method, args=(username,)).start()
 
@@ -44,7 +44,7 @@ class Channel:
         self._bot.get_sock().sendall(("PRIVMSG " + self._channel + " :" + str(message) + "\n").encode())
         if len(self._message_log) == self._message_log_length:
             self._message_log = self._message_log[1:]
-        self._message_log.append({"username": self._bot.get_username(), "channel": self._channel, "content": message})
+        self._message_log.append({"username": self._bot.get_username().replace(" ", "_"), "channel": self._channel, "content": message})
         if self.verbose:
             print("-- sent message to " + self._channel + ": '" + str(message) + "' --")
 
@@ -66,11 +66,11 @@ class Channel:
     def get_message_log(self, username=""):
         if username:
             message_log = []
-            for message in copy.deepcopy(self._message_log):
-                if message["username"] == username:
+            for message in self._message_log.copy():
+                if message["username"] == username.replace(" ", "_"):
                     message_log.append(message)
             return message_log
-        return copy.deepcopy(self._message_log)
+        return self._message_log.copy()
 
     # adds a broadcast in this channel and returns its id
     def add_broadcast(self, message, secs):

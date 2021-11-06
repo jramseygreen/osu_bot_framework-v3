@@ -405,5 +405,5 @@ class CommonCommands:
     def topdiff(self, message):
         beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap["id"])
         for beatmap in reversed(beatmapset["beatmaps"]):
-            if self.channel.get_ar_range()[0] < beatmap["ar"] < self.channel.get_ar_range()[1]:
+            if self.channel.get_diff_range()[0] < beatmap["difficulty"] < self.channel.get_diff_range()[1]:
                 self.channel.change_beatmap(beatmap["id"])

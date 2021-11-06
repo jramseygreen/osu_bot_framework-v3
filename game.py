@@ -189,7 +189,7 @@ class Game(Channel):
     def del_user(self, username):
         # remove from slots
         for slot in self.__slots:
-            if self.__slots[slot]["username"] == username:
+            if self.__slots[slot]["username"].replace(" ", "_") == username.replace(" ", "_"):
                 self.__slots[slot] = {"username": "", "team": "", "score": {}}
                 break
         super().del_user(username)
@@ -428,7 +428,7 @@ class Game(Channel):
 
     def get_slot(self, username):
         for slot in self.__slots:
-            if self.__slots[slot]["username"] == username:
+            if self.__slots[slot]["username"].replace(" ", "_") == username.replace(" ", "_"):
                 return self.__slots[slot]
 
     def get_slot_num(self, username):
