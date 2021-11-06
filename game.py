@@ -246,7 +246,8 @@ class Game(Channel):
             self.__slots[score["match"]["slot"]]["score"] = score
 
     def get_score(self, username):
-        return self.get_slot(username)["score"]
+        if self.get_slot(username):
+            return self.get_slot(username)["score"]
 
     def get_scores(self):
         scores = []
@@ -478,7 +479,7 @@ class Game(Channel):
     def get_formatted_referees(self):
         return [ref.replace(" ", "_") for ref in self.__referees]
 
-    def is_referee(self, username):
+    def has_referee(self, username):
         return username.replace(" ", "_").lower() in [x.lower() for x in self.get_formatted_referees()]
 
     def get_creator(self):
@@ -492,7 +493,7 @@ class Game(Channel):
         self.__title = self.__match_history["match"]["name"]
         for user in self.__match_history["users"]:
             if self.has_user(user["username"].replace(" ", "_")):
-                self.del_user(user["username"].replace(" ", "_"))
+                self._users.remove(user["username"].replace(" ", "_"))
                 self.add_user(user["username"])
         self.__creator = self._bot.fetch_user_profile(self.__match_history["events"][0]["user_id"])["username"]
         self.add_referee(self.__creator)
@@ -538,7 +539,7 @@ class Game(Channel):
             mods = [mods.upper()]
         self.__mods = mods
         if self.__mods != ["ANY"]:
-            self.send_message("!mp mods " + " ".join(self.__mods))
+            self.send_message("!mp mods " + " ".join(self.__mods).lower())
 
     # gets the allowed mods
     def get_mods(self):

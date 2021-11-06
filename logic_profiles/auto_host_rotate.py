@@ -14,7 +14,7 @@ class AutoHostRotate:
             self.channel.send_message("The current queue is: " + ", ".join(self.queue))
 
     def skip(self, message):
-        if message["username"] == self.channel.get_formatted_host() or self.channel.is_referee(message["username"]):
+        if message["username"] == self.channel.get_formatted_host() or self.channel.has_referee(message["username"]):
             if self.queue:
                 self.queue.append(self.queue.pop(0))
                 self.channel.change_host(self.queue[0])
@@ -39,6 +39,6 @@ class AutoHostRotate:
             self.channel.change_host(self.queue[0])
 
     def on_host_change(self, old_host, new_host):
-        if not self.channel.is_referee(new_host) and new_host != self.queue[0]:
+        if not self.channel.has_referee(new_host) and new_host != self.queue[0]:
             self.channel.change_host(self.queue[0])
             self.channel.send_message(old_host + " please type '!skip' if you want to skip your turn")

@@ -21,7 +21,7 @@ class CommonCommands:
 
     def randmap(self, message):
         command = message["content"].split(" ", 1)[0]
-        if self.channel.get_formatted_host() == message["username"] or self.channel.is_referee(message["username"]):
+        if self.channel.get_formatted_host() == message["username"] or self.channel.has_referee(message["username"]):
             query = message["content"].replace(command, "", 1).strip()
             if query == "":
                 self.channel.send_message("Searching for beatmap...")
@@ -40,7 +40,7 @@ class CommonCommands:
         self.channel.send_message("An alternate download link is available [" + self.bot.chimu.fetch_download_link(self.channel.get_beatmap()["id"]) + " here]")
 
     def ar_range(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 2:
@@ -57,7 +57,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
     def od_range(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 2:
@@ -74,7 +74,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
     def hp_range(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 2:
@@ -91,7 +91,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
     def cs_range(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 2:
@@ -108,7 +108,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
     def bpm_range(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 2:
@@ -125,7 +125,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
     def diff_range(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 2:
@@ -142,7 +142,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
     def length_range(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 2:
@@ -164,7 +164,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
     def map_status(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if args:
@@ -176,7 +176,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
     def mods(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if args:
@@ -188,7 +188,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
     def scoring_type(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 1:
@@ -203,7 +203,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
     def team_type(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 1:
@@ -218,7 +218,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
             
     def game_mode(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 1:
@@ -233,7 +233,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
     def welcome_message(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             msg = message["content"].replace(command, "", 1).strip()
             if msg:
@@ -245,7 +245,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
     def add_broadcast(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) > 1:
@@ -259,7 +259,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
     
     def del_broadcast(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 1:
@@ -280,7 +280,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
     def add_beatmap_creator_whitelist(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             creator = message["content"].replace(command, "", 1).strip()
             if creator:
@@ -288,7 +288,7 @@ class CommonCommands:
                 self.channel.send_message("'" + creator + "'" + " added to the creator whitelist")
 
     def del_beatmap_creator_whitelist(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             creator = message["content"].replace(command, "", 1).strip()
             if creator:
@@ -296,7 +296,7 @@ class CommonCommands:
                 self.channel.send_message("'" + creator + "'" + " removed from the creator whitelist")
 
     def add_beatmap_creator_blacklist(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             creator = message["content"].replace(command, "", 1).strip()
             if creator:
@@ -304,7 +304,7 @@ class CommonCommands:
                 self.channel.send_message("'" + creator + "'" + " added to the creator blacklist")
 
     def del_beatmap_creator_blacklist(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             creator = message["content"].replace(command, "", 1).strip()
             if creator:
@@ -312,7 +312,7 @@ class CommonCommands:
                 self.channel.send_message("'" + creator + "'" + " removed from the creator blacklist")
 
     def add_artist_whitelist(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             artist = message["content"].replace(command, "", 1).strip()
             if artist:
@@ -320,7 +320,7 @@ class CommonCommands:
                 self.channel.send_message("'" + artist + "'" + " added to the artist whitelist")
 
     def del_artist_whitelist(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             artist = message["content"].replace(command, "", 1).strip()
             if artist:
@@ -328,7 +328,7 @@ class CommonCommands:
                 self.channel.send_message("'" + artist + "'" + " removed from the artist whitelist")
 
     def add_artist_blacklist(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             artist = message["content"].replace(command, "", 1).strip()
             if artist:
@@ -336,7 +336,7 @@ class CommonCommands:
                 self.channel.send_message("'" + artist + "'" + " added to the artist blacklist")
 
     def del_artist_blacklist(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             artist = message["content"].replace(command, "", 1).strip()
             if artist:
@@ -344,7 +344,7 @@ class CommonCommands:
                 self.channel.send_message("'" + artist + "'" + " removed from the artist blacklist")
 
     def implement_logic_profile(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 1:
@@ -361,13 +361,13 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
     def get_logic_profiles(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             self.channel.send_message("Available logic profiles: " + ", ".join(self.bot.get_logic_profiles().keys()))
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
     def enable_beatmap_checker(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             self.channel.set_beatmap_checker(True)
             self.channel.send_message("Command '" + command + "' executed successfully")
@@ -375,7 +375,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
     def disable_beatmap_checker(self, message):
-        if self.channel.is_referee(message["username"]):
+        if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             self.channel.set_beatmap_checker(False)
             self.channel.send_message("Command '" + command + "' executed successfully")
@@ -383,7 +383,7 @@ class CommonCommands:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
     def starttimer(self, message):
-        if message["username"] == self.channel.get_formatted_host() or self.channel.is_referee(message["username"]):
+        if message["username"] == self.channel.get_formatted_host() or self.channel.has_referee(message["username"]):
             if not self.start_timer:
                 command = message["content"].split(" ", 1)[0]
                 args = message["content"].replace(command, "", 1).strip().split(" ")
@@ -407,7 +407,7 @@ class CommonCommands:
                 self.channel.start_match()
 
     def aborttimer(self, message):
-        if message["username"] == self.channel.get_formatted_host() or self.channel.is_referee(message["username"]):
+        if message["username"] == self.channel.get_formatted_host() or self.channel.has_referee(message["username"]):
             self.channel.send_message("Timer aborted.")
             self.start_timer = False
 

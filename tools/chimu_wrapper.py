@@ -229,5 +229,3 @@ class Chimu:
         attributes["artist_whitelist"] = channel.get_artist_whitelist()
         attributes["artist_blacklist"] = channel.get_artist_blacklist()
         return attributes
-
-
