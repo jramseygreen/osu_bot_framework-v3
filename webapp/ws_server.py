@@ -98,7 +98,6 @@ class ws_server:
         else:
             self.__sock.bind((self.__host, self.__port))
             self.__sock.listen()
-            print("-- Websocket server started --")
             while self.__running:
                 conn, addr = self.__sock.accept()
                 self.__handshake(conn)
