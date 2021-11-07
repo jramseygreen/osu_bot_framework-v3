@@ -322,7 +322,7 @@ class Game(Channel):
                     if self.__beatmap_creator_whitelist and beatmapset["creator"].lower() not in self.__beatmap_creator_whitelist and all([x not in beatmap["version"].lower() for x in self.__beatmap_creator_whitelist]):
                         message = ("Rule violation: Creator Whitelist - " + self.__host + " the beatmap creator is not whitelisted. The whitelist is: '" + "', '".join(self.__beatmap_creator_whitelist) + "'")
                         revert = True
-                    elif self.__beatmap_creator_blacklist and beatmapset["creator"].lower() in self.__beatmap_creator_blacklist and any([x in beatmap["version"].lower() for x in self.__beatmap_creator_blacklist]):
+                    elif self.__beatmap_creator_blacklist and beatmapset["creator"].lower() in self.__beatmap_creator_blacklist or any([x in beatmap["version"].lower() for x in self.__beatmap_creator_blacklist]):
                         message = ("Rule violation: Creator Blacklist - " + self.__host + " the beatmap creator is blacklisted. The blacklist is: '" + "', '".join(self.__beatmap_creator_blacklist) + "'")
                         revert = True
                     elif self.__artist_whitelist and beatmapset["artist"].lower() not in self.__artist_whitelist:
@@ -439,6 +439,16 @@ class Game(Channel):
             if self.__slots[i]["username"] == username:
                 return i
 
+    def get_next_empty_slot(self):
+        for i in range(16):
+            if not self.__slots[i]["username"]:
+                return self.__slots[i]
+
+    def get_next_full_slot(self):
+        for i in range(16):
+            if self.__slots[i]["username"]:
+                return self.__slots[i]
+
     def get_red_team(self):
         users = []
         for slot in self.__slots:
@@ -472,6 +482,8 @@ class Game(Channel):
         self.__host = username
 
     def change_host(self, username):
+        if username.isnumeric():
+            username = "#" + username
         self.send_message("!mp host " + username.replace(" ", "_"))
 
     def set_password(self, password):

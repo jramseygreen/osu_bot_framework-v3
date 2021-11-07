@@ -29,7 +29,7 @@ class Manager:
         channel.set_command("*stop_broadcast", channel.common_commands.del_broadcast, "Stops a broadcast in the channel given it's ID. e.g. *stop_broadcast 0")
         channel.set_command("*welcome", channel.common_commands.welcome_message, "Sets the welcome message for the room. e.g. *welcome welcome to my osu room!")
         channel.set_command("*disable_beatmap_checker", channel.common_commands.disable_beatmap_checker, "Disables beatmap checker")
-        channel.set_command("*enable_beatmap_checker", channel.common_commands.disable_beatmap_checker, "Enables beatmap checker")
+        channel.set_command("*enable_beatmap_checker", channel.common_commands.enable_beatmap_checker, "Enables beatmap checker")
         channel.set_command("*add_artist_whitelist", channel.common_commands.add_artist_whitelist, "Adds an artist to the whitelist. e.g. *add_artist_whitelist eminem")
         channel.set_command("*add_artist_blacklist", channel.common_commands.add_artist_blacklist, "Adds an artist to the blacklist. e.g. *add_artist_blacklist eminem")
         channel.set_command("*add_creator_whitelist", channel.common_commands.add_beatmap_creator_whitelist, "Adds a beatmap creator to the whitelist. e.g. *add_creator_whitelist sotarks")
@@ -38,3 +38,28 @@ class Manager:
         channel.set_command("*del_artist_blacklist", channel.common_commands.del_artist_blacklist, "Removes an artist from the blacklist. e.g. *del_artist_blacklist eminem")
         channel.set_command("*del_creator_whitelist", channel.common_commands.del_beatmap_creator_whitelist, "Removes a beatmap creator from the whitelist. e.g. *del_creator_whitelist sotarks")
         channel.set_command("*del_creator_blacklist", channel.common_commands.del_beatmap_creator_blacklist, "Removes a beatmap creator from the blacklist. e.g. *del_creator_blacklist sotarks")
+        channel.set_command("*toggle_tournament", self.toggle_tournament, "Toggles host change messages when host leaves or first user joins")
+
+    def on_join(self, username):
+        if self.channel.get_users() == [username]:
+            self.channel.change_host(username)
+
+    def on_part(self, username):
+        if username == self.channel.get_formatted_host() and self.channel.has_users():
+            self.channel.change_host(self.channel.get_next_full_slot()["username"])
+
+    def on_message(self, message):
+        if message["username"] == "BanchoBot":
+            if "User not found" == message["content"] and self.channel.has_users():
+                self.channel.change_host(self.channel.get_next_full_slot()["username"])
+
+    def toggle_tournament(self, message):
+        if self.channel.has_referee(message["username"]):
+            if self.channel.get_logic()["on_part"]:
+                self.channel.clear_logic()
+                self.channel.send_message("Tournament room mode disabled")
+            else:
+                self.channel.implement_logic_profile(self.channel.get_logic_profile())
+                self.channel.send_message("Tournament room mode enabled")
+        else:
+            self.channel.send_message("This command is only available to referees.")

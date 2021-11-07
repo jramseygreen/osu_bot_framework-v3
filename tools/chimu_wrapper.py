@@ -189,7 +189,7 @@ class Chimu:
                 elif channel:
                     if beatmap_creator_whitelist and beatmapset["Creator"].lower() not in beatmap_creator_whitelist and all([x not in beatmap["DiffName"].lower() for x in beatmap_creator_whitelist]):
                         continue
-                    elif beatmap_creator_blacklist and beatmapset["Creator"].lower() in beatmap_creator_blacklist and any([x in beatmap["DiffName"].lower() for x in beatmap_creator_blacklist]):
+                    elif beatmap_creator_blacklist and beatmapset["Creator"].lower() in beatmap_creator_blacklist or any([x in beatmap["DiffName"].lower() for x in beatmap_creator_blacklist]):
                         continue
                     elif artist_whitelist and beatmapset["Artist"].lower() not in artist_whitelist:
                         continue

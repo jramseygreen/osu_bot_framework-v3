@@ -29,12 +29,12 @@ class CommonCommands:
                 self.channel.send_message("Searching for '" + query + "'...")
 
             beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query)
-            if beatmap["BeatmapId"] in self.played:
-                beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query)
-            if len(self.played) >= 50:
-                self.played.pop(0)
-            self.played.append(beatmap["BeatmapId"])
             if beatmap:
+                if beatmap["BeatmapId"] in self.played:
+                    beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query)
+                if len(self.played) >= 50:
+                    self.played.pop(0)
+                self.played.append(beatmap["BeatmapId"])
                 self.channel.change_beatmap(beatmap["BeatmapId"])
             else:
                 self.channel.send_message("No beatmaps found!")
@@ -293,8 +293,11 @@ class CommonCommands:
             command = message["content"].split(" ", 1)[0]
             creator = message["content"].replace(command, "", 1).strip()
             if creator:
-                self.channel.add_beatmap_creator_whitelist(creator)
-                self.channel.send_message("'" + creator + "'" + " added to the creator whitelist")
+                if creator.lower() not in self.channel.get_beatmap_creator_whitelist():
+                    self.channel.add_beatmap_creator_whitelist(creator)
+                    self.channel.send_message("'" + creator + "'" + " added to the creator whitelist")
+                else:
+                    self.channel.send_message("'" + creator + "' is already in the whitelist")
 
     def del_beatmap_creator_whitelist(self, message):
         if self.channel.has_referee(message["username"]):
@@ -304,13 +307,17 @@ class CommonCommands:
                 self.channel.del_beatmap_creator_whitelist(creator)
                 self.channel.send_message("'" + creator + "'" + " removed from the creator whitelist")
 
+
     def add_beatmap_creator_blacklist(self, message):
         if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             creator = message["content"].replace(command, "", 1).strip()
             if creator:
-                self.channel.add_beatmap_creator_blacklist(creator)
-                self.channel.send_message("'" + creator + "'" + " added to the creator blacklist")
+                if creator.lower() not in self.channel.get_beatmap_creator_blacklist():
+                    self.channel.add_beatmap_creator_blacklist(creator)
+                    self.channel.send_message("'" + creator + "'" + " added to the creator blacklist")
+                else:
+                    self.channel.send_message("'" + creator + "' is already in the blacklist")
 
     def del_beatmap_creator_blacklist(self, message):
         if self.channel.has_referee(message["username"]):
@@ -325,8 +332,11 @@ class CommonCommands:
             command = message["content"].split(" ", 1)[0]
             artist = message["content"].replace(command, "", 1).strip()
             if artist:
-                self.channel.add_artist_whitelist(artist)
-                self.channel.send_message("'" + artist + "'" + " added to the artist whitelist")
+                if artist.lower() not in self.channel.get_artist_whitelist():
+                    self.channel.add_artist_whitelist(artist)
+                    self.channel.send_message("'" + artist + "'" + " added to the artist whitelist")
+                else:
+                    self.channel.send_message("'" + artist + "' is already in the whitelist")
 
     def del_artist_whitelist(self, message):
         if self.channel.has_referee(message["username"]):
@@ -341,8 +351,11 @@ class CommonCommands:
             command = message["content"].split(" ", 1)[0]
             artist = message["content"].replace(command, "", 1).strip()
             if artist:
-                self.channel.add_artist_blacklist(artist)
-                self.channel.send_message("'" + artist + "'" + " added to the artist blacklist")
+                if artist.lower() not in self.channel.get_artist_blacklist():
+                    self.channel.add_artist_blacklist(artist)
+                    self.channel.send_message("'" + artist + "'" + " added to the artist blacklist")
+                else:
+                    self.channel.send_message("'" + artist + "' is already in the blacklist")
 
     def del_artist_blacklist(self, message):
         if self.channel.has_referee(message["username"]):
@@ -379,7 +392,7 @@ class CommonCommands:
         if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             self.channel.set_beatmap_checker(True)
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("Enabled beatmap checker")
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
@@ -387,7 +400,7 @@ class CommonCommands:
         if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             self.channel.set_beatmap_checker(False)
-            self.channel.send_message("Command '" + command + "' executed successfully")
+            self.channel.send_message("Disabled beatmap Checker")
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
