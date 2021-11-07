@@ -114,7 +114,7 @@ class AutoHostRotate:
         else:
             self.queue.remove(username)
         if self.skip_vote.is_in_progress():
-            self.channel.send_message(str(self.skip_vote.get_threshold()) + " votes now needed to skip the current beatmap").replace("1 votes", "1 vote", 1)
+            self.channel.send_message(str(self.skip_vote.get_threshold()) + " votes now needed to skip the current host").replace("1 votes", "1 vote", 1)
         if self.start_vote.is_in_progress():
             self.channel.send_message(str(self.start_vote.get_threshold()) + " votes now needed to start the match").replace("1 votes", "1 vote", 1)
 
