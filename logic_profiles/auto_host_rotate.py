@@ -56,6 +56,7 @@ class AutoHostRotate:
             if self.queue:
                 self.queue.append(self.queue.pop(0))
                 self.channel.change_host(self.queue[0])
+                self.skip_vote.stop()
         else:
             if not self.skip_vote.is_in_progress():
                 self.skip_vote.start()
