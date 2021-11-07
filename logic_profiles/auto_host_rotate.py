@@ -49,6 +49,11 @@ class AutoHostRotate:
         channel.set_command("*del_artist_blacklist", channel.common_commands.del_artist_blacklist, "Removes an artist from the blacklist. e.g. *del_artist_blacklist eminem")
         channel.set_command("*del_creator_whitelist", channel.common_commands.del_beatmap_creator_whitelist, "Removes a beatmap creator from the whitelist. e.g. *del_creator_whitelist sotarks")
         channel.set_command("*del_creator_blacklist", channel.common_commands.del_beatmap_creator_blacklist, "Removes a beatmap creator from the blacklist. e.g. *del_creator_blacklist sotarks")
+        channel.set_command("*add_player_blacklist", channel.common_commands.del_player_blacklist, "adds a player to the blacklist.")
+        channel.set_command("*del_player_blacklist", channel.common_commands.del_player_blacklist, "Removes a player from the blacklist.")
+        channel.set_command("*enable_start_on_players_ready", channel.common_commands.enable_start_on_players_ready, "enables starting the match when all players are ready")
+        channel.set_command("*disable_start_on_players_ready", channel.common_commands.disable_start_on_players_ready, "disables starting the match when all players are ready")
+        channel.set_command("*autostart", channel.common_commands.set_autostart_timer, "Automatically adds start countdown after map is selected. e.g. *autostart 120")
 
     def show_queue(self, message):
         if self.queue:

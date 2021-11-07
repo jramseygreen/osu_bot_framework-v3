@@ -64,6 +64,7 @@ class Bot:
                     if line[:4] == "PING":
                         self.__sock.sendall((line.replace("PING", "PONG") + "\n").encode())
                         if self.verbose:
+                            self.log("-- RECEIVED PING --")
                             self.log("-- SENT PONG --")
                         continue
 
