@@ -46,8 +46,8 @@ class Channel:
         if len(self._message_log) == self._message_log_length:
             self._message_log = self._message_log[1:]
         self._message_log.append({"username": self._bot.get_username().replace(" ", "_"), "channel": self._channel, "content": message})
-        if self.verbose:
-            print("-- sent message to " + self._channel + ": '" + str(message) + "' --")
+        if self.verbose or self._bot.logging:
+            self._bot.log("-- sent message to " + self._channel + ": '" + str(message) + "' --")
 
     def is_game(self):
         return self._channel[:4] == "#mp_"
@@ -135,5 +135,5 @@ class Channel:
     def has_user(self, username):
         return username.replace(" ", "_") in self.get_formatted_users()
 
-    def make_vote(self, method):
+    def hold_vote(self, method):
         return Vote(self._bot, self, method)

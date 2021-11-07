@@ -9,12 +9,13 @@ from channel import Channel
 from tools.chimu_wrapper import Chimu
 from game import Game
 from socket_wrapper import Sock
+from tools.logger import Logger
 from webapp.controller import Controller
 import requests
 
 
 class Bot:
-    def __init__(self, username="", password="", host="irc.ppy.sh", port=6667, server_ip="localhost", message_log_length=50, verbose=False):
+    def __init__(self, username="", password="", host="irc.ppy.sh", port=6667, server_ip="localhost", message_log_length=50, logging=False, verbose=False):
         self.__sock = Sock()
         self.__controller = Controller(self, host=server_ip)
         self.__host = host
@@ -34,7 +35,14 @@ class Bot:
         self.__logic_profiles = {}
         self.__player_blacklist = []
         self.chimu = Chimu()
+        self.logging = logging
+        self.__logger = Logger("config" + os.sep + "logs" + os.sep + str(len([name for name in os.listdir("config" + os.sep + "logs")]) + 1) + ".txt", "a")
         self.verbose = verbose
+
+    def log(self, message):
+        print(message)
+        if self.logging:
+            self.__logger.write("\n" + message)
 
     def __listen(self, running=False):
         if not running:
@@ -56,15 +64,15 @@ class Bot:
                     if line[:4] == "PING":
                         self.__sock.sendall((line.replace("PING", "PONG") + "\n").encode())
                         if self.verbose:
-                            print("-- SENT PONG --")
+                            self.log("-- SENT PONG --")
                         continue
 
                     # parse line
                     line = line.split(" ")
                     username = line[0].replace("!cho@ppy.sh", "")[1:]
                     command = line[1]
-                    if command != "QUIT" and self.verbose:
-                        print("--- Received: " + " ".join(line))
+                    if command != "QUIT" and (self.verbose or self.logging):
+                        self.log("--- Received: " + " ".join(line))
 
                     # JOIN, PART, PRIVMSG
                     if command.isalpha():
@@ -149,12 +157,12 @@ class Bot:
             self.__sock.sendall(("USER " + self.__username + "\n").encode())
             self.__sock.sendall(("NICK " + self.__username + "\n").encode())
             if self.verbose:
-                print("-- connected to " + self.__host + ":" + str(self.__port) + " successfully --")
+                self.log("-- connected to " + self.__host + ":" + str(self.__port) + " successfully --")
             self.__listen()
             self.__controller.start()
 
         except:
-            print("There was an error connecting to", self.__host + ":" + str(self.__port))
+            self.log("There was an error connecting to " + self.__host + ":" + str(self.__port))
 
     # joins a channel and also returns a channel or game object
     def join(self, channel):
@@ -182,8 +190,8 @@ class Bot:
         if len(self.__personal_message_log) == self.__personal_message_log_length:
             self.__personal_message_log = self.__personal_message_log[1:]
         self.__personal_message_log.append({"username": self.__username, "channel": username, "content": message})
-        if self.verbose:
-            print("-- sent personal message to " + username + ": '" + message + "' --")
+        if self.verbose or self.logging:
+            self.log("-- sent personal message to " + username + ": '" + message + "' --")
 
     # adds a broadcast and returns its id, cahnnel can be any channel or username
     def add_broadcast(self, channel, message, secs):
@@ -359,3 +367,9 @@ class Bot:
 
     def get_formatted_player_blacklist(self):
         return [x.replace(" ", "_") for x in self.__player_blacklist]
+
+    def set_verbose(self, status):
+        self.verbose = status
+
+    def set_logging(self, status):
+        self.logging = status

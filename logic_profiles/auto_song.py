@@ -6,7 +6,7 @@ class AutoSong:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
-        self.vote = channel.make_vote(self.carry_vote)
+        self.vote = channel.hold_vote(self.carry_vote)
         self.played = []
         channel.set_command("!info", "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3] | Type '!config' to view room configuration and commands", "Built with osu bot framework v3")
         channel.set_command("!skip", self.skip, "Vote to skip the current beatmap.")
@@ -42,8 +42,7 @@ class AutoSong:
             if not self.vote.is_in_progress():
                 self.vote.start()
 
-            self.vote.cast_ballot(message["username"])
-            if self.vote.is_in_progress():
+            if self.vote.cast_ballot(message["username"]):
                 self.channel.send_message(str(len(self.vote.get_results())) + " / " + str(self.vote.get_threshold()) + " votes needed to skip the current beatmap")
 
     def on_join(self, username):

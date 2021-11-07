@@ -428,13 +428,29 @@ class CommonCommands:
             self.channel.set_autostart(False)
             self.channel.send_message("Disabled starting automatically when all players are ready")
 
-    def set_auto_start(self, message):
+    def set_auto_start_timer(self, message):
         if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if args[0].is_numeric():
                 self.channel.set_autostart_timer(args[0])
                 self.channel.send_message("Autostart timer set to " + args[0])
+
+    def add_player_blacklist(self, message):
+        if self.channel.has_referee(message["username"]):
+            command = message["content"].split(" ", 1)[0]
+            player = message["content"].replace(command, "", 1).strip()
+            if player and player.replace(" ", "_") not in self.channel.get_formatted_player_blacklist():
+                self.channel.add_player_blacklist(player)
+                self.channel.send_message("'" + player + "' added to the blacklist")
+
+    def del_player_blacklist(self, message):
+        if self.channel.has_referee(message["username"]):
+            command = message["content"].split(" ", 1)[0]
+            player = message["content"].replace(command, "", 1).strip()
+            if player and player.replace(" ", "_") in self.channel.get_formatted_player_blacklist():
+                self.channel.del_player_blacklist(player)
+                self.channel.send_message("'" + player + "' removed from the blacklist")
 
     # todo
     def topdiff(self, message):

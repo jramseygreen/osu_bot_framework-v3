@@ -159,7 +159,6 @@ class Game(Channel):
                 args = message_arr[2:]
                 if message["username"] == self.__creator.replace(" ", "_"):
                     if command == "!mp addref":
-                        print(args)
                         for arg in args:
                             if arg not in self.__referees:
                                 self.__referees.append(arg)
@@ -193,7 +192,7 @@ class Game(Channel):
             else:
                 self.send_message(str(self.__commands[command]["response"]))
             if self.verbose:
-                print("-- Command '" + command + "' Executed --")
+                self._bot.log("-- Command '" + command + "' Executed --")
 
     def send_message(self, message):
         super().send_message(message)
@@ -208,6 +207,10 @@ class Game(Channel):
         super().del_user(username)
         if not self.has_users():
             self.abort_start_timer()
+            if self.__maintain_size:
+                self.set_size(self.__size)
+            if self.__maintain_password:
+                self.set_password(self.__password)
 
     def add_user(self, username):
         super().add_user(username)
@@ -300,7 +303,7 @@ class Game(Channel):
             revert = False
             if self.__beatmap_checker:
                 if self.verbose:
-                    print("-- Beatmap checker started --")
+                    self._bot.log("-- Beatmap checker started --")
                 if beatmap["unsubmitted"]:
                     self.send_message("The selected beatmap is not submitted! Can't check attributes.")
                     self.send_message("An alternate download link is available [" + self._bot.chimu.fetch_download_link(beatmap["id"]) + " here]")
@@ -368,7 +371,7 @@ class Game(Channel):
             threading.Thread(target=self.__check_attributes, args=(True,)).start()
         else:
             if self.verbose:
-                print("-- Attribute checker started --")
+                self._bot.log("-- Attribute checker started --")
             self.__match_history = self.fetch_match_history()
             match = self.get_match_data()
             abort = False
@@ -717,8 +720,8 @@ class Game(Channel):
         text += "\n     • Invite link: " + self.__invite_link
         text += "\n     • Referees: " + ", ".join(self.__referees)
         text += "\n     • Player blacklist: " + ", ".join(self.__player_blacklist)
-        text += "\n     • Beatmap checker: " + str(self.__beatmap_checker)
         text += "\n     • Welcome message: " + self.__welcome_message
+        text += "\n     • Beatmap checker: " + str(self.__beatmap_checker)
         text += "\n     • Maintain password: " + str(self.__maintain_password)
         text += "\n     • Maintain size: " + str(self.__maintain_size)
         text += "\n     • Start on players ready: " + str(self.__start_on_players_ready)
@@ -998,10 +1001,10 @@ class Game(Channel):
     def get_autostart_timer(self):
         return self.__autostart_timer
 
-    def set_maintain_password(self, status):
+    def maintain_password(self, status):
         self.__maintain_password = status
 
-    def set_maintain_size(self, status):
+    def maintain_size(self, status):
         self.__maintain_size = status
 
     def is_maintain_size(self):

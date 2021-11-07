@@ -6,9 +6,9 @@ class AutoHostRotate:
         channel.maintain_password(True)
         channel.maintain_size(True)
         self.queue = channel.get_users().copy()
-        self.skip_vote = channel.make_vote(self.carry_skip_vote)
-        self.start_vote = channel.make_vote(self.carry_start_vote)
-        self.abort_vote = channel.make_vote(self.carry_abort_vote)
+        self.skip_vote = channel.hold_vote(self.carry_skip_vote)
+        self.start_vote = channel.hold_vote(self.carry_start_vote)
+        self.abort_vote = channel.hold_vote(self.carry_abort_vote)
         channel.set_beatmap_checker(True)
         channel.set_command("!q", self.show_queue, "Shows the current queue of players")
         channel.set_command("!queue", self.show_queue, "Shows the current queue of players")
@@ -63,8 +63,8 @@ class AutoHostRotate:
         else:
             if not self.skip_vote.is_in_progress():
                 self.skip_vote.start()
-            self.skip_vote.cast_ballot(message["username"])
-            self.channel.send_message(str(len(self.skip_vote.get_results())) + " / " + str(self.skip_vote.get_threshold()) + " votes needed to skip the current host")
+            if self.skip_vote.cast_ballot(message["username"]):
+                self.channel.send_message(str(len(self.skip_vote.get_results())) + " / " + str(self.skip_vote.get_threshold()) + " votes needed to skip the current host")
 
     def carry_skip_vote(self, vote_manager):
         if self.queue:
@@ -77,15 +77,15 @@ class AutoHostRotate:
         else:
             if not self.start_vote.is_in_progress():
                 self.start_vote.start()
-            self.start_vote.cast_ballot(message["username"])
-            self.channel.send_message(str(len(self.start_vote.get_results())) + " / " + str(self.start_vote.get_threshold()) + " votes needed to start the match")
+            if self.start_vote.cast_ballot(message["username"]):
+                self.channel.send_message(str(len(self.start_vote.get_results())) + " / " + str(self.start_vote.get_threshold()) + " votes needed to start the match")
 
     def abort(self, message):
         if self.channel.in_progress():
             if not self.abort_vote.is_in_progress():
                 self.abort_vote.start()
-            self.abort_vote.cast_ballot(message["username"])
-            self.channel.send_message(str(len(self.abort_vote.get_results())) + " / " + str(self.abort_vote.get_threshold()) + " votes needed to end the match")
+            if self.abort_vote.cast_ballot(message["username"]):
+                self.channel.send_message(str(len(self.abort_vote.get_results())) + " / " + str(self.abort_vote.get_threshold()) + " votes needed to end the match")
 
     def carry_abort_vote(self, vote_manager):
         self.channel.abort_match()
