@@ -43,6 +43,10 @@ class Manager:
         channel.set_command("*enable_start_on_players_ready", channel.common_commands.enable_start_on_players_ready, "enables starting the match when all players are ready")
         channel.set_command("*disable_start_on_players_ready", channel.common_commands.disable_start_on_players_ready, "disables starting the match when all players are ready")
         channel.set_command("*autostart", channel.common_commands.set_autostart_timer, "Automatically adds start countdown after map is selected. e.g. *autostart 120")
+        channel.set_command("*enable_maintain_password", channel.common_commands.enable_maintain_password, "Enables maintaining password")
+        channel.set_command("*disable_maintain_password", channel.common_commands.disable_maintain_password,"disables maintaining password")
+        channel.set_command("*enable_maintain_size", channel.common_commands.enable_maintain_size, "Enables maintaining size")
+        channel.set_command("*disable_maintain_size", channel.common_commands.disable_maintain_size, "Disables maintaining size")
 
         channel.set_command("*toggle_tournament", self.toggle_tournament, "Toggles host change messages when host leaves or first user joins")
 

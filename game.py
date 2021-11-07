@@ -191,7 +191,7 @@ class Game(Channel):
                 threading.Thread(target=self.__commands[command]["response"], args=(message,)).start()
             else:
                 self.send_message(str(self.__commands[command]["response"]))
-            if self.verbose:
+            if self.verbose or self._bot.logging:
                 self._bot.log("-- Command '" + command + "' Executed --")
 
     def send_message(self, message):
@@ -302,7 +302,7 @@ class Game(Channel):
             message = ""
             revert = False
             if self.__beatmap_checker:
-                if self.verbose:
+                if self.verbose or self._bot.logging:
                     self._bot.log("-- Beatmap checker started --")
                 if beatmap["unsubmitted"]:
                     self.send_message("The selected beatmap is not submitted! Can't check attributes.")
@@ -370,7 +370,7 @@ class Game(Channel):
         if not running:
             threading.Thread(target=self.__check_attributes, args=(True,)).start()
         else:
-            if self.verbose:
+            if self.verbose or self._bot.logging:
                 self._bot.log("-- Attribute checker started --")
             self.__match_history = self.fetch_match_history()
             match = self.get_match_data()

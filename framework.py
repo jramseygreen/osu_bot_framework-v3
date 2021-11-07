@@ -40,7 +40,8 @@ class Bot:
         self.verbose = verbose
 
     def log(self, message):
-        print(message)
+        if self.verbose:
+            print(message)
         if self.logging:
             self.__logger.write("\n" + message)
 
@@ -63,7 +64,7 @@ class Bot:
                     # ping pong
                     if line[:4] == "PING":
                         self.__sock.sendall((line.replace("PING", "PONG") + "\n").encode())
-                        if self.verbose:
+                        if self.verbose or self.logging:
                             self.log("-- RECEIVED PING --")
                             self.log("-- SENT PONG --")
                         continue
@@ -157,7 +158,7 @@ class Bot:
             self.__sock.sendall(("PASS " + self.__password + "\n").encode())
             self.__sock.sendall(("USER " + self.__username + "\n").encode())
             self.__sock.sendall(("NICK " + self.__username + "\n").encode())
-            if self.verbose:
+            if self.verbose or self.logging:
                 self.log("-- connected to " + self.__host + ":" + str(self.__port) + " successfully --")
             self.__listen()
             self.__controller.start()

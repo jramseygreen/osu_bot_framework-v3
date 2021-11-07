@@ -452,6 +452,26 @@ class CommonCommands:
                 self.channel.del_player_blacklist(player)
                 self.channel.send_message("'" + player + "' removed from the blacklist")
 
+    def enable_maintain_password(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.maintain_password(True)
+            self.channel.send_message("Enabled maintaining password")
+
+    def disable_maintain_password(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.maintain_password(False)
+            self.channel.send_message("Disabled maintaining password")
+
+    def enable_maintain_size(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.maintain_size(True)
+            self.channel.send_message("Enabled maintaining size")
+
+    def disable_maintain_size(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.maintain_size(False)
+            self.channel.send_message("Disabled maintaining size")
+
     # todo
     def topdiff(self, message):
         beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap()["id"])
