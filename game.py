@@ -934,7 +934,9 @@ class Game(Channel):
         self.set_game_mode(data["game_mode"])
 
     def invite_user(self, username):
-        self._bot.send_personal_message(username.replace(" ", "_"), "Come join my multiplayer match: '[" + self.get_invite_link() + " " + self.get_title() + "]'")
+        while not self.__title or not self.__invite_link:
+            pass
+        self._bot.send_personal_message(username.replace(" ", "_"), "Come join my multiplayer match: '[" + self.__invite_link + " " + self.__title + "]'")
 
     def set_beatmap_checker(self, switch):
         self.__beatmap_checker = switch
