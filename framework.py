@@ -35,8 +35,8 @@ class Bot:
         self.__logic_profiles = {}
         self.__player_blacklist = []
         self.chimu = Chimu()
-        self.logging = logging
         self.__logger = Logger("config" + os.sep + "logs" + os.sep + str(len([name for name in os.listdir("config" + os.sep + "logs")]) + 1) + ".txt", "a")
+        self.logging = logging
         self.verbose = verbose
 
     def log(self, message):
