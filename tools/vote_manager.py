@@ -52,6 +52,7 @@ class Vote:
             if user.replace(" ", "_") == username.replace(" ", "_"):
                 return self.results[user]
 
+    # returns the most voted for option
     def get_majority_vote(self):
         if self.results:
             return max(set(self.results.values()), key=list(self.results.values()).count)

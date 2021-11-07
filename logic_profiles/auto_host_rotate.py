@@ -2,6 +2,9 @@ class AutoHostRotate:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
+        channel.set_beatmap_checker(True)
+        channel.maintain_password(True)
+        channel.maintain_size(True)
         self.queue = channel.get_users().copy()
         self.skip_vote = channel.make_vote(self.carry_skip_vote)
         self.start_vote = channel.make_vote(self.carry_start_vote)
@@ -14,7 +17,7 @@ class AutoHostRotate:
         channel.set_command("!randmap", channel.common_commands.randmap,"When host or referee, searches for a random beatmap matching the room's limits and ranges")
         channel.set_command("!altlink", channel.common_commands.altlink,"Returns an alternate link for the current beatmap from chimu.moe")
         channel.set_command("!topdiff", channel.common_commands.topdiff,"When host, upgrades the beatmap to the highest difficulty within the room limits and ranges")
-        channel.set_command("!start", self.start,"When host starts the game with optional countdown timer else starts vote to start")
+        channel.set_command("!start", self.start,"When host starts the game with optional countdown timer else starts vote to start match")
         channel.set_command("!aborttimer", channel.common_commands.abort_start_timer,"When host or referee, aborts start timer")
         channel.set_command("!abort", self.abort, "Starts vote to abort match")
         channel.set_command("R̲e̲f̲e̲r̲e̲e̲ C̲o̲m̲m̲a̲n̲d̲s̲", "")

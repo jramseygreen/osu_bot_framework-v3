@@ -418,6 +418,24 @@ class CommonCommands:
             self.channel.abort_start_timer()
             self.channel.send_message("Aborted the match start timer")
 
+    def enable_start_on_players_ready(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.set_autostart(True)
+            self.channel.send_message("Enabled starting automatically when all players are ready")
+
+    def disable_start_on_players_ready(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.set_autostart(False)
+            self.channel.send_message("Disabled starting automatically when all players are ready")
+
+    def set_auto_start(self, message):
+        if self.channel.has_referee(message["username"]):
+            command = message["content"].split(" ", 1)[0]
+            args = message["content"].replace(command, "", 1).strip().split(" ")
+            if args[0].is_numeric():
+                self.channel.set_autostart_timer(args[0])
+                self.channel.send_message("Autostart timer set to " + args[0])
+
     # todo
     def topdiff(self, message):
         beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap()["id"])

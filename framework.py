@@ -32,6 +32,7 @@ class Bot:
         self.__broadcast_controller = BroadcastController(self)
         self.__on_personal_message_method = None
         self.__logic_profiles = {}
+        self.__player_blacklist = []
         self.chimu = Chimu()
         self.verbose = verbose
 
@@ -332,3 +333,29 @@ class Bot:
                     "\n", 1)[0])
         except:
             return {}
+
+    def set_player_blacklist(self, blacklist):
+        self.__player_blacklist = blacklist
+        for channel in self.__channels:
+            if self.__channels[channel].is_game():
+                self.__channels[channel].set_player_blacklist(blacklist)
+
+    def add_player_blacklist(self, username):
+        if username.replace(" ", "_") not in self.get_formatted_player_blacklist():
+            self.__player_blacklist.append(username)
+            for channel in self.__channels:
+                if self.__channels[channel].is_game():
+                    self.__channels[channel].add_player_blacklist(username)
+
+    def del_player_blacklist(self, username):
+        if username.replace(" ", "_") in self.get_formatted_player_blacklist():
+            del self.__player_blacklist[self.get_formatted_player_blacklist().index(username.replace(" ", "_"))]
+            for channel in self.__channels:
+                if self.__channels[channel].is_game():
+                    self.__channels[channel].del_player_blacklist(username)
+
+    def get_player_blacklist(self):
+        return self.__player_blacklist
+
+    def get_formatted_player_blacklist(self):
+        return [x.replace(" ", "_") for x in self.__player_blacklist]

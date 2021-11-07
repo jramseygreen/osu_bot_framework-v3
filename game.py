@@ -28,6 +28,11 @@ class Game(Channel):
         self.__config_text = ""
         self.__beatmap_checker = True
         self.__start_timer = False
+        self.__start_on_players_ready = False
+        self.__autostart_timer = -1
+        self.__maintain_password = False
+        self.__maintain_size = False
+        self.__player_blacklist = bot.get_player_blacklist()
 
         # limits and ranges (done)
         self.__ar_range = (0.0, 10.0)
@@ -115,6 +120,10 @@ class Game(Channel):
                 self.__fetch_scores()
                 if self.__on_match_finish_method:
                     threading.Thread(target=self.__on_match_finish_method).start()
+                if self.__maintain_size:
+                    self.set_size(self.__size)
+                if self.__maintain_password:
+                    self.set_password(self.__password)
             elif "Aborted the match" == message["content"]:
                 self.__in_progress = False
             elif "Beatmap changed to" in message["content"] or "Changed beatmap to" in message["content"]:
@@ -126,11 +135,14 @@ class Game(Channel):
                 else:
                     self.__check_beatmap({"id": beatmapID, "unsubmitted": True})
             elif "Host is changing map..." == message["content"]:
+                self.abort_start_timer()
                 if self.__on_changing_beatmap_method:
                     threading.Thread(target=self.__on_changing_beatmap_method).start()
             elif "All players are ready" == message["content"]:
                 if self.__on_all_players_ready_method:
                     threading.Thread(target=self.__on_all_players_ready_method).start()
+                if self.__start_on_players_ready:
+                    self.start_match()
             elif "Closed the match" == message["content"]:
                 self._bot.part(self._channel)
                 if self.__on_room_close_method:
@@ -202,6 +214,14 @@ class Game(Channel):
         # welcome message implementation
         if self.__welcome_message:
             self._bot.send_personal_message(username.replace(" ", "_"), self.__welcome_message)
+
+        if username in self.get_formatted_player_blacklist():
+            self.kick_user(username)
+            self._bot.send_personal_message(username, "Sorry, you have been blacklisted from this game room.")
+
+    def kick_user(self, username):
+        if username.replace(" ", "_") in self.get_formatted_users():
+            self.send_message("!mp kick " + username.replace(" ", "_"))
 
     def get_formatted_users(self):
         return [user.replace(" ", "_") for user in self._users]
@@ -337,9 +357,11 @@ class Game(Channel):
                 self.send_message(message)
                 threading.Thread(target=self.__on_rule_violation_method, args=({"username": self._bot.get_username(), "channel": self._channel, "content": message},)).start()
             else:
+                self.__beatmap = beatmap
                 if self.__on_beatmap_change_method:
                     threading.Thread(target=self.__on_beatmap_change_method, args=(self.__beatmap, beatmap,)).start()
-                self.__beatmap = beatmap
+                if self.__autostart_timer > 0:
+                    self.start_match(self.__autostart_timer)
 
     def __check_attributes(self, running=False):
         if not running:
@@ -389,7 +411,7 @@ class Game(Channel):
         if not running:
             threading.Thread(target=self.start_match, args=(secs, True,)).start()
         else:
-
+            self.__start_timer = False
             secs = int(secs)
             if secs > 0:
                 time.sleep(1.1)
@@ -694,8 +716,13 @@ class Game(Channel):
         text += "\n     • Match history: https://osu.ppy.sh/mp/" + self._channel.replace("#mp_", "", 1) + "/"
         text += "\n     • Invite link: " + self.__invite_link
         text += "\n     • Referees: " + ", ".join(self.__referees)
+        text += "\n     • Player blacklist: " + ", ".join(self.__player_blacklist)
         text += "\n     • Beatmap checker: " + str(self.__beatmap_checker)
         text += "\n     • Welcome message: " + self.__welcome_message
+        text += "\n     • Maintain password: " + str(self.__maintain_password)
+        text += "\n     • Maintain size: " + str(self.__maintain_size)
+        text += "\n     • Start on players ready: " + str(self.__start_on_players_ready)
+        text += "\n     • Autostart timer: " + str(self.__autostart_timer)
         text += "\n\n 𝙶̲𝚊̲𝚖̲𝚎̲ ̲𝚛̲𝚘̲𝚘̲𝚖̲ ̲𝚊̲𝚝̲𝚝̲𝚛̲𝚒̲𝚋̲𝚞̲𝚝̲𝚎̲𝚜̲:"
         text += "\n     • Room size: " + str(self.__size)
         text += "\n     • game mode: " + self.__game_mode
@@ -958,3 +985,44 @@ class Game(Channel):
 
     def is_start_timer(self):
         return self.__start_timer
+
+    def start_on_players_ready(self, status):
+        self.__start_on_players_ready = status
+
+    def is_start_on_players_ready(self):
+        return self.__start_on_players_ready
+
+    def set_autostart_timer(self, secs):
+        self.__autostart_timer = int(secs)
+
+    def get_autostart_timer(self):
+        return self.__autostart_timer
+
+    def set_maintain_password(self, status):
+        self.__maintain_password = status
+
+    def set_maintain_size(self, status):
+        self.__maintain_size = status
+
+    def is_maintain_size(self):
+        return self.__maintain_size
+
+    def is_maintain_password(self):
+        return self.__maintain_password
+
+    def get_player_blacklist(self):
+        return self.__player_blacklist
+
+    def get_formatted_player_blacklist(self):
+        return [x.replace(" ", "_") for x in self.__player_blacklist]
+
+    def set_player_blacklist(self, blacklist):
+        self.__player_blacklist = blacklist
+
+    def add_player_blacklist(self, username):
+        if username.replace(" ", "_") not in self.get_formatted_player_blacklist():
+            self.__player_blacklist.append(username)
+
+    def del_player_blacklist(self, username):
+        if username.replace(" ", "_") in self.get_formatted_player_blacklist():
+            del self.__player_blacklist[self.get_formatted_player_blacklist().index(username.replace(" ", "_"))]
