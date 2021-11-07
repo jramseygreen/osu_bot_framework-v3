@@ -3,9 +3,8 @@ import inspect
 import json
 import os
 import threading
-import time
 
-from broadcast_controller import BroadcastController
+from tools.broadcast_controller import BroadcastController
 from channel import Channel
 from tools.chimu_wrapper import Chimu
 from game import Game

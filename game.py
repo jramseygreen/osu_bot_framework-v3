@@ -322,7 +322,7 @@ class Game(Channel):
                     if self.__beatmap_creator_whitelist and beatmapset["creator"].lower() not in self.__beatmap_creator_whitelist and all([x not in beatmap["version"].lower() for x in self.__beatmap_creator_whitelist]):
                         message = ("Rule violation: Creator Whitelist - " + self.__host + " the beatmap creator is not whitelisted. The whitelist is: '" + "', '".join(self.__beatmap_creator_whitelist) + "'")
                         revert = True
-                    elif self.__beatmap_creator_blacklist and beatmapset["creator"].lower() in self.__beatmap_creator_blacklist:
+                    elif self.__beatmap_creator_blacklist and beatmapset["creator"].lower() in self.__beatmap_creator_blacklist and any([x in beatmap["version"].lower() for x in self.__beatmap_creator_blacklist]):
                         message = ("Rule violation: Creator Blacklist - " + self.__host + " the beatmap creator is blacklisted. The blacklist is: '" + "', '".join(self.__beatmap_creator_blacklist) + "'")
                         revert = True
                     elif self.__artist_whitelist and beatmapset["artist"].lower() not in self.__artist_whitelist:
@@ -395,7 +395,7 @@ class Game(Channel):
                 time.sleep(1.1)
                 self.__start_timer = True
                 self.send_message(("Queued the match to start in " + str(secs // 60) + " minutes " + str(secs % 60) + " seconds").replace(" 0 minutes", "").replace(" 0 seconds", "").replace("1 minutes", "1 minute"))
-                while secs > 0:
+                while secs - 1 > 0:
                     time.sleep(1)
                     if not self.__start_timer or not self._bot.has_channel(self._channel):
                         return
