@@ -621,7 +621,6 @@ class Game(Channel):
     def get_length_range(self):
         return self.__length_range
 
-    # todo
     # sets the allowed room scoring types
     def set_scoring_type(self, scoring_type):
         self.__scoring_type = scoring_type.lower()
@@ -769,6 +768,8 @@ class Game(Channel):
             self.on_match_start(profile.on_match_start)
         if hasattr(profile, "on_match_finish") and callable(getattr(profile, "on_match_finish")):
             self.on_match_finish(profile.on_match_finish)
+        if hasattr(profile, "on_match_abort") and callable(getattr(profile, "on_match_abort")):
+            self.on_match_abort(profile.on_match_abort)
         if hasattr(profile, "on_host_change") and callable(getattr(profile, "on_host_change")):
             self.on_host_change(profile.on_host_change)
         if hasattr(profile, "on_team_addition") and callable(getattr(profile, "on_team_addition")):
@@ -834,6 +835,7 @@ class Game(Channel):
         super().clear_logic()
         self.on_match_start(None)
         self.on_match_finish(None)
+        self.on_match_abort(None)
         self.on_host_change(None)
         self.on_beatmap_change(None)
         self.on_changing_beatmap(None)
@@ -844,6 +846,23 @@ class Game(Channel):
         self.on_team_addition(None)
         self.on_clear_host(None)
         self.on_rule_violation(None)
+
+    def get_logic(self):
+        logic = super().get_logic()
+        logic["on_match_start"] = self.__on_match_start_method
+        logic["on_match_finish"] = self.__on_match_finish_method
+        logic["on_match_abort"] = self.__on_match_abort_method
+        logic["on_host_change"] = self.__on_host_change_method
+        logic["on_beatmap_change"] = self.__on_beatmap_change_method
+        logic["on_changing_beatmap"] = self.__on_changing_beatmap_method
+        logic["on_all_players_ready"] = self.__on_all_players_ready_method
+        logic["on_room_close"] = self.__on_room_close_method
+        logic["on_slot_change"] = self.__on_slot_change_method
+        logic["on_team_change"] = self.__on_team_change_method
+        logic["on_team_addition_method"] = self.__on_team_addition_method
+        logic["on_clear_host"] = self.__on_clear_host_method
+        logic["on_rule_violation"] = self.__on_rule_violation_method
+        return logic
 
     def clear_commands(self):
         self.__commands = {"!info": {"response": "built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "built with osu_bot_framework v3"}}
