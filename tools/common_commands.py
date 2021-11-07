@@ -29,7 +29,7 @@ class CommonCommands:
                 self.channel.send_message("Searching for '" + query + "'...")
 
             beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query)
-            while beatmap["BeatmapId"] in self.played:
+            if beatmap["BeatmapId"] in self.played:
                 beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query)
             if len(self.played) >= 50:
                 self.played.pop(0)

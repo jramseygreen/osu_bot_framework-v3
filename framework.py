@@ -220,8 +220,6 @@ class Bot:
             pass
         channel.set_password(password)
         channel.set_size(size)
-        while not channel.get_beatmap():
-            pass
         channel.set_mods(mods)
         channel.set_game_mode(game_mode)
         channel.set_team_type(team_type)

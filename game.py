@@ -108,6 +108,7 @@ class Game(Channel):
                 self.set_host(message["content"].replace(" became the host.", ""))
             elif "The match has started!" == message["content"]:
                 self.__in_progress = True
+                self.abort_start_timer()
                 self.__check_attributes()
             elif "The match has finished!" == message["content"]:
                 self.__in_progress = False
