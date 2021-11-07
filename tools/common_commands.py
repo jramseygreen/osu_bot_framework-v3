@@ -42,7 +42,11 @@ class CommonCommands:
             self.channel.send_message("This command is only available to the host or referees.")
 
     def altlink(self, message):
-        self.channel.send_message("An alternate download link is available [" + self.bot.chimu.fetch_download_link(self.channel.get_beatmap()["id"]) + " here]")
+        link = self.bot.chimu.fetch_download_link(self.channel.get_beatmap()["id"])
+        if link:
+            self.channel.send_message("An alternate download link is available [" + link + " here]")
+        else:
+            self.channel.send_message("Sorry chimu.moe doesn't store this beatmap!")
 
     def ar_range(self, message):
         if self.channel.has_referee(message["username"]):
@@ -404,7 +408,7 @@ class CommonCommands:
     # todo
     def topdiff(self, message):
         beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap()["id"])
-        for beatmap in reversed(beatmapset["beatmaps"]):
+        for beatmap in sorted(beatmapset["beatmaps"], key=lambda x: x["difficulty_rating"], reverse=True):
             if self.channel.get_diff_range()[0] < beatmap["difficulty_rating"] < self.channel.get_diff_range()[1]:
                 self.channel.change_beatmap(beatmap["id"])
                 return

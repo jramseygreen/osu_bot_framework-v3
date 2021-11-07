@@ -92,15 +92,14 @@ class Chimu:
 
     def fetch_random_beatmap(self, channel=None, **attributes):
         # grab attributes from channel object
+        query = ""
+        if "query" in attributes:
+            query = attributes["query"]
+            del attributes["query"]
         if channel:
             attributes = self.channel_to_attributes(channel)
 
         attributes["amount"] = 10000
-        query = ""
-
-        if "query" in attributes:
-            query = attributes["query"]
-            del attributes["query"]
         status = None
         if "status" in attributes:
             if type(attributes["status"]) == str:

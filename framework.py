@@ -220,13 +220,13 @@ class Bot:
             pass
         channel.set_password(password)
         channel.set_size(size)
-        channel.change_beatmap(beatmapID)
         while not channel.get_beatmap():
             pass
         channel.set_mods(mods)
         channel.set_game_mode(game_mode)
         channel.set_team_type(team_type)
         channel.set_scoring_type(scoring_type)
+        channel.change_beatmap(beatmapID)
         self.send_personal_message(self.__username, self.__username + " a game room was created: [" + channel.get_invite_link() + " " + title + "]")
         return channel
 
