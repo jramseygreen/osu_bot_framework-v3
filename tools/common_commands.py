@@ -420,12 +420,12 @@ class CommonCommands:
 
     def enable_start_on_players_ready(self, message):
         if self.channel.has_referee(message["username"]):
-            self.channel.set_autostart(True)
+            self.channel.start_on_players_ready(True)
             self.channel.send_message("Enabled starting automatically when all players are ready")
 
     def disable_start_on_players_ready(self, message):
         if self.channel.has_referee(message["username"]):
-            self.channel.set_autostart(False)
+            self.channel.start_on_players_ready(False)
             self.channel.send_message("Disabled starting automatically when all players are ready")
 
     def set_auto_start_timer(self, message):

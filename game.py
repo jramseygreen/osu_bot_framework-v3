@@ -312,19 +312,19 @@ class Game(Channel):
                     revert = False
                 elif beatmap == self.__beatmap:
                     return
-                elif self.__od_range[0] > beatmap["accuracy"] > self.__od_range[1]:
+                elif self.__od_range[0] > beatmap["accuracy"] or beatmap["accuracy"] > self.__od_range[1]:
                     self.send_message("Rule violation: OD - " + self.__host + " the selected beatmap is outside the overall difficulty range: " + str(self.__od_range))
                     revert = True
-                elif self.__ar_range[0] > beatmap["ar"] > self.__ar_range[1]:
+                elif self.__ar_range[0] > beatmap["ar"] or beatmap["ar"] > self.__ar_range[1]:
                     message = ("Rule violation: AR - " + self.__host + " the selected beatmap is outside the approach rate range: " + str(self.__ar_range))
                     revert = True
                 elif self.__bpm_range[0] > beatmap["bpm"] or (self.__bpm_range[1] != -1 and self.__bpm_range[1] < beatmap["bpm"]):
                     message = ("Rule violation: BPM - " + self.__host + " the selected beatmap is outside the BPM range: " + str(self.__bpm_range).replace("-1.0", "unlimited"))
                     revert = True
-                elif self.__cs_range[0] > beatmap["cs"] > self.__cs_range[1]:
+                elif self.__cs_range[0] > beatmap["cs"] or beatmap["cs"]  > self.__cs_range[1]:
                     message = ("Rule violation: CS - " + self.__host + " the selected beatmap is outside the circle size range: " + str(self.__cs_range))
                     revert = True
-                elif self.__hp_range[0] > beatmap["drain"] > self.__hp_range[1]:
+                elif self.__hp_range[0] > beatmap["drain"] or beatmap["drain"] > self.__hp_range[1]:
                     message = ("Rule violation: HP - " + self.__host + " the selected beatmap is outside the HP range: " + str(self.__hp_range))
                     revert = True
                 elif self.__length_range[0] > beatmap["hit_length"] or (
@@ -464,13 +464,13 @@ class Game(Channel):
             if self.__slots[i]["username"] == username:
                 return i
 
-    def get_next_empty_slot(self):
-        for i in range(16):
+    def get_next_empty_slot(self, offset=0):
+        for i in range(offset, 16):
             if not self.__slots[i]["username"]:
                 return self.__slots[i]
 
-    def get_next_full_slot(self):
-        for i in range(16):
+    def get_next_full_slot(self, offset=0):
+        for i in range(offset, 16):
             if self.__slots[i]["username"]:
                 return self.__slots[i]
 
