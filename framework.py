@@ -3,6 +3,7 @@ import inspect
 import json
 import os
 import threading
+from datetime import datetime
 
 from tools.broadcast_controller import BroadcastController
 from channel import Channel
@@ -34,8 +35,8 @@ class Bot:
         self.__on_personal_message_method = None
         self.__logic_profiles = {}
         self.__player_blacklist = []
-        self.chimu = Chimu()
-        self.__logger = Logger("config" + os.sep + "logs" + os.sep + str(len([name for name in os.listdir("config" + os.sep + "logs")]) + 1) + ".txt", "a")
+        self.chimu = Chimu(self)
+        self.__logger = Logger("config" + os.sep + "logs" + os.sep + str(datetime.now()).replace(" ", "-", 1).replace(":", "-").split(".", 1)[0] + ".txt", "a")
         self.logging = logging
         self.verbose = verbose
 
@@ -109,9 +110,15 @@ class Bot:
                                             self.__room_limit_reached = True
                                     for channel in self.__channels:
                                         if self.__channels[channel].get_on_personal_message_method():
-                                            threading.Thread(target=self.__channels[channel].get_on_personal_message_method(), args=(message,)).start()
+                                            if len(str(inspect.signature(self.__channels[channel].get_on_personal_message_method())).strip("()").split(", ")) == 1:
+                                                threading.Thread(target=self.__channels[channel].get_on_personal_message_method(), args=(message,)).start()
+                                            else:
+                                                threading.Thread(target=self.__channels[channel].get_on_personal_message_method()).start()
                                     if self.__on_personal_message_method:
-                                        threading.Thread(target=self.__on_personal_message_method, args=(message,)).start()
+                                        if len(str(inspect.signature(self.__on_personal_message_method)).strip("()").split(", ")) == 1:
+                                            threading.Thread(target=self.__on_personal_message_method, args=(message,)).start()
+                                        else:
+                                            threading.Thread(target=self.__on_personal_message_method).start()
                             self.__controller.update()
                     # functional information
                     else:

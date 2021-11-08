@@ -18,8 +18,11 @@ class AutoHostRotate:
         channel.set_command("!altlink", channel.common_commands.altlink,"Returns an alternate link for the current beatmap from chimu.moe")
         channel.set_command("!topdiff", channel.common_commands.topdiff,"When host, upgrades the beatmap to the highest difficulty within the room limits and ranges")
         channel.set_command("!start", self.start,"When host starts the game with optional countdown timer else starts vote to start match")
+        channel.set_command("!mp start", self.mp_start,"When host starts the game with optional countdown timer else starts vote to start match")
         channel.set_command("!aborttimer", channel.common_commands.abort_start_timer,"When host or referee, aborts start timer")
+        channel.set_command("!mp aborttimer", self.mp_abort_start_timer,"When host or referee, aborts start timer")
         channel.set_command("!abort", self.abort, "Starts vote to abort match")
+        channel.set_command("!mp abort", self.mp_abort, "Starts vote to abort match")
         channel.set_command("R̲e̲f̲e̲r̲e̲e̲ C̲o̲m̲m̲a̲n̲d̲s̲", "")
         channel.set_command("*skip", self.skip, "Changes the host to the next username in the queue")
         channel.set_command("*implement", channel.common_commands.implement_logic_profile, "Implements a logic profile")
@@ -49,7 +52,7 @@ class AutoHostRotate:
         channel.set_command("*del_artist_blacklist", channel.common_commands.del_artist_blacklist, "Removes an artist from the blacklist. e.g. *del_artist_blacklist eminem")
         channel.set_command("*del_creator_whitelist", channel.common_commands.del_beatmap_creator_whitelist, "Removes a beatmap creator from the whitelist. e.g. *del_creator_whitelist sotarks")
         channel.set_command("*del_creator_blacklist", channel.common_commands.del_beatmap_creator_blacklist, "Removes a beatmap creator from the blacklist. e.g. *del_creator_blacklist sotarks")
-        channel.set_command("*add_player_blacklist", channel.common_commands.del_player_blacklist, "adds a player to the blacklist.")
+        channel.set_command("*add_player_blacklist", channel.common_commands.add_player_blacklist, "adds a player to the blacklist.")
         channel.set_command("*del_player_blacklist", channel.common_commands.del_player_blacklist, "Removes a player from the blacklist.")
         channel.set_command("*enable_start_on_players_ready", channel.common_commands.enable_start_on_players_ready, "enables starting the match when all players are ready")
         channel.set_command("*disable_start_on_players_ready", channel.common_commands.disable_start_on_players_ready, "disables starting the match when all players are ready")
@@ -58,6 +61,8 @@ class AutoHostRotate:
         channel.set_command("*disable_maintain_password", channel.common_commands.disable_maintain_password,"disables maintaining password")
         channel.set_command("*enable_maintain_size", channel.common_commands.enable_maintain_size, "Enables maintaining size")
         channel.set_command("*disable_maintain_size", channel.common_commands.disable_maintain_size, "Disables maintaining size")
+        channel.set_command("*enable_auto_download", channel.common_commands.enable_auto_download, "Enables automatic downloading of maps for the bot administrator")
+        channel.set_command("*disable_auto_download", channel.common_commands.disable_auto_download,"Disables automatic downloading of maps for the bot administrator")
 
     def show_queue(self, message):
         if self.queue:
@@ -114,9 +119,9 @@ class AutoHostRotate:
         else:
             self.queue.remove(username)
         if self.skip_vote.is_in_progress():
-            self.channel.send_message(str(self.skip_vote.get_threshold()) + " votes now needed to skip the current host").replace("1 votes", "1 vote", 1)
+            self.channel.send_message(str(self.skip_vote.get_threshold()) + " votes now needed to skip the current host".replace("1 votes", "1 vote", 1))
         if self.start_vote.is_in_progress():
-            self.channel.send_message(str(self.start_vote.get_threshold()) + " votes now needed to start the match").replace("1 votes", "1 vote", 1)
+            self.channel.send_message(str(self.start_vote.get_threshold()) + " votes now needed to start the match".replace("1 votes", "1 vote", 1))
 
     def on_match_start(self):
         self.start_vote.stop()
@@ -136,3 +141,15 @@ class AutoHostRotate:
         if not self.channel.has_referee(new_host) and new_host != self.queue[0]:
             self.channel.change_host(self.queue[0])
             self.channel.send_message(old_host + " please type '!skip' if you want to skip your turn")
+
+    def mp_start(self, message):
+        if not self.channel.has_referee(message["username"]) and message["username"] == self.channel.get_formatted_host():
+            self.start(message)
+
+    def mp_abort_start_timer(self, message):
+        if message["username"] == self.channel.get_formatted_host():
+            self.channel.common_commands.abort_start_timer(message)
+
+    def mp_abort(self, message):
+        if not self.channel.has_referee(message["username"]) and  self.channel.in_progress():
+            self.abort(message)

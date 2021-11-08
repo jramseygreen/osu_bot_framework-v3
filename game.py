@@ -1,3 +1,4 @@
+import inspect
 import json
 import threading
 import time
@@ -33,6 +34,7 @@ class Game(Channel):
         self.__maintain_password = False
         self.__maintain_size = False
         self.__player_blacklist = bot.get_player_blacklist()
+        self.__auto_download = {"status": False, "path": "", "auto_open": False, "with_video": False}
 
         # limits and ranges (done)
         self.__ar_range = (0.0, 10.0)
@@ -83,7 +85,14 @@ class Game(Channel):
                 elif "for team red" in message["content"]:
                     team = "red"
                 if self.__on_team_addition_method:
-                    threading.Thread(target=self.__on_team_addition_method, args=(username, team,)).start()
+                    argnum = len(str(inspect.signature(self.__on_team_addition_method)).strip("()").split(", "))
+                    if argnum == 2:
+                        threading.Thread(target=self.__on_team_addition_method, args=(username, team,)).start()
+                    elif argnum == 1:
+                        threading.Thread(target=self.__on_team_addition_method, args=(username,)).start()
+                    else:
+                        threading.Thread(target=self.__on_team_addition_method).start()
+
                 self.set_slot(int(message["content"].split("slot ", 1)[1].split(".", 1)[0].split(" ")[0]) - 1, {"username": username, "team": team, "score": {}})
                 self.add_user(username)
             elif "left the game" in message["content"]:
@@ -96,19 +105,40 @@ class Game(Channel):
                 score = self.get_score(username)
                 self.set_slot(slot, {"username": username, "team": team, "score": score})
                 if self.__on_slot_change_method:
-                    threading.Thread(target=self.__on_slot_change_method, args=(username, slot,)).start()
+                    argnum = len(str(inspect.signature(self.__on_slot_change_method)).strip("()").split(", "))
+                    if argnum == 2:
+                        threading.Thread(target=self.__on_slot_change_method, args=(username, slot,)).start()
+                    elif argnum == 1:
+                        threading.Thread(target=self.__on_slot_change_method, args=(username,)).start()
+                    else:
+                        threading.Thread(target=self.__on_slot_change_method).start()
+
             elif "changed to Blue" in message["content"]:
                 username = message["content"].replace(" changed to Blue", "")
                 slot = self.get_slot_num(username)
                 self.set_slot(slot, {"username": username, "team": "blue", "score": {}})
                 if self.__on_team_change_method:
-                    threading.Thread(target=self.__on_team_change_method, args=(username, "blue",)).start()
+                    argnum = len(str(inspect.signature(self.__on_team_change_method)).strip("()").split(", "))
+                    if argnum == 2:
+                        threading.Thread(target=self.__on_team_change_method, args=(username, "blue",)).start()
+                    elif argnum == 1:
+                        threading.Thread(target=self.__on_team_change_method, args=(username,)).start()
+                    else:
+                        threading.Thread(target=self.__on_team_change_method).start()
+
             elif "changed to Red" in message["content"]:
                 username = message["content"].replace(" changed to Red", "")
                 slot = self.get_slot_num(username)
                 self.set_slot(slot, {"username": username, "team": "red", "score": {}})
                 if self.__on_team_change_method:
-                    threading.Thread(target=self.__on_team_change_method, args=(username, "red",)).start()
+                    argnum = len(str(inspect.signature(self.__on_team_change_method)).strip("()").split(", "))
+                    if argnum == 2:
+                        threading.Thread(target=self.__on_team_change_method, args=(username, "red",)).start()
+                    elif argnum == 1:
+                        threading.Thread(target=self.__on_team_change_method, args=(username,)).start()
+                    else:
+                        threading.Thread(target=self.__on_team_change_method).start()
+
             elif "became the host" in message["content"]:
                 self.set_host(message["content"].replace(" became the host.", ""))
             elif "The match has started!" == message["content"]:
@@ -149,7 +179,10 @@ class Game(Channel):
                     threading.Thread(target=self.__on_room_close_method).start()
             elif "Cleared match host" == message["content"]:
                 if self.__on_clear_host_method:
-                    threading.Thread(target=self.__on_clear_host_method, args=(self.__host,)).start()
+                    if len(str(inspect.signature(self.__on_clear_host_method)).strip("()").split(", ")) == 1:
+                        threading.Thread(target=self.__on_clear_host_method, args=(self.__host,)).start()
+                    else:
+                        threading.Thread(target=self.__on_clear_host_method).start()
                 self.__host = ""
 
         elif message["username"] in [x.replace(" ", "_") for x in self.__referees]:
@@ -185,14 +218,17 @@ class Game(Channel):
         self.__execute_commands(message)
 
     def __execute_commands(self, message):
-        command = message["content"].split(" ", 1)[0]
-        if command in self.__commands:
-            if callable(self.__commands[command]["response"]):
-                threading.Thread(target=self.__commands[command]["response"], args=(message,)).start()
-            else:
-                self.send_message(str(self.__commands[command]["response"]))
-            if self.verbose or self._bot.logging:
-                self._bot.log("-- Command '" + command + "' Executed --")
+        for command in self.__commands:
+            if message["content"].find(command) == 0:
+                if callable(self.__commands[command]["response"]):
+                    if len(str(inspect.signature(self.__commands[command]["response"])).strip("()").split(", ")) == 1:
+                        threading.Thread(target=self.__commands[command]["response"], args=(message,)).start()
+                    else:
+                        threading.Thread(target=self.__commands[command]["response"]).start()
+                else:
+                    self.send_message(str(self.__commands[command]["response"]))
+                if self.verbose or self._bot.logging:
+                    self._bot.log("-- Command '" + command + "' Executed --")
 
     def send_message(self, message):
         super().send_message(message)
@@ -306,7 +342,6 @@ class Game(Channel):
                     self._bot.log("-- Beatmap checker started --")
                 if beatmap["unsubmitted"]:
                     self.send_message("The selected beatmap is not submitted! Can't check attributes.")
-                    self.send_message("An alternate download link is available [" + self._bot.chimu.fetch_download_link(beatmap["id"]) + " here]")
                     revert = False
                 elif beatmap["id"] == 22538:
                     revert = False
@@ -341,7 +376,7 @@ class Game(Channel):
                     message = ("Rule violation: Difficulty - " + self.__host + " the selected beatmap is outside the difficulty range: " + str(self.__diff_range).replace("-1.0", "unlimited") + "*")
                     revert = True
                 elif self.__game_mode != "any" and beatmap["mode"] != self.__game_mode:
-                    self.send_message("Rule violation: Mode - " + self.__host + " the selected beatmap's mode must be: " + " or ".join(self.__game_mode))
+                    self.send_message("Rule violation: Mode - " + self.__host + " the selected beatmap's mode must be: " + self.__game_mode)
                     revert = True
                 elif self.__beatmap_creator_blacklist or self.__beatmap_creator_whitelist or self.__artist_blacklist or self.__artist_whitelist:
                     beatmapset = self.__fetch_beatmapset(beatmap["id"])
@@ -361,13 +396,26 @@ class Game(Channel):
             if revert:
                 self.set_beatmap(self.__beatmap)
                 self.send_message(message)
-                threading.Thread(target=self.__on_rule_violation_method, args=({"username": self._bot.get_username(), "channel": self._channel, "content": message},)).start()
+                if self.__on_rule_violation_method:
+                    if len(str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ")) == 1:
+                        threading.Thread(target=self.__on_rule_violation_method, args=({"username": self._bot.get_username(), "channel": self._channel, "content": message},)).start()
+                    else:
+                        threading.Thread(target=self.__on_rule_violation_method).start()
             else:
                 self.__beatmap = beatmap
                 if self.__on_beatmap_change_method:
-                    threading.Thread(target=self.__on_beatmap_change_method, args=(self.__beatmap, beatmap,)).start()
+                    argnum = len(str(inspect.signature(self.__on_beatmap_change_method)).strip("()").split(", "))
+                    if argnum == 2:
+                        threading.Thread(target=self.__on_beatmap_change_method, args=(self.__beatmap, beatmap,)).start()
+                    elif argnum == 1:
+                        threading.Thread(target=self.__on_beatmap_change_method, args=(self.__beatmap, )).start()
+                    else:
+                        threading.Thread(target=self.__on_beatmap_change_method).start()
+
                 if self.__autostart_timer > 0:
                     self.start_match(self.__autostart_timer)
+                if self.__auto_download["status"]:
+                    self._bot.chimu.download_beatmap(beatmap["id"], path=self.__auto_download["path"], with_video=self.__auto_download["with_video"], auto_open=self.__auto_download["auto_open"])
 
     def __check_attributes(self, running=False):
         if not running:
@@ -402,9 +450,12 @@ class Game(Channel):
                 if not self.__beatmap:
                     beatmapID = "22538"
                 self.send_message("!mp map " + beatmapID + " " + str(GAME_ATTR[self.__game_mode]))
-                self.send_message("!mp mods " + " ".join(self.__mods).lower())
+                self.set_mods(self.__mods)
                 self.send_message(message)
-                threading.Thread(target=self.__on_rule_violation_method, args=({"username": self._bot.get_username(), "channel": self._channel, "content": message},)).start()
+                if len(str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ")) == 1:
+                    threading.Thread(target=self.__on_rule_violation_method, args=({"username": self._bot.get_username(), "channel": self._channel, "content": message},)).start()
+                else:
+                    threading.Thread(target=self.__on_rule_violation_method).start()
             elif self.__on_match_start_method:
                 threading.Thread(target=self.__on_match_start_method).start()
 
@@ -451,6 +502,12 @@ class Game(Channel):
     def get_slots(self):
         return self.__slots
 
+    def get_formatted_slots(self):
+        slots = {}
+        for slot in self.__slots:
+            slots[slot] = {"username": self.__slots[slot]["username"].replace(" ", "_"), "team": self.__slots[slot]["team"], "score": self.__slots[slot]["score"]}
+        return slots
+
     def set_slot(self, slot, data):
         for s in self.__slots:
             if self.__slots[s] == data:
@@ -464,7 +521,7 @@ class Game(Channel):
 
     def get_slot_num(self, username):
         for i in range(16):
-            if self.__slots[i]["username"] == username:
+            if self.__slots[i]["username"].replace(" ", "_") == username.replace(" ", "_"):
                 return i
 
     def get_next_empty_slot(self, offset=0):
@@ -506,7 +563,14 @@ class Game(Channel):
 
     def set_host(self, username):
         if self.__on_host_change_method:
-            threading.Thread(target=self.__on_host_change_method, args=(self.__host, username,)).start()
+            argnum = len(str(inspect.signature(self.__on_host_change_method)).strip("()").split(", "))
+            if argnum == 2:
+                threading.Thread(target=self.__on_host_change_method, args=(self.__host, username,)).start()
+            elif argnum == 1:
+                threading.Thread(target=self.__on_host_change_method, args=(self.__host,)).start()
+            else:
+                threading.Thread(target=self.__on_host_change_method).start()
+
         self.__host = username
 
     def change_host(self, username):
@@ -607,7 +671,7 @@ class Game(Channel):
             mods = [mods.upper()]
         self.__mods = mods
         if self.__mods != ["ANY"]:
-            self.send_message("!mp mods " + " ".join(self.__mods).lower())
+            self.send_message("!mp mods " + " ".join([GAME_ATTR[x] for x in self.__mods]).lower())
 
     # gets the allowed mods
     def get_mods(self):
@@ -1034,3 +1098,6 @@ class Game(Channel):
     def del_player_blacklist(self, username):
         if username.replace(" ", "_") in self.get_formatted_player_blacklist():
             del self.__player_blacklist[self.get_formatted_player_blacklist().index(username.replace(" ", "_"))]
+
+    def auto_download(self, status, path="", auto_open=False, with_video=False):
+        self.__auto_download = {"status": status, "path": path, "auto_open": auto_open, "with_video": with_video}

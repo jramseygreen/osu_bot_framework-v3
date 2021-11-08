@@ -1,5 +1,3 @@
-import random
-
 GAME_ATTR = {
     "head-to-head": 0,
     "tag-coop": 1,
@@ -14,12 +12,20 @@ GAME_ATTR = {
     "FL": "FL",
     "HD": "HD",
     "FI": "FI",
+    "EZ": "EZ",
+    "HT": "HT",
+    "SD": "SD",
+    "RX": "relax",
+    "NC": "NC",
+    "PF": "PF",
+    "AP": "AP",
+    "NF": "NF",
     "FREEMOD": "FREEMOD",
     "osu": 0,
     "taiko": 1,
     "fruits": 2,
     "mania": 3,
-    "any": random.randint(0, 3),
+    "any": 0,
     "ranked": 1,
     "approved": 2,
     "qualified": 3,
@@ -27,5 +33,4 @@ GAME_ATTR = {
     "pending": 0,
     "wip": -1,
     "graveyard": -2
-
 }

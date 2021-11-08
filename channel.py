@@ -1,4 +1,5 @@
 import copy
+import inspect
 import threading
 
 from tools.common_commands import CommonCommands
@@ -26,20 +27,40 @@ class Channel:
         if username.replace(" ", "_") not in self.get_formatted_users():
             self._users.append(username)
         if self.__on_join_method:
-            threading.Thread(target=self.__on_join_method, args=(username,)).start()
+            if self.is_game():
+                slot = self.get_slot_num(username)
+                argnum = len(str(inspect.signature(self.__on_join_method)).strip("()").split(", "))
+                if argnum == 2:
+                    threading.Thread(target=self.__on_join_method, args=(slot, username,)).start()
+                elif argnum == 1:
+                    threading.Thread(target=self.__on_join_method, args=(username,)).start()
+                else:
+                    threading.Thread(target=self.__on_join_method).start()
 
     def del_user(self, username):
+        slot = None
+        if self.is_game():
+            slot = self.get_slot_num(username)
         if username.replace(" ", "_") in self.get_formatted_users():
             del self._users[self.get_formatted_users().index(username.replace(" ", "_"))]
         if self.__on_part_method:
-            threading.Thread(target=self.__on_part_method, args=(username,)).start()
+            argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
+            if argnum == 2:
+                threading.Thread(target=self.__on_part_method, args=(slot, username,)).start()
+            elif argnum == 1:
+                threading.Thread(target=self.__on_part_method, args=(username,)).start()
+            else:
+                threading.Thread(target=self.__on_part_method).start()
 
     def process_message(self, message):
         if len(self._message_log) == self._message_log_length:
             self._message_log = self._message_log[1:]
         self._message_log.append(message)
         if self.__on_message_method:
-            threading.Thread(target=self.__on_message_method, args=(message,)).start()
+            if len(str(inspect.signature(self.__on_message_method)).strip("()").split(", ")) == 1:
+                threading.Thread(target=self.__on_message_method, args=(message,)).start()
+            else:
+                threading.Thread(target=self.__on_message_method).start()
 
     def send_message(self, message):
         self._bot.get_sock().sendall(("PRIVMSG " + self._channel + " :" + str(message) + "\n").encode())

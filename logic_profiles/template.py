@@ -14,10 +14,10 @@ class Template:
     def on_message(self, message):
         pass
 
-    def on_join(self, username):
+    def on_join(self, slot, username):
         pass
 
-    def on_part(self, username):
+    def on_part(self, slot, username):
         pass
 
     def on_match_start(self):

@@ -10,7 +10,8 @@ from GAME_ATTR import GAME_ATTR
 
 
 class Chimu:
-    def __init__(self):
+    def __init__(self, bot):
+        self.bot = bot
         self.url = "https://api.chimu.moe/v1/"
 
     # fetches a beatmapset dictionary object from chimu.moe
@@ -65,30 +66,31 @@ class Chimu:
     # downloads a beatmapset to the path given, or in the framework directory
     # opening on completion will open it with the default program (osu) and deletes the file on import
     # starts on its own thread by default
-    def download_beatmapset(self, beatmapsetID, path="", with_video=False, open_on_complete=False, blocking=False):
+    def download_beatmapset(self, beatmapsetID, path="", with_video=False, auto_open=False, blocking=False):
         if not blocking:
-            x = threading.Thread(target=self.download_beatmapset, args=(beatmapsetID, path, with_video, open_on_complete, True,))
+            x = threading.Thread(target=self.download_beatmapset, args=(beatmapsetID, path, with_video, auto_open, True,))
             x.setDaemon(True)
             x.start()
         else:
-            if path != "" and path[-1] != "/":
-                path = path + "/"
-            url = self.fetch_download_link(beatmapsetID, with_video=with_video)
+            if path != "" and path[-1] != os.sep and path[-1] != "/":
+                path = path + os.sep
+            url = self.fetch_set_download_link(beatmapsetID, with_video=with_video)
+            self.bot.log("-- Downloading beatmapset " + str(beatmapsetID) + " --")
             file = requests.get(url)
             if "Error" not in file.text:
                 f = open(path + str(beatmapsetID) + ".osz", "wb")
                 f.write(file.content)
                 f.close()
-                if open_on_complete:
+                if auto_open:
                     # osu will delete the file when it's opened!
                     os.system(path + str(beatmapsetID) + ".osz")
 
     # takes beatmap id instead of beatmap set id
-    def download_beatmap(self, beatmapID, path="", with_video=False, open_on_complete=False, blocking=False):
+    def download_beatmap(self, beatmapID, path="", with_video=False, auto_open=False, blocking=False):
         beatmap = self.fetch_beatmap(beatmapID)
         if beatmap:
             beatmapsetID = beatmap["ParentSetId"]
-            self.download_beatmapset(beatmapsetID, path, with_video, open_on_complete, blocking)
+            self.download_beatmapset(beatmapsetID, path, with_video, auto_open, blocking)
 
     def fetch_random_beatmap(self, channel=None, **attributes):
         # grab attributes from channel object

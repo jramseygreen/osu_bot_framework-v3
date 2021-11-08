@@ -1,5 +1,7 @@
 import time
 
+from GAME_ATTR import GAME_ATTR
+
 
 def is_number(string):
     try:
@@ -177,7 +179,11 @@ class CommonCommands:
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if args:
-                self.channel.set_map_status(args)
+                if all([arg.lower() in GAME_ATTR for arg in args]):
+                    self.channel.set_map_status(args)
+                else:
+                    self.channel.send_message("One or more unrecognised arguments!")
+                    return
             else:
                 self.channel.set_map_status("any")
             self.channel.send_message("The map status was set to " + str(self.channel.get_map_status()))
@@ -189,7 +195,11 @@ class CommonCommands:
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if args:
-                self.channel.set_mods(args)
+                if all([arg.upper() in GAME_ATTR for arg in args]):
+                    self.channel.set_mods(args)
+                else:
+                    self.channel.send_message("One or more unrecognised arguments!")
+                    return
             else:
                 self.channel.set_mods("any")
             self.channel.send_message("Allowed mods set to " + str(self.channel.get_mods()))
@@ -201,7 +211,11 @@ class CommonCommands:
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 1:
-                self.channel.set_scoring_type(args[0])
+                if args[0].lower() in GAME_ATTR:
+                    self.channel.set_scoring_type(args[0])
+                else:
+                    self.channel.send_message("One or more unrecognised arguments!")
+                    return
             elif not args:
                 self.channel.set_scoring_type("any")
             else:
@@ -216,7 +230,11 @@ class CommonCommands:
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 1:
-                self.channel.set_team_type(args[0])
+                if args[0].lower() in GAME_ATTR:
+                    self.channel.set_team_type(args[0])
+                else:
+                    self.channel.send_message("One or more unrecognised arguments!")
+                    return
             elif not args:
                 self.channel.set_team_type("any")
             else:
@@ -231,7 +249,11 @@ class CommonCommands:
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if len(args) == 1:
-                self.channel.set_game_mode(args[0])
+                if args[0].lower() in GAME_ATTR:
+                    self.channel.set_game_mode(args[0])
+                else:
+                    self.channel.send_message("One or more unrecognised arguments!")
+                    return
             elif not args:
                 self.channel.set_game_mode("any")
             else:
@@ -432,7 +454,7 @@ class CommonCommands:
         if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
-            if args[0].is_numeric():
+            if args[0].is_number():
                 self.channel.set_autostart_timer(args[0])
                 self.channel.send_message("Autostart timer set to " + args[0])
 
@@ -472,10 +494,25 @@ class CommonCommands:
             self.channel.maintain_size(False)
             self.channel.send_message("Disabled maintaining size")
 
+    def enable_auto_download(self, message):
+        if message["username"] == self.bot.get_username():
+            self.channel.auto_download(True, auto_open=True)
+            self.channel.send_message("The bot will now download beatmaps automatically")
+        else:
+            self.channel.send_message("Sorry this command can only be used by the bot administrator!")
+
+    def disable_auto_download(self, message):
+        if message["username"] == self.bot.get_username():
+            self.channel.auto_download(False)
+            self.channel.send_message("Automatic beatmap download disabled")
+        else:
+            self.channel.send_message("Sorry this command can only be used by the bot administrator!")
+
     # todo
     def topdiff(self, message):
         beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap()["id"])
         for beatmap in sorted(beatmapset["beatmaps"], key=lambda x: x["difficulty_rating"], reverse=True):
+            # todo upper range bug with -1
             if self.channel.get_diff_range()[0] < beatmap["difficulty_rating"] < self.channel.get_diff_range()[1]:
                 self.channel.change_beatmap(beatmap["id"])
                 return

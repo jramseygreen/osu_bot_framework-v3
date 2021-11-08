@@ -1,3 +1,4 @@
+import inspect
 import math
 import threading
 
@@ -10,16 +11,21 @@ class Vote:
         self.threshold = None
         self.results = {}
         self.in_progress = False
+
         self.choices = []
+        self.__original_join_method = channel.get_logic()["on_join"]
+        self.__original_part_method = channel.get_logic()["on_part"]
 
         self.__on_join_method = None
         self.__on_part_method = None
 
     def start(self, choices=[], threshold=None):
         self.results = {}
-        self.__on_join_method = self.channel.get_logic()["on_join"]
-        self.__on_part_method = self.channel.get_logic()["on_part"]
+        self.choices = choices
+
         if not threshold:
+            self.__on_join_method = self.channel.get_logic()["on_join"]
+            self.__on_part_method = self.channel.get_logic()["on_part"]
             self.channel.on_join(self.__on_join)
             self.channel.on_part(self.__on_part)
             threshold = math.floor(len(self.channel.get_users()) / 2) + 1
@@ -27,6 +33,10 @@ class Vote:
         self.in_progress = True
 
     def stop(self):
+        if self.__on_join == self.channel.get_logic()["on_join"]:
+            self.channel.on_join(self.__original_join_method)
+        if self.__on_part == self.channel.get_logic()["on_part"]:
+            self.channel.on_part(self.__original_part_method)
         self.in_progress = False
 
     def cast_ballot(self, username, choice=""):
@@ -38,7 +48,10 @@ class Vote:
                 # if any vote choice is past the threshold
                 if self.results and len(self.results) >= self.threshold:
                     self.stop()
-                    x = threading.Thread(target=self.method, args=(self,))
+                    if len(str(inspect.signature(self.method)).strip("()").split(", ")) == 1:
+                        x = threading.Thread(target=self.method, args=(self,))
+                    else:
+                        x = threading.Thread(target=self.method)
                     x.start()
                     while x.is_alive():
                         pass
@@ -64,12 +77,19 @@ class Vote:
     def is_in_progress(self):
         return self.in_progress
 
-    def __on_join(self, username):
+    def __on_join(self, slot, username):
         if self.in_progress:
             self.threshold = math.floor(len(self.channel.get_users()) / 2) + 1
-        self.__on_join_method(username)
 
-    def __on_part(self, username):
+        argnum = len(str(inspect.signature(self.__on_join_method)).strip("()").split(", "))
+        if argnum == 2:
+            threading.Thread(target=self.__on_join_method, args=(slot, username,)).start()
+        elif argnum == 1:
+            threading.Thread(target=self.__on_join_method, args=(username,)).start()
+        else:
+            threading.Thread(target=self.__on_join_method).start()
+
+    def __on_part(self, slot, username):
         if self.in_progress:
             self.threshold = math.floor(len(self.channel.get_users()) / 2) + 1
             if self.get_ballot(username) is not None:
@@ -77,9 +97,19 @@ class Vote:
             # if any vote choice is past the threshold
             if self.results and len(self.results) >= self.threshold:
                 self.stop()
-                x = threading.Thread(target=(self.method), args=(self,))
+                if len(str(inspect.signature(self.method)).strip("()").split(", ")) == 1:
+                    x = threading.Thread(target=self.method, args=(self,))
+                else:
+                    x = threading.Thread(target=self.method)
                 x.start()
                 while x.is_alive():
                     pass
                 self.threshold = None
-        self.__on_part_method(username)
+
+        argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
+        if argnum == 2:
+            threading.Thread(target=self.__on_part_method, args=(slot, username,)).start()
+        elif argnum == 1:
+            threading.Thread(target=self.__on_part_method, args=(username,)).start()
+        else:
+            threading.Thread(target=self.__on_part_method).start()
