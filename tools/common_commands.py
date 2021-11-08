@@ -1,3 +1,4 @@
+import os
 import time
 
 from GAME_ATTR import GAME_ATTR
@@ -508,12 +509,18 @@ class CommonCommands:
         else:
             self.channel.send_message("Sorry this command can only be used by the bot administrator!")
 
-    # todo
     def topdiff(self, message):
         beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap()["id"])
         for beatmap in sorted(beatmapset["beatmaps"], key=lambda x: x["difficulty_rating"], reverse=True):
-            # todo upper range bug with -1
-            if self.channel.get_diff_range()[0] < beatmap["difficulty_rating"] < self.channel.get_diff_range()[1]:
+            error = self.channel.check_beatmap(beatmap)
+            if not error:
                 self.channel.change_beatmap(beatmap["id"])
-                return
         self.channel.change_beatmap(self.channel.get_beatmap()["id"])
+
+    # todo
+    def upload_logic_profile(self, message):
+        f = open("logic_profiles" + os.sep + self.channel.get_logic_profile() + ".py", "r")
+        text = f.read()
+        f.close()
+        url = self.bot.paste2_upload(self.channel.get_logic_profile() + " logic profile", text)
+        self.channel.send_message("The current logic profile is [" + url + " " + self.channel.get_logic_profile() + "]")

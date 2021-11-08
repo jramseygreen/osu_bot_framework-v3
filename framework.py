@@ -36,7 +36,7 @@ class Bot:
         self.__logic_profiles = {}
         self.__player_blacklist = []
         self.chimu = Chimu(self)
-        self.__logger = Logger("config" + os.sep + "logs" + os.sep + str(datetime.now()).replace(" ", "-", 1).replace(":", "-").split(".", 1)[0] + ".txt", "a")
+        self.__logger = Logger("config" + os.sep + "logs" + os.sep + str(datetime.now()).replace(" ", "_", 1).replace(":", "-").split(".", 1)[0] + ".txt", "a")
         self.logging = logging
         self.verbose = verbose
 
@@ -241,7 +241,8 @@ class Bot:
         channel.set_game_mode(game_mode)
         channel.set_team_type(team_type)
         channel.set_scoring_type(scoring_type)
-        channel.change_beatmap(beatmapID)
+        if beatmapID != 22538:
+            channel.change_beatmap(beatmapID)
         self.send_personal_message(self.__username, self.__username + " a game room was created: [" + channel.get_invite_link() + " " + title + "]")
         return channel
 
