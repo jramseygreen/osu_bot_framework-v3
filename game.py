@@ -340,6 +340,9 @@ class Game(Channel):
                 elif beatmap["difficulty_rating"] < self.__diff_range[0] or (beatmap["difficulty_rating"] > self.__diff_range[1] != -1):
                     message = ("Rule violation: Difficulty - " + self.__host + " the selected beatmap is outside the difficulty range: " + str(self.__diff_range).replace("-1.0", "unlimited") + "*")
                     revert = True
+                elif self.__game_mode != "any" and beatmap["mode"] != self.__game_mode:
+                    self.send_message("Rule violation: Mode - " + self.__host + " the selected beatmap's mode must be: " + " or ".join(self.__game_mode))
+                    revert = True
                 elif self.__beatmap_creator_blacklist or self.__beatmap_creator_whitelist or self.__artist_blacklist or self.__artist_whitelist:
                     beatmapset = self.__fetch_beatmapset(beatmap["id"])
                     if self.__beatmap_creator_whitelist and beatmapset["creator"].lower() not in self.__beatmap_creator_whitelist and all([x not in beatmap["version"].lower() for x in self.__beatmap_creator_whitelist]):
