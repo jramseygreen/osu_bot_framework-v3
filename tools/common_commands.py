@@ -465,6 +465,7 @@ class CommonCommands:
             player = message["content"].replace(command, "", 1).strip()
             if player and player.replace(" ", "_") not in self.channel.get_formatted_player_blacklist():
                 self.channel.add_player_blacklist(player)
+                self.channel.kick_user(player)
                 self.channel.send_message("'" + player + "' added to the blacklist")
 
     def del_player_blacklist(self, message):
@@ -528,6 +529,26 @@ class CommonCommands:
             while not self.channel.in_progress():
                 time.sleep(1)
             self.beatmap_updated = False
+
+    def allow_convert(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.set_allow_convert(True)
+            self.channel.send_message("Beatmap conversion set to allowed")
+
+    def disallow_convert(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.set_allow_convert(False)
+            self.channel.send_message("Beatmap conversion set to disallowed")
+
+    def allow_unsubmitted_beatmaps(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.set_allow_unsubmitted(True)
+            self.channel.send_message("Allow unsubmitted beatmaps set to True")
+
+    def disallow_unsubmitted_beatmaps(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.set_allow_unsubmitted(False)
+            self.channel.send_message("Allow unsubmitted beatmaps set to False")
 
     # todo
     def upload_logic_profile(self, message):

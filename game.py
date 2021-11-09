@@ -29,7 +29,7 @@ class Game(Channel):
         self.__config_link = ""
         self.__config_text = ""
         self.__custom_config_text = ""
-        self.__beatmap_checker = True
+        self.__beatmap_checker = False
         self.__start_timer = False
         self.__start_on_players_ready = False
         self.__autostart_timer = -1
@@ -142,11 +142,9 @@ class Game(Channel):
                         threading.Thread(target=self.__on_team_change_method, args=(username,)).start()
                     else:
                         threading.Thread(target=self.__on_team_change_method).start()
-
             elif "became the host" in message["content"]:
-                self.set_host(message["content"].replace(" became the host.", ""))
+                self.__set_host(message["content"].replace(" became the host.", ""))
             elif "The match has started!" == message["content"]:
-                self.__in_progress = True
                 self.abort_start_timer()
                 self.__check_attributes()
             elif "The match has finished!" == message["content"]:
@@ -218,7 +216,7 @@ class Game(Channel):
 
     def __execute_commands(self, message):
         for command in self.__commands:
-            if message["content"].find(command) == 0:
+            if str(message["content"]).find(command) == 0:
                 if callable(self.__commands[command]["response"]):
                     if len(str(inspect.signature(self.__commands[command]["response"])).strip("()").split(", ")) == 1:
                         threading.Thread(target=self.__commands[command]["response"], args=(message,)).start()
@@ -327,7 +325,19 @@ class Game(Channel):
                 passed.append(score)
             else:
                 failed.append(score)
-        return sorted(passed, key=lambda x: x["score"], reverse=True) + sorted(failed, key=lambda x: x["score"], reverse=True)
+        match = self.get_match_data()
+        key = "max_combo"
+        if "score" in match["scoring_type"]:
+            key = "score"
+        elif "accuracy" == match["scoring_type"]:
+            key = "accuracy"
+
+        return sorted(passed, key=lambda x: x[key], reverse=True) + sorted(failed, key=lambda x: x[key], reverse=True)
+
+    def has_score(self, username):
+        if self.get_score(username):
+            return True
+        return False
 
     def __check_beatmap_attributes(self, beatmapID, running=False):
         if not running:
@@ -414,12 +424,13 @@ class Game(Channel):
                     beatmapID = "22538"
                 self.send_message("!mp map " + beatmapID + " " + str(GAME_ATTR[self.__game_mode]))
                 self.set_mods(self.__mods)
-                self.send_message(error)
+                self.send_message("Rule Violation: " + error["type"] + " - " + error["message"])
                 if len(str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ")) == 1:
                     threading.Thread(target=self.__on_rule_violation_method, args=(error,)).start()
                 else:
                     threading.Thread(target=self.__on_rule_violation_method).start()
             elif self.__on_match_start_method:
+                self.__in_progress = True
                 threading.Thread(target=self.__on_match_start_method).start()
 
     def check_beatmap(self, beatmap):
@@ -562,7 +573,7 @@ class Game(Channel):
     def get_formatted_host(self):
         return self.__host.replace(" ", "_")
 
-    def set_host(self, username):
+    def __set_host(self, username):
         if self.__on_host_change_method:
             argnum = len(str(inspect.signature(self.__on_host_change_method)).strip("()").split(", "))
             if argnum == 2:
@@ -574,9 +585,8 @@ class Game(Channel):
 
         self.__host = username
 
-    def change_host(self, username):
-        if username.isnumeric():
-            username = "#" + username
+    def set_host(self, username):
+        self.__host = username
         self.send_message("!mp host " + username.replace(" ", "_"))
 
     def set_password(self, password):
@@ -674,7 +684,7 @@ class Game(Channel):
         if self.__mods != ["ANY"]:
             msg = " ".join([GAME_ATTR[x] for x in self.__mods]).lower()
             if len(self.__mods) == 2 and "EZ" in self.__mods and "HR" in self.__mods:
-                msg = "18"
+                msg = ("18 " + msg.replace("hr", "").replace("ez", "").strip()).strip()
 
             self.send_message("!mp mods " + msg)
 

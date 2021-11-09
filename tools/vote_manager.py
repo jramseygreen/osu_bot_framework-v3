@@ -61,6 +61,9 @@ class Vote:
             if user.replace(" ", "_") == username.replace(" ", "_"):
                 return self.results[user]
 
+    def get_ballot_number(self):
+        return len(self.results)
+
     # returns the most voted for option
     def get_majority_vote(self):
         if self.results:
@@ -92,7 +95,6 @@ class Vote:
             # if any vote choice is past the threshold
             if self.results and len(self.results) >= self.threshold:
                 self.stop()
-                time.sleep(0.5)
                 if len(str(inspect.signature(self.method)).strip("()").split(", ")) == 1:
                     threading.Thread(target=self.method, args=(self,)).start()
                 else:

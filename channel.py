@@ -33,7 +33,7 @@ class Channel:
                     slot = self.get_slot_num(username)
                 argnum = len(str(inspect.signature(self.__on_join_method)).strip("()").split(", "))
                 if argnum == 2:
-                    threading.Thread(target=self.__on_join_method, args=(slot, username,)).start()
+                    threading.Thread(target=self.__on_join_method, args=(username, slot,)).start()
                 elif argnum == 1:
                     threading.Thread(target=self.__on_join_method, args=(username,)).start()
                 else:
@@ -49,7 +49,7 @@ class Channel:
             if self.__on_part_method:
                 argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
                 if argnum == 2:
-                    threading.Thread(target=self.__on_part_method, args=(slot, username,)).start()
+                    threading.Thread(target=self.__on_part_method, args=(username, slot,)).start()
                 elif argnum == 1:
                     threading.Thread(target=self.__on_part_method, args=(username,)).start()
                 else:

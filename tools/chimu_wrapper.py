@@ -205,7 +205,10 @@ class Chimu:
 
                 beatmaps.append(beatmap)
         if beatmaps:
-            return random.choice(beatmaps)
+            beatmap = random.choice(beatmaps)
+            while not channel.is_allow_unsubmitted() and not self.bot.fetch_beatmap(beatmap["BeatmapId"]):
+                beatmap = random.choice(beatmaps)
+            return beatmap
 
     def channel_to_attributes(self, channel):
         attributes = {}

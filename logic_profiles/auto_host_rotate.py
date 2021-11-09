@@ -44,6 +44,10 @@ class AutoHostRotate:
         channel.set_command("*welcome", channel.common_commands.welcome_message, "Sets the welcome message for the room. e.g. *welcome welcome to my osu room!")
         channel.set_command("*disable_beatmap_checker", channel.common_commands.disable_beatmap_checker, "Disables beatmap checker")
         channel.set_command("*enable_beatmap_checker", channel.common_commands.enable_beatmap_checker, "Enables beatmap checker")
+        channel.set_command("*enable_convert", channel.common_commands.allow_convert, "Allows beatmap conversion")
+        channel.set_command("*disable_convert", channel.common_commands.disallow_convert, "Disallows beatmap conversion")
+        channel.set_command("*enable_unsubmitted", channel.common_commands.allow_unsubmitted, "Allows unsubmitted beatmaps")
+        channel.set_command("*disable_unsubmitted", channel.common_commands.disallow_unsubmitted, "Disallows unsubmitted beatmaps")
         channel.set_command("*add_artist_whitelist", channel.common_commands.add_artist_whitelist, "Adds an artist to the whitelist. e.g. *add_artist_whitelist eminem")
         channel.set_command("*add_artist_blacklist", channel.common_commands.add_artist_blacklist, "Adds an artist to the blacklist. e.g. *add_artist_blacklist eminem")
         channel.set_command("*add_creator_whitelist", channel.common_commands.add_beatmap_creator_whitelist, "Adds a beatmap creator to the whitelist. e.g. *add_creator_whitelist sotarks")
@@ -72,7 +76,7 @@ class AutoHostRotate:
         if message["username"] == self.channel.get_formatted_host() or (message["content"] == "*skip" and self.channel.has_referee(message["username"])):
             if self.queue:
                 self.queue.append(self.queue.pop(0))
-                self.channel.change_host(self.queue[0])
+                self.channel.set_host(self.queue[0])
                 self.skip_vote.stop()
         else:
             if not self.skip_vote.is_in_progress():
@@ -83,7 +87,7 @@ class AutoHostRotate:
     def carry_skip_vote(self, vote_manager):
         if self.queue:
             self.queue.append(self.queue.pop(0))
-            self.channel.change_host(self.queue[0])
+            self.channel.set_host(self.queue[0])
 
     def start(self, message):
         if message["username"] == self.channel.get_formatted_host():
@@ -107,12 +111,12 @@ class AutoHostRotate:
     def on_join(self, username):
         self.queue.append(username)
         if self.channel.get_users() == [username]:
-            self.channel.change_host(self.queue[0])
+            self.channel.set_host(self.queue[0])
 
     def on_part(self, username):
         if self.queue[0] == username and len(self.queue) > 1 and not self.channel.in_progress():
             self.queue.remove(username)
-            self.channel.change_host(self.queue[0])
+            self.channel.set_host(self.queue[0])
         else:
             self.queue.remove(username)
         if self.skip_vote.is_in_progress():
@@ -128,7 +132,7 @@ class AutoHostRotate:
         if self.queue:
             if self.queue[0] == self.channel.get_host():
                 self.queue.append(self.queue.pop(0))
-            self.channel.change_host(self.queue[0])
+            self.channel.set_host(self.queue[0])
         self.abort_vote.stop()
 
     def on_match_abort(self):
@@ -136,7 +140,7 @@ class AutoHostRotate:
 
     def on_host_change(self, old_host, new_host):
         if not self.channel.has_referee(new_host) and new_host != self.queue[0]:
-            self.channel.change_host(self.queue[0])
+            self.channel.set_host(self.queue[0])
             self.channel.send_message(old_host + " please type '!skip' if you want to skip your turn")
         else:
             self.skip_vote.stop()
