@@ -516,10 +516,18 @@ class CommonCommands:
                 error = None
                 if self.channel.beatmap_checker_on():
                     error = self.channel.check_beatmap(beatmap)
-                if not error:
+                if not error or error["type"] == "unsubmitted":
                     self.channel.change_beatmap(beatmap["id"])
                     return
         self.channel.change_beatmap(self.channel.get_beatmap()["id"])
+
+    def update_beatmap(self, message):
+        if not self.beatmap_updated:
+            self.beatmap_updated = True
+            self.channel.set_beatmap(self.channel.get_beatmap())
+            while not self.channel.in_progress():
+                time.sleep(1)
+            self.beatmap_updated = False
 
     # todo
     def upload_logic_profile(self, message):

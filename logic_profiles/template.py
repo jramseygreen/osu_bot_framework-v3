@@ -56,5 +56,5 @@ class Template:
     def on_clear_host(self, old_host):
         pass
 
-    def on_rule_violation(self, message):
+    def on_rule_violation(self, error):
         pass
