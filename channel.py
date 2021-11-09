@@ -26,9 +26,11 @@ class Channel:
     def add_user(self, username):
         if username.replace(" ", "_") not in self.get_formatted_users():
             self._users.append(username)
-        if self.__on_join_method:
-            if self.is_game():
-                slot = self.get_slot_num(username)
+            self._bot.log("-- Added user: " + username + " --")
+            if self.__on_join_method:
+                slot = None
+                if self.is_game():
+                    slot = self.get_slot_num(username)
                 argnum = len(str(inspect.signature(self.__on_join_method)).strip("()").split(", "))
                 if argnum == 2:
                     threading.Thread(target=self.__on_join_method, args=(slot, username,)).start()
@@ -43,14 +45,15 @@ class Channel:
             slot = self.get_slot_num(username)
         if username.replace(" ", "_") in self.get_formatted_users():
             del self._users[self.get_formatted_users().index(username.replace(" ", "_"))]
-        if self.__on_part_method:
-            argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
-            if argnum == 2:
-                threading.Thread(target=self.__on_part_method, args=(slot, username,)).start()
-            elif argnum == 1:
-                threading.Thread(target=self.__on_part_method, args=(username,)).start()
-            else:
-                threading.Thread(target=self.__on_part_method).start()
+            self._bot.log("-- Removed user: " + username + " --")
+            if self.__on_part_method:
+                argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
+                if argnum == 2:
+                    threading.Thread(target=self.__on_part_method, args=(slot, username,)).start()
+                elif argnum == 1:
+                    threading.Thread(target=self.__on_part_method, args=(username,)).start()
+                else:
+                    threading.Thread(target=self.__on_part_method).start()
 
     def process_message(self, message):
         if len(self._message_log) == self._message_log_length:
@@ -67,8 +70,7 @@ class Channel:
         if len(self._message_log) == self._message_log_length:
             self._message_log = self._message_log[1:]
         self._message_log.append({"username": self._bot.get_username().replace(" ", "_"), "channel": self._channel, "content": message})
-        if self.verbose or self._bot.logging:
-            self._bot.log("-- sent message to " + self._channel + ": '" + str(message) + "' --")
+        self._bot.log("-- sent message to " + self._channel + ": '" + str(message) + "' --")
 
     def is_game(self):
         return self._channel[:4] == "#mp_"

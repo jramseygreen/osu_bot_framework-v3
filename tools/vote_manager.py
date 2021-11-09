@@ -1,6 +1,7 @@
 import inspect
 import math
 import threading
+import time
 
 
 class Vote:
@@ -13,23 +14,19 @@ class Vote:
         self.in_progress = False
 
         self.choices = []
-        self.__original_join_method = None
-        self.__original_part_method = None
 
         self.__on_join_method = None
         self.__on_part_method = None
 
     def start(self, choices=[], threshold=None):
-        if not self.__original_join_method:
-            self.__original_join_method = self.channel.get_logic()["on_join"]
-        if not self.__original_part_method:
-            self.__original_part_method = self.channel.get_logic()["on_part"]
+        if not self.__on_join_method:
+            self.__on_join_method = self.channel.get_logic()["on_join"]
+        if not self.__on_part_method:
+            self.__on_part_method = self.channel.get_logic()["on_part"]
         self.results = {}
         self.choices = choices
 
         if not threshold:
-            self.__on_join_method = self.channel.get_logic()["on_join"]
-            self.__on_part_method = self.channel.get_logic()["on_part"]
             self.channel.on_join(self.__on_join)
             self.channel.on_part(self.__on_part)
             threshold = math.floor(len(self.channel.get_users()) / 2) + 1
@@ -37,10 +34,6 @@ class Vote:
         self.in_progress = True
 
     def stop(self):
-        if self.__on_join == self.channel.get_logic()["on_join"]:
-            self.channel.on_join(self.__original_join_method)
-        if self.__on_part == self.channel.get_logic()["on_part"]:
-            self.channel.on_part(self.__original_part_method)
         self.in_progress = False
 
     def cast_ballot(self, username, choice=""):
@@ -52,6 +45,7 @@ class Vote:
                 # if any vote choice is past the threshold
                 if self.results and len(self.results) >= self.threshold:
                     self.stop()
+                    time.sleep(0.5)
                     if len(str(inspect.signature(self.method)).strip("()").split(", ")) == 1:
                         threading.Thread(target=self.method, args=(self,)).start()
                     else:
@@ -98,13 +92,11 @@ class Vote:
             # if any vote choice is past the threshold
             if self.results and len(self.results) >= self.threshold:
                 self.stop()
+                time.sleep(0.5)
                 if len(str(inspect.signature(self.method)).strip("()").split(", ")) == 1:
-                    x = threading.Thread(target=self.method, args=(self,))
+                    threading.Thread(target=self.method, args=(self,)).start()
                 else:
-                    x = threading.Thread(target=self.method)
-                x.start()
-                while x.is_alive():
-                    pass
+                    threading.Thread(target=self.method).start()
 
         argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
         if argnum == 2:

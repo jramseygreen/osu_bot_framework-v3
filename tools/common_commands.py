@@ -18,7 +18,6 @@ class CommonCommands:
         self.bot = bot
         self.channel = channel
         self.played = []
-        self.abort_vote = channel.hold_vote(channel.abort_match)
 
     def config_link(self, message):
         self.channel.send_message("The configuration of the game room and available commands can be viewed [" + self.channel.get_config_link() + " here]")
@@ -521,13 +520,6 @@ class CommonCommands:
                     self.channel.change_beatmap(beatmap["id"])
                     return
         self.channel.change_beatmap(self.channel.get_beatmap()["id"])
-
-    def abort(self, message):
-        if self.channel.in_progress():
-            if not self.abort_vote.is_in_progress():
-                self.abort_vote.start()
-            if self.abort_vote.cast_ballot(message["username"]):
-                self.channel.send_message(str(len(self.abort_vote.get_results())) + " / " + str(self.abort_vote.get_threshold()) + " votes needed to end the match")
 
     # todo
     def upload_logic_profile(self, message):

@@ -65,16 +65,15 @@ class Bot:
                     # ping pong
                     if line[:4] == "PING":
                         self.__sock.sendall((line.replace("PING", "PONG") + "\n").encode())
-                        if self.verbose or self.logging:
-                            self.log("-- RECEIVED PING --")
-                            self.log("-- SENT PONG --")
+                        self.log("-- RECEIVED PING --")
+                        self.log("-- SENT PONG --")
                         continue
 
                     # parse line
                     line = line.split(" ")
                     username = line[0].replace("!cho@ppy.sh", "")[1:]
                     command = line[1]
-                    if command != "QUIT" and (self.verbose or self.logging):
+                    if command != "QUIT":
                         self.log("--- Received: " + " ".join(line))
 
                     # JOIN, PART, PRIVMSG
@@ -142,11 +141,23 @@ class Bot:
                             if self.__channels[channel].is_game():
                                 self.__channels[channel].set_invite_link("osump://" + line[-1][1:] + "/")
                         # users already in game channel
-                        elif command == "366" :
+                        elif command == "366":
                             channel = line[3]
                             if channel in self.__channels and self.__channels[channel].is_game():
                                 self.__channels[channel].get_existing_attributes()
                             self.__controller.update()
+                        # bad credentials
+                        elif command == "464":
+                            self.log("There was an error connecting to " + self.__host + ":" + str(self.__port))
+                            self.log("Either your username or password is incorrect! Please restart the program.")
+                            f = open("config" + os.sep + "bot_config.conf", "r+")
+                            config = json.loads(f.read())
+                            f.seek(0)
+                            f.truncate(0)
+                            config["username"] = "username"
+                            config["password"] = "password"
+                            f.write(json.dumps(config).replace(", ", ",\n").replace("{", "{\n", 1).replace("}", "\n}"))
+                            f.close()
 
     # attempts to connect to osu using the provided credentials
     def start(self):
@@ -165,8 +176,7 @@ class Bot:
             self.__sock.sendall(("PASS " + self.__password + "\n").encode())
             self.__sock.sendall(("USER " + self.__username + "\n").encode())
             self.__sock.sendall(("NICK " + self.__username + "\n").encode())
-            if self.verbose or self.logging:
-                self.log("-- connected to " + self.__host + ":" + str(self.__port) + " successfully --")
+            self.log("-- connected to " + self.__host + ":" + str(self.__port) + " successfully --")
             self.__listen()
             self.__controller.start()
 
@@ -199,8 +209,7 @@ class Bot:
         if len(self.__personal_message_log) == self.__personal_message_log_length:
             self.__personal_message_log = self.__personal_message_log[1:]
         self.__personal_message_log.append({"username": self.__username, "channel": username, "content": message})
-        if self.verbose or self.logging:
-            self.log("-- sent personal message to " + username + ": '" + message + "' --")
+        self.log("-- sent personal message to " + username + ": '" + message + "' --")
 
     # adds a broadcast and returns its id, cahnnel can be any channel or username
     def add_broadcast(self, channel, message, secs):

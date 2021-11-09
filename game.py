@@ -229,8 +229,7 @@ class Game(Channel):
                         threading.Thread(target=self.__commands[command]["response"]).start()
                 else:
                     self.send_message(str(self.__commands[command]["response"]))
-                if self.verbose or self._bot.logging:
-                    self._bot.log("-- Command '" + command + "' Executed --")
+                self._bot.log("-- Command '" + command + "' Executed --")
 
     def send_message(self, message):
         super().send_message(message)
@@ -258,7 +257,7 @@ class Game(Channel):
 
         if username in self.get_formatted_player_blacklist():
             self.kick_user(username)
-            self._bot.send_personal_message(username, "Sorry, you have been blacklisted from this game room.")
+            self._bot.send_personal_message(username, "Sorry, you have been blacklisted from [https://osu.ppy.sh/mp/" + self._channel[4:] + " " + self.__title + "]")
 
     def kick_user(self, username):
         if username.replace(" ", "_") in self.get_formatted_users():
@@ -340,8 +339,7 @@ class Game(Channel):
             error = ""
             revert = False
             if self.__beatmap_checker:
-                if self.verbose or self._bot.logging:
-                    self._bot.log("-- Beatmap checker started --")
+                self._bot.log("-- Beatmap checker started --")
                 if beatmap["unsubmitted"]:
                     self.send_message("The selected beatmap is not submitted! Can't check attributes.")
                     revert = False
@@ -380,8 +378,7 @@ class Game(Channel):
         if not running:
             threading.Thread(target=self.__check_attributes, args=(True,)).start()
         else:
-            if self.verbose or self._bot.logging:
-                self._bot.log("-- Attribute checker started --")
+            self._bot.log("-- Attribute checker started --")
             self.__match_history = self.fetch_match_history()
             match = self.get_match_data()
             abort = False
@@ -472,9 +469,10 @@ class Game(Channel):
                 time.sleep(1.1)
                 self.__start_timer = True
                 self.send_message(("Queued the match to start in " + str(secs // 60) + " minutes " + str(secs % 60) + " seconds").replace(" 0 minutes", "").replace(" 0 seconds", "").replace("1 minutes", "1 minute"))
-                while secs - 1 > 0:
+                secs -= 1
+                while secs > 0:
                     time.sleep(1)
-                    if not self.__start_timer or not self._bot.has_channel(self._channel):
+                    if not self.__start_timer or not self._bot.has_channel(self._channel) or not self.has_users() or self.in_progress():
                         return
                     if secs % 30 == 0 or secs == 10 or secs <= 5:
                         self.send_message(("Match starts in " + str(secs // 60) + " minutes " + str(secs % 60) + " seconds").replace(" 0 minutes", "").replace(" 0 seconds", "").replace("1 minutes", "1 minute"))
@@ -1119,3 +1117,6 @@ class Game(Channel):
 
     def get_custom_config_text(self):
         return self.__custom_config_text
+
+    def clear_host(self):
+        self.send_message("!mp clearhost")

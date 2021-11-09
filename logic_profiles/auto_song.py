@@ -8,9 +8,11 @@ class AutoSong:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
+        channel.start_on_players_ready(True)
+        channel.clear_host()
         self.vote = channel.hold_vote(self.carry_vote)
         self.played = []
-        channel.set_custom_config_text("In this lobby beatmaps are selected for you at random by the bot.")
+        channel.set_custom_config_text("In this lobby beatmaps are selected for you at random by the bot.\nYou can vote to skip a beatmap with the !skip command.\n\n\n")
         channel.set_command("!info", "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3] | Type '!config' to view room configuration and commands", "Built with osu bot framework v3")
         channel.set_command("!skip", self.skip, "Vote to skip the current beatmap.")
         channel.set_command("!altlink", channel.common_commands.altlink, "returns an alternate link for the current beatmap from chimu.moe")
@@ -37,8 +39,7 @@ class AutoSong:
     def skip(self, message):
         if self.channel.has_referee(message["username"]) and message["content"] == "*skip":
             self.carry_vote(None)
-            return
-        if not self.channel.in_progress():
+        elif not self.channel.in_progress():
             if not self.vote.is_in_progress():
                 self.vote.start()
 
@@ -56,8 +57,8 @@ class AutoSong:
     def on_match_finish(self):
         self.next_round()
 
-    def on_all_players_ready(self):
-        self.channel.start_match()
+    def on_match_start(self):
+        self.vote.stop()
 
     def next_round(self):
         beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, offset=random.randint(0, 1000))
@@ -72,7 +73,6 @@ class AutoSong:
         self.channel.start_match(120)
 
     def carry_vote(self, vote_manager):
-        time.sleep(1)
         self.channel.send_message("Beatmap skipped!")
         self.channel.abort_start_timer()
         self.next_round()

@@ -8,7 +8,7 @@ class AutoHostRotate:
         self.queue = channel.get_users().copy()
         self.skip_vote = channel.hold_vote(self.carry_skip_vote)
         self.start_vote = channel.hold_vote(self.carry_start_vote)
-        self.abort_vote = channel.hold_vote(self.carry_abort_vote)
+        self.abort_vote = channel.hold_vote(channel.abort_match())
         channel.set_beatmap_checker(True)
         channel.set_command("!q", self.show_queue, "Shows the current queue of players")
         channel.set_command("!queue", self.show_queue, "Shows the current queue of players")
@@ -101,9 +101,6 @@ class AutoHostRotate:
             if self.abort_vote.cast_ballot(message["username"]):
                 self.channel.send_message(str(len(self.abort_vote.get_results())) + " / " + str(self.abort_vote.get_threshold()) + " votes needed to end the match")
 
-    def carry_abort_vote(self, vote_manager):
-        self.channel.abort_match()
-
     def carry_start_vote(self, vote_manager):
         self.channel.start_match(10)
 
@@ -125,6 +122,7 @@ class AutoHostRotate:
 
     def on_match_start(self):
         self.start_vote.stop()
+        self.skip_vote.stop()
 
     def on_match_finish(self):
         if self.queue:
@@ -152,5 +150,5 @@ class AutoHostRotate:
             self.channel.common_commands.abort_start_timer(message)
 
     def mp_abort(self, message):
-        if not self.channel.has_referee(message["username"]) and  self.channel.in_progress():
+        if not self.channel.has_referee(message["username"]) and self.channel.in_progress():
             self.abort(message)
