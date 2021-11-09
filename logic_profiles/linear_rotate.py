@@ -3,4 +3,3 @@ class LinearHostRotate:
         self.bot = bot
         self.channel = channel
 
-    

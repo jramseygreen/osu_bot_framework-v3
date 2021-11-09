@@ -223,7 +223,7 @@ class Bot:
         return self.__broadcast_controller.get_broadcasts(channel)
 
     # makes a tournament lobby and returns the channel object
-    def make_room(self, title="game room", password="", size=8, beatmapID=22538, mods=["ANY"], game_mode="any", team_type="any", scoring_type="any"):
+    def make_room(self, title="game room", password="", size=8, beatmapID=22538, mods=["ANY"], game_mode="any", team_type="any", scoring_type="any", allow_convert=False):
         self.__make_room_lock.acquire()
         self.__room_limit_reached = False
         self.send_personal_message("BanchoBot", "!mp make " + title)
@@ -235,6 +235,7 @@ class Bot:
         self.__make_room_lock.release()
         while not channel.get_invite_link():
             pass
+        channel.set_allow_convert(allow_convert)
         channel.set_password(password)
         channel.set_size(size)
         channel.set_mods(mods)

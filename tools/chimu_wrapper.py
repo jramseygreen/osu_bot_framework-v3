@@ -99,7 +99,12 @@ class Chimu:
             query = attributes["query"]
             del attributes["query"]
         if channel:
+            offset = None
+            if "offset" in attributes:
+                offset = attributes["offset"]
             attributes = self.channel_to_attributes(channel)
+            if offset:
+                attributes["offset"] = offset
 
         attributes["amount"] = 10000
         status = None

@@ -18,6 +18,7 @@ class CommonCommands:
         self.bot = bot
         self.channel = channel
         self.played = []
+        self.abort_vote = channel.hold_vote(channel.abort_match)
 
     def config_link(self, message):
         self.channel.send_message("The configuration of the game room and available commands can be viewed [" + self.channel.get_config_link() + " here]")
@@ -511,11 +512,22 @@ class CommonCommands:
 
     def topdiff(self, message):
         beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap()["id"])
-        for beatmap in sorted(beatmapset["beatmaps"], key=lambda x: x["difficulty_rating"], reverse=True):
-            error = self.channel.check_beatmap(beatmap)
-            if not error:
-                self.channel.change_beatmap(beatmap["id"])
+        if beatmapset:
+            for beatmap in sorted(beatmapset["beatmaps"], key=lambda x: x["difficulty_rating"], reverse=True):
+                error = None
+                if self.channel.beatmap_checker_on():
+                    error = self.channel.check_beatmap(beatmap)
+                if not error:
+                    self.channel.change_beatmap(beatmap["id"])
+                    return
         self.channel.change_beatmap(self.channel.get_beatmap()["id"])
+
+    def abort(self, message):
+        if self.channel.in_progress():
+            if not self.abort_vote.is_in_progress():
+                self.abort_vote.start()
+            if self.abort_vote.cast_ballot(message["username"]):
+                self.channel.send_message(str(len(self.abort_vote.get_results())) + " / " + str(self.abort_vote.get_threshold()) + " votes needed to end the match")
 
     # todo
     def upload_logic_profile(self, message):

@@ -25,6 +25,7 @@ GAME_ATTR = {
     "taiko": 1,
     "fruits": 2,
     "mania": 3,
+    "ANY": 0,
     "any": 0,
     "ranked": 1,
     "approved": 2,

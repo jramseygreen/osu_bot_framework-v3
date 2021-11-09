@@ -13,13 +13,17 @@ class Vote:
         self.in_progress = False
 
         self.choices = []
-        self.__original_join_method = channel.get_logic()["on_join"]
-        self.__original_part_method = channel.get_logic()["on_part"]
+        self.__original_join_method = None
+        self.__original_part_method = None
 
         self.__on_join_method = None
         self.__on_part_method = None
 
     def start(self, choices=[], threshold=None):
+        if not self.__original_join_method:
+            self.__original_join_method = self.channel.get_logic()["on_join"]
+        if not self.__original_part_method:
+            self.__original_part_method = self.channel.get_logic()["on_part"]
         self.results = {}
         self.choices = choices
 
@@ -41,21 +45,18 @@ class Vote:
 
     def cast_ballot(self, username, choice=""):
         success = False
-        if not self.get_ballot(username) and self.in_progress:
-            if self.choices and choice in self.choices:
+        if username not in self.results and self.in_progress:
+            if (self.choices and choice in self.choices) or not self.choices:
                 success = True
                 self.results[username] = choice
                 # if any vote choice is past the threshold
                 if self.results and len(self.results) >= self.threshold:
                     self.stop()
                     if len(str(inspect.signature(self.method)).strip("()").split(", ")) == 1:
-                        x = threading.Thread(target=self.method, args=(self,))
+                        threading.Thread(target=self.method, args=(self,)).start()
                     else:
-                        x = threading.Thread(target=self.method)
-                    x.start()
-                    while x.is_alive():
-                        pass
-                    self.threshold = None
+                        threading.Thread(target=self.method).start()
+
         return success
 
     def get_results(self):
@@ -104,7 +105,6 @@ class Vote:
                 x.start()
                 while x.is_alive():
                     pass
-                self.threshold = None
 
         argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
         if argnum == 2:
