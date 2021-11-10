@@ -345,7 +345,7 @@ class Game(Channel):
                 self._bot.log("-- Beatmap checker started --")
                 if beatmap != self.__beatmap:
                     if not beatmap and self.__allow_unsubmitted:
-                        beatmap = {"id": int(beatmapID)}
+                        beatmap = {"id": int(beatmapID), "url": "https://osu.ppy.sh/b/" + str(beatmapID)}
                         accept_beatmap = True
                     elif int(beatmapID) == 22538:
                         accept_beatmap = True
@@ -353,7 +353,7 @@ class Game(Channel):
                         error = self.check_beatmap(beatmap)
                         if error:
                             self.set_beatmap(self.__beatmap)
-                            self.send_message("Rule violation: " + error["type"] + " - " + error["message"])
+                            self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap", "[" + self.__beatmap["url"] + " selected beatmap]"))
                             if self.__on_rule_violation_method:
                                 if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
                                     threading.Thread(target=self.__on_rule_violation_method, args=(error,)).start()
@@ -363,10 +363,12 @@ class Game(Channel):
                             accept_beatmap = True
             else:
                 if not beatmap:
-                    beatmap = {"id": int(beatmapID)}
+                    beatmap = {"id": int(beatmapID), "url": "https://osu.ppy.sh/b/" + str(beatmapID)}
                 accept_beatmap = True
 
             if accept_beatmap:
+                if self.__autostart_timer > 0 and self.__beatmap != beatmap:
+                    self.start_match(self.__autostart_timer)
                 self.__beatmap = beatmap
 
                 if self.__on_beatmap_change_method:
@@ -377,9 +379,6 @@ class Game(Channel):
                         threading.Thread(target=self.__on_beatmap_change_method, args=(self.__beatmap, )).start()
                     else:
                         threading.Thread(target=self.__on_beatmap_change_method).start()
-
-                if self.__autostart_timer > 0:
-                    self.start_match(self.__autostart_timer)
 
                 if self.__auto_download["status"]:
                     self._bot.chimu.download_beatmap(beatmap["id"], path=self.__auto_download["path"], with_video=self.__auto_download["with_video"], auto_open=self.__auto_download["auto_open"])
@@ -408,19 +407,19 @@ class Game(Channel):
                 error = {"type": "team", "message": "The allowed team type is: " + self.__team_type}
                 abort = True
             elif self.__beatmap_checker and self.__game_mode.lower() != "any" and match["playmode"] != self.__game_mode.lower():
-                error = error = {"type": "mode", "message": "The selected beatmap's mode must be: " + self.__game_mode}
+                error = {"type": "mode", "message": "The selected beatmap's mode must be: " + self.__game_mode}
                 abort = True
 
             if abort:
                 # execute on_rule_break
                 self.send_message("!mp abort")
                 self.send_message("!mp set " + str(GAME_ATTR[self.__team_type]) + " " + str(GAME_ATTR[self.__scoring_type]) + " " + str(self.__size))
-                beatmapID = str(self.__beatmap["id"])
-                if not self.__beatmap:
-                    beatmapID = "22538"
-                self.send_message("!mp map " + beatmapID + " " + str(GAME_ATTR[self.__game_mode]))
+                game_mode = ""
+                if self.__game_mode != "any":
+                    game_mode = str(GAME_ATTR[self.__game_mode])
+                self.send_message("!mp map " + str(self.__beatmap["id"]) + " " + game_mode)
                 self.set_mods(self.__mods)
-                self.send_message("Rule Violation: " + error["type"] + " - " + error["message"])
+                self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap", "[" + self.__beatmap["url"] + " selected beatmap]"))
                 if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
                     threading.Thread(target=self.__on_rule_violation_method, args=(error,)).start()
                 else:
