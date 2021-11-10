@@ -42,18 +42,11 @@ class AutoSong:
         if self.channel.has_referee(message["username"]) and message["content"] == "*skip":
             self.carry_vote(None)
         elif not self.channel.in_progress():
-            if not self.vote.is_in_progress():
-                self.vote.hold_vote()
-
             self.vote.cast_ballot(message["username"], "Skip beatmap")
 
     def on_join(self, username):
         if self.channel.get_users() == [username]:
             self.next_round()
-
-    # def on_part(self, username):
-    #     if self.vote.is_in_progress():
-    #         self.channel.send_message(str(self.vote.get_threshold()) + " votes now needed to skip the current beatmap").replace("1 votes", "1 vote", 1)
 
     def on_match_finish(self):
         self.next_round()

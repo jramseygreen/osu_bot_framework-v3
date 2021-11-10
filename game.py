@@ -163,6 +163,7 @@ class Game(Channel):
                 self.__check_beatmap_attributes(beatmapID)
             elif "Host is changing map..." == message["content"]:
                 self.abort_start_timer()
+                self.abort_start_timer()
                 if self.__on_changing_beatmap_method:
                     threading.Thread(target=self.__on_changing_beatmap_method).start()
             elif "All players are ready" == message["content"]:
@@ -353,7 +354,7 @@ class Game(Channel):
                         error = self.check_beatmap(beatmap)
                         if error:
                             self.set_beatmap(self.__beatmap)
-                            self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap", "[" + self.__beatmap["url"] + " selected beatmap]"))
+                            self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap", "[" + beatmap["url"] + " selected beatmap]"))
                             if self.__on_rule_violation_method:
                                 if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
                                     threading.Thread(target=self.__on_rule_violation_method, args=(error,)).start()
@@ -367,7 +368,7 @@ class Game(Channel):
                 accept_beatmap = True
 
             if accept_beatmap:
-                if self.__autostart_timer > 0 and self.__beatmap != beatmap:
+                if self.__autostart_timer > 0:
                     self.start_match(self.__autostart_timer)
                 self.__beatmap = beatmap
 
@@ -420,13 +421,15 @@ class Game(Channel):
                 self.send_message("!mp map " + str(self.__beatmap["id"]) + " " + game_mode)
                 self.set_mods(self.__mods)
                 self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap", "[" + self.__beatmap["url"] + " selected beatmap]"))
-                if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
-                    threading.Thread(target=self.__on_rule_violation_method, args=(error,)).start()
-                else:
-                    threading.Thread(target=self.__on_rule_violation_method).start()
-            elif self.__on_match_start_method:
+                if self.__on_rule_violation_method:
+                    if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
+                        threading.Thread(target=self.__on_rule_violation_method, args=(error,)).start()
+                    else:
+                        threading.Thread(target=self.__on_rule_violation_method).start()
+            else:
                 self.__in_progress = True
-                threading.Thread(target=self.__on_match_start_method).start()
+                if self.__on_match_start_method:
+                    threading.Thread(target=self.__on_match_start_method).start()
 
     def check_beatmap(self, beatmap):
         error = ""
@@ -479,7 +482,8 @@ class Game(Channel):
             if secs > 0:
                 time.sleep(1.1)
                 self.__start_timer = True
-                self.send_message(("Queued the match to start in " + str(secs // 60) + " minutes " + str(secs % 60) + " seconds").replace(" 0 minutes", "").replace(" 0 seconds", "").replace("1 minutes", "1 minute"))
+                if self.has_users():
+                    self.send_message(("Queued the match to start in " + str(secs // 60) + " minutes " + str(secs % 60) + " seconds (!aborttimer to stop)").replace(" 0 minutes", "").replace(" 0 seconds", "").replace("1 minutes", "1 minute"))
                 secs -= 1
                 while secs > 0:
                     time.sleep(1)
@@ -621,6 +625,9 @@ class Game(Channel):
 
     def get_creator(self):
         return self.__creator
+
+    def is_creator(self, username):
+        return username.replace(" ", "_") == self.__creator.replace(" ", "_")
 
     def get_formatted_creator(self):
         return self.__creator.replace(" ", "_")
@@ -789,14 +796,14 @@ class Game(Channel):
 
     # returns the link to the current room configuration and uploads to paste2.org if the configuration has changed
     def get_config_link(self):
-        text = self.__custom_config_text
-        text += " 𝙶̲𝚊̲𝚖̲𝚎̲ ̲𝚁̲𝚘̲𝚘̲𝚖̲ ̲𝙲̲𝚘̲𝚗̲𝚏̲𝚒̲𝚐̲𝚞̲𝚛̲𝚊̲𝚝̲𝚒̲𝚘̲𝚗̲:"
+        text = self.__custom_config_text + "\n"
+        text += "𝙶̲𝚊̲𝚖̲𝚎̲ ̲𝚁̲𝚘̲𝚘̲𝚖̲ ̲𝙲̲𝚘̲𝚗̲𝚏̲𝚒̲𝚐̲𝚞̲𝚛̲𝚊̲𝚝̲𝚒̲𝚘̲𝚗̲:"
         text += "\n     • Title: " + self.__title
         text += "\n     • Channel: " + self._channel
         text += "\n     • Logic profile: " + self._logic_profile
         text += "\n     • Match history: https://osu.ppy.sh/mp/" + self._channel.replace("#mp_", "", 1) + "/"
         text += "\n     • Invite link: " + self.__invite_link
-        text += "\n     • Referees: " + ", ".join(self.__referees)
+        text += "\n     • Referees: " + ", ".join(self.__referees).replace(self.__creator, self.__creator + " (Room creator)")
         text += "\n     • Player blacklist: " + ", ".join(self.__player_blacklist)
         text += "\n     • Welcome message: " + self.__welcome_message
         text += "\n     • Beatmap checker: " + str(self.__beatmap_checker)

@@ -17,7 +17,6 @@ class CommonCommands:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
-        self.played = []
 
     def config_link(self, message):
         self.channel.send_message("The configuration of the game room and available commands can be viewed [" + self.channel.get_config_link() + " here]")
@@ -33,11 +32,6 @@ class CommonCommands:
 
             beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query)
             if beatmap:
-                if beatmap["BeatmapId"] in self.played:
-                    beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query)
-                if len(self.played) >= 50:
-                    self.played.pop(0)
-                self.played.append(beatmap["BeatmapId"])
                 self.channel.change_beatmap(beatmap["BeatmapId"])
             else:
                 self.channel.send_message("No beatmaps found!")
@@ -552,6 +546,21 @@ class CommonCommands:
         if self.channel.has_referee(message["username"]):
             self.channel.set_allow_unsubmitted(False)
             self.channel.send_message("Allow unsubmitted beatmaps set to False")
+
+    def make_room(self, message):
+        if self.channel.is_creator(message["username"]):
+            command = message["content"].split(" ", 1)[0]
+            title = message["content"].replace(command, "", 1).strip()
+            self.bot.make_room(title=title)
+
+    def join(self, message):
+        if self.channel.is_creator(message["username"]):
+            command = message["content"].split(" ", 1)[0]
+            channel = message["content"].replace(command, "", 1).strip()
+            if channel[0] != "#":
+                channel = "#" + channel
+            self.bot.join(channel)
+            self.bot.send_personal_message(self.bot.get_username(), "Bot joined: " + channel)
 
     # todo
     def upload_logic_profile(self, message):

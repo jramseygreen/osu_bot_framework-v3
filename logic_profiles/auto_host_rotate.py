@@ -5,7 +5,7 @@ class AutoHostRotate:
         channel.set_beatmap_checker(True)
         channel.maintain_password(True)
         channel.maintain_size(True)
-        self.queue = [user for user in channel.get_users()]
+        self.queue = channel.get_users().copy()
         self.skip_vote = channel.new_vote_manager(self.carry_skip_vote)
         self.start_vote = channel.new_vote_manager(self.carry_start_vote)
         self.abort_vote = channel.new_vote_manager(self.channel.abort_match)
@@ -19,7 +19,7 @@ class AutoHostRotate:
         channel.set_command("!start", self.start,"When host starts the game with optional countdown timer else starts vote to start match")
         channel.set_command("!mp start", self.mp_start,"When host starts the game with optional countdown timer else starts vote to start match")
         channel.set_command("!aborttimer", channel.common_commands.abort_start_timer,"When host or referee, aborts start timer")
-        channel.set_command("!mp aborttimer", self.mp_abort_start_timer,"When host or referee, aborts start timer")
+        channel.set_command("!mp aborttimer", channel.common_commands.abort_start_timer, "When host or referee, aborts start timer")
         channel.set_command("!abort", self.abort, "Starts vote to abort match")
         channel.set_command("!mp abort", self.mp_abort, "Starts vote to abort match")
         channel.set_command("!update", channel.common_commands.update_beatmap, "Updates current beatmap")
@@ -141,10 +141,6 @@ class AutoHostRotate:
     def mp_start(self, message):
         if not self.channel.has_referee(message["username"]) and message["username"] == self.channel.get_formatted_host():
             self.start(message)
-
-    def mp_abort_start_timer(self, message):
-        if message["username"] == self.channel.get_formatted_host():
-            self.channel.common_commands.abort_start_timer(message)
 
     def mp_abort(self, message):
         if not self.channel.has_referee(message["username"]) and self.channel.in_progress():

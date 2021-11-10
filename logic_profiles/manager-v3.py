@@ -14,6 +14,8 @@ class Manager:
         channel.set_command("R̲e̲f̲e̲r̲e̲e̲ C̲o̲m̲m̲a̲n̲d̲s̲", "")
         channel.set_command("*implement", channel.common_commands.implement_logic_profile, "Implements a logic profile")
         channel.set_command("*logic_profiles", channel.common_commands.get_logic_profiles, "Shows available logic profiles")
+        channel.set_command("*make_room", channel.common_commands.make_room, "Creates a game room with title which is monitored by the bot. e.g. *make_room an osu room")
+        channel.set_command("*join", channel.common_commands.join, "Joins a channel with the bot. e.g. *join #lobby, *join #mp_123456")
         channel.set_command("*ar_range", channel.common_commands.ar_range, "Sets the ar range for the room. e.g. *ar_range 5.5 8")
         channel.set_command("*od_range", channel.common_commands.od_range, "Sets the od range for the room. e.g. *od_range 5.5 8")
         channel.set_command("*hp_range", channel.common_commands.hp_range, "Sets the hp range for the room. e.g. *hp_range 5.5 8")

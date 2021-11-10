@@ -11,7 +11,7 @@ class Vote:
         self.method = method
         self.threshold = None
         self.results = {}
-        self.in_progress = False
+        self.is_in_progress = False
 
         self.choices = []
 
@@ -19,7 +19,7 @@ class Vote:
         self.__on_part_method = None
 
     def hold_vote(self, choices=[], threshold=None):
-        if not self.in_progress:
+        if not self.is_in_progress:
             if not self.__on_join_method:
                 self.__on_join_method = self.channel.get_logic()["on_join"]
             if not self.__on_part_method:
@@ -32,17 +32,17 @@ class Vote:
                 self.channel.on_part(self.__on_part)
                 threshold = math.floor(len(self.channel.get_users()) / 2) + 1
             self.threshold = threshold
-            self.in_progress = True
+            self.is_in_progress = True
 
     def stop(self):
-        self.in_progress = False
+        self.is_in_progress = False
 
     def restart(self, threshold=None):
         self.stop()
         self.hold_vote(self.choices, threshold)
 
     def __trigger(self):
-        if len(self.channel.get_users()) >= self.get_ballot_number() or (self.results and any([list(self.results.values()).count(x) >= self.threshold for x in set(self.results.values())])):
+        if self.get_ballot_number() >= len(self.channel.get_users()) or (self.results and any([list(self.results.values()).count(x) >= self.threshold for x in set(self.results.values())])):
             if str(inspect.signature(self.method)).strip("()").split(", ") != [""]:
                 threading.Thread(target=self.method, args=(self,)).start()
             else:
@@ -50,10 +50,10 @@ class Vote:
             self.stop()
 
     def cast_ballot(self, username, choice=""):
-        if not self.in_progress:
+        if not self.is_in_progress:
             self.hold_vote()
         success = False
-        if username not in self.results and self.in_progress:
+        if username not in self.results and self.is_in_progress:
             if (self.choices and choice in self.choices) or not self.choices:
                 success = True
                 self.results[username] = choice
@@ -106,11 +106,11 @@ class Vote:
         self.threshold = threshold
         self.__trigger()
 
-    def is_in_progress(self):
-        return self.in_progress
+    def in_progress(self):
+        return self.is_in_progress
 
     def __on_join(self, username, slot):
-        if self.in_progress:
+        if self.is_in_progress:
             self.threshold = math.floor(len(self.channel.get_users()) / 2) + 1
 
         argnum = len(str(inspect.signature(self.__on_join_method)).strip("()").split(", "))
@@ -122,7 +122,7 @@ class Vote:
             threading.Thread(target=self.__on_join_method).start()
 
     def __on_part(self, username, slot):
-        if self.in_progress:
+        if self.is_in_progress:
             self.threshold = math.floor(len(self.channel.get_users()) / 2) + 1
             if self.get_ballot(username) is not None:
                 del self.results[username]

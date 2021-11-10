@@ -13,6 +13,12 @@ class Chimu:
     def __init__(self, bot):
         self.bot = bot
         self.url = "https://api.chimu.moe/v1/"
+        try:
+            f = open("config" + os.sep + "unsubmitted.obf", "r")
+            self.unsubmitted = f.readlines()
+            f.close()
+        except:
+            self.unsubmitted = []
 
     # fetches a beatmapset dictionary object from chimu.moe
     def fetch_beatmapset(self, beatmapsetID):
@@ -35,20 +41,25 @@ class Chimu:
             return {}
 
     # return list of beatmapsets based on query + provided attributes
-    def search(self, query="", **attributes):
-        # construct url
-        url = self.url + "search?query=" + query.replace(" ", "%20")
-        for attribute in attributes:
-            if attributes[attribute] != -1:
-                url += "&" + attribute + "=" + str(attributes[attribute])
-        # print(url)
-        r = requests.get(url)
-        data = json.loads(r.text)
-
-        # if no error code return data
-        if data["code"] == 0:
-            return data["data"]
-        return []
+    def search(self, query="", pages=10, **attributes):
+        # construct urls
+        urls = []
+        for i in range(0, pages):
+            url = self.url + "search?query=" + query.replace(" ", "%20")
+            attributes["offset"] = i * 100
+            for attribute in attributes:
+                if attributes[attribute] != -1:
+                    url += "&" + attribute + "=" + str(attributes[attribute])
+            urls.append(url)
+        data = []
+        for url in urls:
+            r = requests.get(url)
+            result = json.loads(r.text)
+            if result["code"] == 0:
+                data += result["data"]
+            else:
+                break
+        return data
 
     # beatmapset download link
     def fetch_set_download_link(self, beatmapsetID, with_video=False):
@@ -75,7 +86,7 @@ class Chimu:
             if path != "" and path[-1] != os.sep and path[-1] != "/":
                 path = path + os.sep
             url = self.fetch_set_download_link(beatmapsetID, with_video=with_video)
-            self.bot.log("-- Downloading beatmapset " + str(beatmapsetID) + " --")
+            self.bot.log("-- Downloading beatmapset " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " to /" + path + " --")
             file = requests.get(url)
             if "Error" not in file.text:
                 f = open(path + str(beatmapsetID) + ".osz", "wb")
@@ -83,6 +94,7 @@ class Chimu:
                 f.close()
                 if auto_open:
                     # osu will delete the file when it's opened!
+                    self.bot.log("-- Opened " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " --")
                     os.system(path + str(beatmapsetID) + ".osz")
 
     # takes beatmap id instead of beatmap set id
@@ -206,7 +218,12 @@ class Chimu:
                 beatmaps.append(beatmap)
         if beatmaps:
             beatmap = random.choice(beatmaps)
-            while channel and not channel.is_allow_unsubmitted() and not self.bot.fetch_beatmap(beatmap["BeatmapId"]):
+            while channel and not channel.is_allow_unsubmitted() and (str(beatmap["BeatmapId"]) in self.unsubmitted or not self.bot.fetch_beatmap(beatmap["BeatmapId"])):
+                self.bot.log("-- added beatmap to unsubmitted list --")
+                self.unsubmitted.append(beatmap["BeatmapId"])
+                f = open("config" + os.sep + "unsubmitted.obf", "a")
+                f.write(beatmap["BeatmapId"])
+                f.close()
                 beatmap = random.choice(beatmaps)
             return beatmap
 
