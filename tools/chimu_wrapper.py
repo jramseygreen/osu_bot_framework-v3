@@ -206,7 +206,7 @@ class Chimu:
                 beatmaps.append(beatmap)
         if beatmaps:
             beatmap = random.choice(beatmaps)
-            while not channel.is_allow_unsubmitted() and not self.bot.fetch_beatmap(beatmap["BeatmapId"]):
+            while channel and not channel.is_allow_unsubmitted() and not self.bot.fetch_beatmap(beatmap["BeatmapId"]):
                 beatmap = random.choice(beatmaps)
             return beatmap
 
