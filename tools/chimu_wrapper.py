@@ -218,12 +218,13 @@ class Chimu:
                 beatmaps.append(beatmap)
         if beatmaps:
             beatmap = random.choice(beatmaps)
-            while channel and not channel.is_allow_unsubmitted() and (str(beatmap["BeatmapId"]) in self.unsubmitted or not self.bot.fetch_beatmap(beatmap["BeatmapId"])):
-                self.bot.log("-- added beatmap to unsubmitted list --")
-                self.unsubmitted.append(beatmap["BeatmapId"])
-                f = open("config" + os.sep + "unsubmitted.obf", "a")
-                f.write(beatmap["BeatmapId"])
-                f.close()
+            while channel and not channel.is_allow_unsubmitted() and channel.beatmap_checker_on() and (str(beatmap["BeatmapId"]) in self.unsubmitted or not self.bot.fetch_beatmap(beatmap["BeatmapId"])):
+                if str(beatmap["BeatmapId"]) not in self.unsubmitted:
+                    self.bot.log("-- added beatmap to unsubmitted list --")
+                    self.unsubmitted.append(beatmap["BeatmapId"])
+                    f = open("config" + os.sep + "unsubmitted.obf", "a")
+                    f.write(str(beatmap["BeatmapId"]) + "\n")
+                    f.close()
                 beatmap = random.choice(beatmaps)
             return beatmap
 

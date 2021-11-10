@@ -213,7 +213,7 @@ class Game(Channel):
 
     def __execute_commands(self, message):
         for command in self.__commands:
-            if str(message["content"]).find(command) == 0:
+            if not message["content"].replace(command, "") or message["content"].replace(command, "")[0] == " ":
                 if callable(self.__commands[command]["response"]):
                     if str(inspect.signature(self.__commands[command]["response"])).strip("()").split(", ") != [""]:
                         threading.Thread(target=self.__commands[command]["response"], args=(message,)).start()
