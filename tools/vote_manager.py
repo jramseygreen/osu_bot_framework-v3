@@ -14,6 +14,7 @@ class Vote:
         self.is_in_progress = False
 
         self.choices = []
+        self.cooldown = False
 
         self.__on_join_method = None
         self.__on_part_method = None
@@ -36,6 +37,12 @@ class Vote:
 
     def stop(self):
         self.is_in_progress = False
+        threading.Thread(target=self.__cooldown_timer).start()
+
+    def __cooldown_timer(self):
+        self.cooldown = True
+        time.sleep(5)
+        self.cooldown = False
 
     def restart(self, threshold=None):
         self.stop()
@@ -53,7 +60,7 @@ class Vote:
         if not self.is_in_progress:
             self.hold_vote()
         success = False
-        if username not in self.results and self.is_in_progress:
+        if not self.cooldown and username not in self.results and self.is_in_progress:
             if (self.choices and choice in self.choices) or not self.choices:
                 success = True
                 self.results[username] = choice

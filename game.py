@@ -483,7 +483,11 @@ class Game(Channel):
                 time.sleep(1.1)
                 self.__start_timer = True
                 if self.has_users():
-                    self.send_message(("Queued the match to start in " + str(secs // 60) + " minutes " + str(secs % 60) + " seconds (!aborttimer to stop)").replace(" 0 minutes", "").replace(" 0 seconds", "").replace("1 minutes", "1 minute"))
+                    msg = ("Queued the match to start in " + str(secs // 60) + " minutes " + str(secs % 60) + " seconds").replace(" 0 minutes", "").replace(" 0 seconds", "").replace("1 minutes", "1 minute")
+                    for command in self.__commands:
+                        if self.__commands[command]["response"] == self.common_commands.abort_start_timer:
+                            msg += " (" + command + " to stop)"
+                    self.send_message(msg)
                 secs -= 1
                 while secs > 0:
                     time.sleep(1)

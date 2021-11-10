@@ -551,7 +551,9 @@ class CommonCommands:
         if self.channel.is_creator(message["username"]):
             command = message["content"].split(" ", 1)[0]
             title = message["content"].replace(command, "", 1).strip()
-            self.bot.make_room(title=title)
+            channel = self.bot.make_room(title=title)
+            channel.set_command("*implement", self.implement_logic_profile, "Implements a logic profile")
+            channel.set_command("*logic_profiles", self.get_logic_profiles, "Shows available logic profiles")
 
     def join(self, message):
         if self.channel.is_creator(message["username"]):
@@ -559,7 +561,9 @@ class CommonCommands:
             channel = message["content"].replace(command, "", 1).strip()
             if channel[0] != "#":
                 channel = "#" + channel
-            self.bot.join(channel)
+            chan = self.bot.join(channel)
+            chan.set_command("*implement", self.implement_logic_profile, "Implements a logic profile")
+            chan.set_command("*logic_profiles", self.get_logic_profiles, "Shows available logic profiles")
             self.bot.send_personal_message(self.bot.get_username(), "Bot joined: " + channel)
 
     # todo

@@ -258,7 +258,6 @@ class Bot:
         self.send_personal_message(self.__username, self.__username + " a game room was created: [" + channel.get_invite_link() + " " + title + "]")
         return channel
 
-
     # uploads to paste2.org with passed description and content
     # returns the url of the created paste2 page
     def paste2_upload(self, description, content):
