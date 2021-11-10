@@ -170,10 +170,6 @@ class Game(Channel):
                     threading.Thread(target=self.__on_all_players_ready_method).start()
                 if self.__start_on_players_ready:
                     self.start_match()
-            elif "Closed the match" == message["content"]:
-                self._bot.part(self._channel)
-                if self.__on_room_close_method:
-                    threading.Thread(target=self.__on_room_close_method).start()
             elif "Cleared match host" == message["content"]:
                 if self.__on_clear_host_method:
                     if str(inspect.signature(self.__on_clear_host_method)).strip("()").split(", ") != [""]:
@@ -940,6 +936,11 @@ class Game(Channel):
         data["creator_blacklist"] = self.__beatmap_creator_blacklist
         data["artist_whitelist"] = self.__artist_whitelist
         data["artist_blacklist"] = self.__artist_blacklist
+        data["autostart_timer"] = self.__autostart_timer
+        data["maintain_password"] = self.__maintain_password
+        data["maintain_size"] = self.__maintain_size
+        data["beatmap_checker"] = self.__beatmap_checker
+        data["start_on_players_ready"] = self.__start_on_players_ready
 
         # limits and ranges (done)
         data["ar_range"] = self.__ar_range
@@ -1004,6 +1005,12 @@ class Game(Channel):
         self.set_password(data["password"])
         self.set_welcome_message(data["welcome_message"])
         self.__commands = data["commands"]
+        self.__autostart_timer = data["autostart_timer"]
+        self.__maintain_password = data["maintain_password"]
+        self.__maintain_size = data["maintain_size"]
+        self.__beatmap_checker = data["beatmap_checker"]
+        self.__start_on_players_ready = data["start_on_players_ready"]
+
 
         # limits and ranges (done)
         self.set_ar_range(data["ar_range"])
@@ -1014,12 +1021,14 @@ class Game(Channel):
         self.set_bpm_range(data["bpm_range"])
         self.set_length_range(data["length_range"])
         self.set_map_status(data["map_status"])
+        self.set_allow_unsubmitted(data["allow_unsubmitted"])
 
         # game attributes
         self.set_mods(data["mods"])
         self.set_scoring_type(data["scoring_type"])
         self.set_team_type(data["team_type"])
         self.set_game_mode(data["game_mode"])
+        self.set_allow_convert(data["allow_convert"])
         self.set_allow_convert(data["allow_convert"])
 
     def invite_user(self, username):
@@ -1135,10 +1144,10 @@ class Game(Channel):
     def is_allow_convert(self):
         return self.__allow_convert
 
-    def set_custom_config_text(self, text):
+    def set_custom_config(self, text):
         self.__custom_config_text = text
 
-    def get_custom_config_text(self):
+    def get_custom_config(self):
         return self.__custom_config_text
 
     def clear_host(self):

@@ -59,7 +59,7 @@ class Manager:
 
     def on_join(self, username):
         if self.channel.get_users() == [username]:
-            self.channel.change_host(username)
+            self.channel.set_host(username)
 
     def on_part(self, username):
         if username == self.channel.get_formatted_host() and self.channel.has_users():

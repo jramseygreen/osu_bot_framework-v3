@@ -89,6 +89,8 @@ class Bot:
                             elif command == "PART":
                                 if channel in self.__channels:
                                     if self.__channels[channel].is_game():
+                                        if self.__channels[channel].get_logic()["on_room_close"]:
+                                            threading.Thread(target=self.__channels[channel].get_logic()["on_room_close"]).start()
                                         del self.__channels[channel]
                                     elif username in self.__channels[channel].get_formatted_users():
                                         self.__channels[channel].del_user(username)
@@ -334,10 +336,10 @@ class Bot:
 
     #clones attributes and logic from channel1 to channel2 (strings)
     def clone_channel(self, channel1, channel2):
-        attributes = self.__channels[channel1].get_attributes()
-        logic = self.__channels[channel1].get_logic_profile()
-        self.__channels[channel2].implement_logic_profile(logic)
-        self.__channels[channel2].import_attributes(attributes)
+        attributes = channel1.get_attributes()
+        logic = channel1.get_logic_profile()
+        channel2.implement_logic_profile(logic)
+        channel2.import_attributes(attributes)
 
     # fetches beatmap from ppy.sh
     def fetch_beatmap(self, beatmapID):

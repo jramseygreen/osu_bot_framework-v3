@@ -3,8 +3,22 @@ class KingOfTheHill:
         self.bot = bot
         self.channel = channel
         channel.set_beatmap_checker(True)
+        channel.maintain_password(True)
+        channel.maintain_size(True)
+        channel.set_custom_config("King Of The Hill:\n\nSee how good you really are! The bot will automatically give host to the top scoring player.\n\n")
         self.scores = []
-        channel.set_command("!skip", self.skip, "Skip your turn if you are host.")
+        channel.set_command("!config", channel.common_commands.config_link, "Returns a link to the game room configuration page")
+        channel.set_command("!randmap", channel.common_commands.randmap, "When host or referee, searches for a random beatmap matching the room's limits and ranges")
+        channel.set_command("!altlink", channel.common_commands.altlink, "Returns an alternate link for the current beatmap from chimu.moe")
+        channel.set_command("!topdiff", channel.common_commands.topdiff, "When host, upgrades the beatmap to the highest difficulty within the room limits and ranges")
+        channel.set_command("!start", channel.common_commands.start_timer, "When host or referee, starts the game with optional countdown timer")
+        channel.set_command("!aborttimer", channel.common_commands.abort_start_timer, "When host or referee, aborts start timer")
+        channel.set_command("!update", channel.common_commands.update_beatmap, "Updates current beatmap")
+        channel.set_command("!skip", self.skip, "when you are the host, transfers host to the next highest scoring player")
+        channel.set_command("R̲e̲f̲e̲r̲e̲e̲ C̲o̲m̲m̲a̲n̲d̲s̲", "")
+        channel.set_command("*implement", channel.common_commands.implement_logic_profile, "Implements a logic profile")
+        channel.set_command("*logic_profiles", channel.common_commands.get_logic_profiles, "Shows available logic profiles")
+        channel.set_command("*scoring_type", channel.common_commands.scoring_type, "Sets the allowed scoring mode for the room. e.g. *scoring_type score")
 
     def skip(self, message):
         if self.channel.get_formatted_host() == message["username"]:

@@ -10,9 +10,11 @@ class AutoSong:
         self.channel = channel
         channel.start_on_players_ready(True)
         channel.clear_host()
+        channel.set_allow_unsubmitted(False)
+        channel.set_autostart_timer(True, 120)
         self.vote = channel.new_vote_manager(self.carry_vote)
         self.played = []
-        channel.set_custom_config_text("In this lobby beatmaps are selected for you at random by the bot.\nYou can vote to skip a beatmap with the !skip command.\n\n\n")
+        channel.set_custom_config("In this lobby beatmaps are selected for you at random by the bot.\nYou can vote to skip a beatmap with the !skip command.\n\n\n")
         channel.set_command("!info", "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3] | Type '!config' to view room configuration and commands", "Built with osu bot framework v3")
         channel.set_command("!skip", self.skip, "Vote to skip the current beatmap.")
         channel.set_command("!altlink", channel.common_commands.altlink, "returns an alternate link for the current beatmap from chimu.moe")
@@ -69,7 +71,6 @@ class AutoSong:
 
         self.played.append(beatmap["BeatmapId"])
         self.channel.send_message("!mp map " + str(beatmap["BeatmapId"]) + " | The next beatmap is [https://osu.ppy.sh" + beatmap["DownloadPath"] + " " + beatmap["OsuFile"][:-4] + "] | Type '!skip' to vote to skip this beatmap.")
-        self.channel.start_match(120)
 
     def carry_vote(self, vote_manager):
         self.channel.send_message("Beatmap skipped!")

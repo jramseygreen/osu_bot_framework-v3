@@ -5,7 +5,7 @@ class AutoHostRotate:
         channel.set_beatmap_checker(True)
         channel.maintain_password(True)
         channel.maintain_size(True)
-        self.queue = channel.get_users().copy()
+        self.queue = [user for user in channel.get_users()]
         self.skip_vote = channel.new_vote_manager(self.carry_skip_vote)
         self.start_vote = channel.new_vote_manager(self.carry_start_vote)
         self.abort_vote = channel.new_vote_manager(self.channel.abort_match)
@@ -79,11 +79,10 @@ class AutoHostRotate:
                 self.channel.set_host(self.queue[0])
                 self.skip_vote.stop()
         else:
-            if not self.skip_vote.is_in_progress():
-                self.skip_vote.hold_vote()
             self.skip_vote.cast_ballot(message["username"], "Skip host")
 
     def carry_skip_vote(self, vote_manager):
+        self.channel.send_message("Skip host vote successful - voted for by: " + ", ".join(list(vote_manager.get_results("Skip host").keys())) + " | (" + str(vote_manager.get_threshold()) + " / " + str(len(self.channel.get_users())) + " players)")
         if self.queue:
             self.queue.append(self.queue.pop(0))
             self.channel.set_host(self.queue[0])
@@ -92,17 +91,14 @@ class AutoHostRotate:
         if message["username"] == self.channel.get_formatted_host():
             self.channel.common_commands.start_timer(message)
         else:
-            if not self.start_vote.is_in_progress():
-                self.start_vote.hold_vote()
             self.start_vote.cast_ballot(message["username"], "Start match")
 
     def abort(self, message):
         if self.channel.in_progress():
-            if not self.abort_vote.is_in_progress():
-                self.abort_vote.hold_vote()
             self.abort_vote.cast_ballot(message["username"], "End match")
 
-    def carry_start_vote(self):
+    def carry_start_vote(self, vote_manager):
+        self.channel.send_message("Match start vote successful - voted for by: " + ", ".join(list(vote_manager.get_results("Start match").keys())) + " | (" + str(vote_manager.get_threshold()) + " / " + str(len(self.channel.get_users())) + " players)")
         self.channel.start_match(10)
 
     def on_join(self, username):
@@ -116,10 +112,6 @@ class AutoHostRotate:
             self.channel.set_host(self.queue[0])
         else:
             self.queue.remove(username)
-        # if self.skip_vote.is_in_progress():
-        #     self.channel.send_message(str(self.skip_vote.get_threshold()) + " votes now needed to skip the current host".replace("1 votes", "1 vote", 1))
-        # if self.start_vote.is_in_progress():
-        #     self.channel.send_message(str(self.start_vote.get_threshold()) + " votes now needed to start the match".replace("1 votes", "1 vote", 1))
 
     def on_match_start(self):
         self.start_vote.stop()
@@ -141,6 +133,10 @@ class AutoHostRotate:
             self.channel.send_message(old_host + " please type '!skip' if you want to skip your turn")
         else:
             self.skip_vote.stop()
+
+    def on_room_close(self):
+        channel = self.bot.make_room(title=self.channel.get_title())
+        self.bot.clone_channel(self.channel, channel)
 
     def mp_start(self, message):
         if not self.channel.has_referee(message["username"]) and message["username"] == self.channel.get_formatted_host():
