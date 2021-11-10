@@ -487,6 +487,7 @@ class Game(Channel):
                     for command in self.__commands:
                         if self.__commands[command]["response"] == self.common_commands.abort_start_timer:
                             msg += " (" + command + " to stop)"
+                            break
                     self.send_message(msg)
                 secs -= 1
                 while secs > 0:
