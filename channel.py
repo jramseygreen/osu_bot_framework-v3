@@ -34,7 +34,7 @@ class Channel:
                 argnum = len(str(inspect.signature(self.__on_join_method)).strip("()").split(", "))
                 if argnum == 2:
                     threading.Thread(target=self.__on_join_method, args=(username, slot,)).start()
-                elif argnum == 1:
+                elif str(inspect.signature(self.__on_join_method)).strip("()").split(", ") != [""]:
                     threading.Thread(target=self.__on_join_method, args=(username,)).start()
                 else:
                     threading.Thread(target=self.__on_join_method).start()
@@ -50,7 +50,7 @@ class Channel:
                 argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
                 if argnum == 2:
                     threading.Thread(target=self.__on_part_method, args=(username, slot,)).start()
-                elif argnum == 1:
+                elif str(inspect.signature(self.__on_part_method)).strip("()").split(", ") != [""]:
                     threading.Thread(target=self.__on_part_method, args=(username,)).start()
                 else:
                     threading.Thread(target=self.__on_part_method).start()
@@ -60,7 +60,7 @@ class Channel:
             self._message_log = self._message_log[1:]
         self._message_log.append(message)
         if self.__on_message_method:
-            if len(str(inspect.signature(self.__on_message_method)).strip("()").split(", ")) == 1:
+            if str(inspect.signature(self.__on_message_method)).strip("()").split(", ") != [""]:
                 threading.Thread(target=self.__on_message_method, args=(message,)).start()
             else:
                 threading.Thread(target=self.__on_message_method).start()
@@ -158,5 +158,5 @@ class Channel:
     def has_user(self, username):
         return username.replace(" ", "_") in self.get_formatted_users()
 
-    def hold_vote(self, method):
+    def new_vote_manager(self, method):
         return Vote(self._bot, self, method)

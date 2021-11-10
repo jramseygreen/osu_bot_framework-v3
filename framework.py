@@ -109,12 +109,12 @@ class Bot:
                                             self.__room_limit_reached = True
                                     for channel in self.__channels:
                                         if self.__channels[channel].get_on_personal_message_method():
-                                            if len(str(inspect.signature(self.__channels[channel].get_on_personal_message_method())).strip("()").split(", ")) == 1:
+                                            if str(inspect.signature(self.__channels[channel].get_on_personal_message_method())).strip("()").split(", ") != [""]:
                                                 threading.Thread(target=self.__channels[channel].get_on_personal_message_method(), args=(message,)).start()
                                             else:
                                                 threading.Thread(target=self.__channels[channel].get_on_personal_message_method()).start()
                                     if self.__on_personal_message_method:
-                                        if len(str(inspect.signature(self.__on_personal_message_method)).strip("()").split(", ")) == 1:
+                                        if str(inspect.signature(self.__on_personal_message_method)).strip("()").split(", ") != [""]:
                                             threading.Thread(target=self.__on_personal_message_method, args=(message,)).start()
                                         else:
                                             threading.Thread(target=self.__on_personal_message_method).start()

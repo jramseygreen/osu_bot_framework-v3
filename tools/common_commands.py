@@ -456,8 +456,11 @@ class CommonCommands:
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
             if args[0].is_number():
-                self.channel.set_autostart_timer(args[0])
-                self.channel.send_message("Autostart timer set to " + args[0])
+                self.channel.set_autostart_timer(True, args[0])
+                if self.channel.is_autostart_timer():
+                    self.channel.send_message("Autostart timer set to " + args[0])
+                else:
+                    self.channel.send_message("Autostart timer disabled")
 
     def add_player_blacklist(self, message):
         if self.channel.has_referee(message["username"]):
@@ -540,12 +543,12 @@ class CommonCommands:
             self.channel.set_allow_convert(False)
             self.channel.send_message("Beatmap conversion set to disallowed")
 
-    def allow_unsubmitted_beatmaps(self, message):
+    def allow_unsubmitted(self, message):
         if self.channel.has_referee(message["username"]):
             self.channel.set_allow_unsubmitted(True)
             self.channel.send_message("Allow unsubmitted beatmaps set to True")
 
-    def disallow_unsubmitted_beatmaps(self, message):
+    def disallow_unsubmitted(self, message):
         if self.channel.has_referee(message["username"]):
             self.channel.set_allow_unsubmitted(False)
             self.channel.send_message("Allow unsubmitted beatmaps set to False")

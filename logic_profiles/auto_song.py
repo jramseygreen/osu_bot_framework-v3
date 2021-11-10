@@ -10,7 +10,7 @@ class AutoSong:
         self.channel = channel
         channel.start_on_players_ready(True)
         channel.clear_host()
-        self.vote = channel.hold_vote(self.carry_vote)
+        self.vote = channel.new_vote_manager(self.carry_vote)
         self.played = []
         channel.set_custom_config_text("In this lobby beatmaps are selected for you at random by the bot.\nYou can vote to skip a beatmap with the !skip command.\n\n\n")
         channel.set_command("!info", "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3] | Type '!config' to view room configuration and commands", "Built with osu bot framework v3")
@@ -41,18 +41,17 @@ class AutoSong:
             self.carry_vote(None)
         elif not self.channel.in_progress():
             if not self.vote.is_in_progress():
-                self.vote.start()
+                self.vote.hold_vote()
 
-            if self.vote.cast_ballot(message["username"]):
-                self.channel.send_message(str(len(self.vote.get_results())) + " / " + str(self.vote.get_threshold()) + " votes needed to skip the current beatmap")
+            self.vote.cast_ballot(message["username"], "Skip beatmap")
 
     def on_join(self, username):
         if self.channel.get_users() == [username]:
             self.next_round()
 
-    def on_part(self, username):
-        if self.vote.is_in_progress():
-            self.channel.send_message(str(self.vote.get_threshold()) + " votes now needed to skip the current beatmap").replace("1 votes", "1 vote", 1)
+    # def on_part(self, username):
+    #     if self.vote.is_in_progress():
+    #         self.channel.send_message(str(self.vote.get_threshold()) + " votes now needed to skip the current beatmap").replace("1 votes", "1 vote", 1)
 
     def on_match_finish(self):
         self.next_round()

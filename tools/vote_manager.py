@@ -18,7 +18,7 @@ class Vote:
         self.__on_join_method = None
         self.__on_part_method = None
 
-    def start(self, choices=[], threshold=None):
+    def hold_vote(self, choices=[], threshold=None):
         if not self.__on_join_method:
             self.__on_join_method = self.channel.get_logic()["on_join"]
         if not self.__on_part_method:
@@ -36,25 +36,38 @@ class Vote:
     def stop(self):
         self.in_progress = False
 
+    def __trigger(self):
+        if len(self.channel.get_users()) >= self.get_ballot_number() or (self.results and any([list(self.results.values()).count(x) >= self.threshold for x in set(self.results.values())])):
+            if str(inspect.signature(self.method)).strip("()").split(", ") != [""]:
+                threading.Thread(target=self.method, args=(self,)).start()
+            else:
+                threading.Thread(target=self.method).start()
+            self.stop()
+
     def cast_ballot(self, username, choice=""):
         success = False
         if username not in self.results and self.in_progress:
             if (self.choices and choice in self.choices) or not self.choices:
                 success = True
                 self.results[username] = choice
+                msg = username + " voted: " + choice + " | " + str(self.get_ballot_number()) + " / " + str(self.threshold) + " votes needed"
+                if self.choices:
+                    msg += " - "
+                    for c in self.choices:
+                        msg += " '" + c + "': "
+                        msg += str(len(self.get_results(c))) + " votes |"
+                self.channel.send_message(msg.strip("|"))
+
                 # if any vote choice is past the threshold
-                if self.results and len(self.results) >= self.threshold:
-                    self.stop()
-                    time.sleep(0.5)
-                    if len(str(inspect.signature(self.method)).strip("()").split(", ")) == 1:
-                        threading.Thread(target=self.method, args=(self,)).start()
-                    else:
-                        threading.Thread(target=self.method).start()
+                self.__trigger()
 
         return success
 
-    def get_results(self):
-        return self.results
+    def get_results(self, choice=None):
+        results = self.results
+        if choice:
+            results = {username: self.results[username] for username in self.results if self.results[username] == choice}
+        return results
 
     def get_ballot(self, username):
         for user in self.results:
@@ -71,6 +84,10 @@ class Vote:
 
     def get_threshold(self):
         return self.threshold
+
+    def set_threshold(self, threshold):
+        self.threshold = threshold
+        self.__trigger()
 
     def is_in_progress(self):
         return self.in_progress
@@ -93,17 +110,12 @@ class Vote:
             if self.get_ballot(username) is not None:
                 del self.results[username]
             # if any vote choice is past the threshold
-            if self.results and len(self.results) >= self.threshold:
-                self.stop()
-                if len(str(inspect.signature(self.method)).strip("()").split(", ")) == 1:
-                    threading.Thread(target=self.method, args=(self,)).start()
-                else:
-                    threading.Thread(target=self.method).start()
+            self.__trigger()
 
         argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
         if argnum == 2:
             threading.Thread(target=self.__on_part_method, args=(slot, username,)).start()
-        elif argnum == 1:
+        elif str(inspect.signature(self.method)).strip("()").split(", ") != [""]:
             threading.Thread(target=self.__on_part_method, args=(username,)).start()
         else:
             threading.Thread(target=self.__on_part_method).start()

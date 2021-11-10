@@ -92,7 +92,7 @@ class Game(Channel):
                     argnum = len(str(inspect.signature(self.__on_team_addition_method)).strip("()").split(", "))
                     if argnum == 2:
                         threading.Thread(target=self.__on_team_addition_method, args=(username, team,)).start()
-                    elif argnum == 1:
+                    elif str(inspect.signature(self.__on_team_addition_method)).strip("()").split(", ") != [""]:
                         threading.Thread(target=self.__on_team_addition_method, args=(username,)).start()
                     else:
                         threading.Thread(target=self.__on_team_addition_method).start()
@@ -112,7 +112,7 @@ class Game(Channel):
                     argnum = len(str(inspect.signature(self.__on_slot_change_method)).strip("()").split(", "))
                     if argnum == 2:
                         threading.Thread(target=self.__on_slot_change_method, args=(username, slot,)).start()
-                    elif argnum == 1:
+                    elif str(inspect.signature(self.__on_slot_change_method)).strip("()").split(", ") != [""]:
                         threading.Thread(target=self.__on_slot_change_method, args=(username,)).start()
                     else:
                         threading.Thread(target=self.__on_slot_change_method).start()
@@ -125,7 +125,7 @@ class Game(Channel):
                     argnum = len(str(inspect.signature(self.__on_team_change_method)).strip("()").split(", "))
                     if argnum == 2:
                         threading.Thread(target=self.__on_team_change_method, args=(username, "blue",)).start()
-                    elif argnum == 1:
+                    elif str(inspect.signature(self.__on_team_change_method)).strip("()").split(", ") != [""]:
                         threading.Thread(target=self.__on_team_change_method, args=(username,)).start()
                     else:
                         threading.Thread(target=self.__on_team_change_method).start()
@@ -138,7 +138,7 @@ class Game(Channel):
                     argnum = len(str(inspect.signature(self.__on_team_change_method)).strip("()").split(", "))
                     if argnum == 2:
                         threading.Thread(target=self.__on_team_change_method, args=(username, "red",)).start()
-                    elif argnum == 1:
+                    elif str(inspect.signature(self.__on_team_change_method)).strip("()").split(", ") != [""]:
                         threading.Thread(target=self.__on_team_change_method, args=(username,)).start()
                     else:
                         threading.Thread(target=self.__on_team_change_method).start()
@@ -176,7 +176,7 @@ class Game(Channel):
                     threading.Thread(target=self.__on_room_close_method).start()
             elif "Cleared match host" == message["content"]:
                 if self.__on_clear_host_method:
-                    if len(str(inspect.signature(self.__on_clear_host_method)).strip("()").split(", ")) == 1:
+                    if str(inspect.signature(self.__on_clear_host_method)).strip("()").split(", ") != [""]:
                         threading.Thread(target=self.__on_clear_host_method, args=(self.__host,)).start()
                     else:
                         threading.Thread(target=self.__on_clear_host_method).start()
@@ -218,7 +218,7 @@ class Game(Channel):
         for command in self.__commands:
             if str(message["content"]).find(command) == 0:
                 if callable(self.__commands[command]["response"]):
-                    if len(str(inspect.signature(self.__commands[command]["response"])).strip("()").split(", ")) == 1:
+                    if str(inspect.signature(self.__commands[command]["response"])).strip("()").split(", ") != [""]:
                         threading.Thread(target=self.__commands[command]["response"], args=(message,)).start()
                     else:
                         threading.Thread(target=self.__commands[command]["response"]).start()
@@ -359,7 +359,7 @@ class Game(Channel):
                             self.set_beatmap(self.__beatmap)
                             self.send_message("Rule violation: " + error["type"] + " - " + error["message"])
                             if self.__on_rule_violation_method:
-                                if len(str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ")) == 1:
+                                if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
                                     threading.Thread(target=self.__on_rule_violation_method, args=(error,)).start()
                                 else:
                                     threading.Thread(target=self.__on_rule_violation_method).start()
@@ -377,7 +377,7 @@ class Game(Channel):
                     argnum = len(str(inspect.signature(self.__on_beatmap_change_method)).strip("()").split(", "))
                     if argnum == 2:
                         threading.Thread(target=self.__on_beatmap_change_method, args=(self.__beatmap, beatmap,)).start()
-                    elif argnum == 1:
+                    elif str(inspect.signature(self.__on_beatmap_change_method)).strip("()").split(", ") != [""]:
                         threading.Thread(target=self.__on_beatmap_change_method, args=(self.__beatmap, )).start()
                     else:
                         threading.Thread(target=self.__on_beatmap_change_method).start()
@@ -425,7 +425,7 @@ class Game(Channel):
                 self.send_message("!mp map " + beatmapID + " " + str(GAME_ATTR[self.__game_mode]))
                 self.set_mods(self.__mods)
                 self.send_message("Rule Violation: " + error["type"] + " - " + error["message"])
-                if len(str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ")) == 1:
+                if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
                     threading.Thread(target=self.__on_rule_violation_method, args=(error,)).start()
                 else:
                     threading.Thread(target=self.__on_rule_violation_method).start()
@@ -578,7 +578,7 @@ class Game(Channel):
             argnum = len(str(inspect.signature(self.__on_host_change_method)).strip("()").split(", "))
             if argnum == 2:
                 threading.Thread(target=self.__on_host_change_method, args=(self.__host, username,)).start()
-            elif argnum == 1:
+            elif str(inspect.signature(self.__on_host_change_method)).strip("()").split(", ") != [""]:
                 threading.Thread(target=self.__on_host_change_method, args=(self.__host,)).start()
             else:
                 threading.Thread(target=self.__on_host_change_method).start()
@@ -808,7 +808,7 @@ class Game(Channel):
         text += "\n     • Maintain password: " + str(self.__maintain_password)
         text += "\n     • Maintain size: " + str(self.__maintain_size)
         text += "\n     • Start on players ready: " + str(self.__start_on_players_ready)
-        text += "\n     • Autostart timer: " + str(self.__autostart_timer)
+        text += "\n     • Autostart timer: " + str(self.is_autostart_timer()) + " " + str(self.__autostart_timer) + "secs"
         text += "\n\n 𝙶̲𝚊̲𝚖̲𝚎̲ ̲𝚛̲𝚘̲𝚘̲𝚖̲ ̲𝚊̲𝚝̲𝚝̲𝚛̲𝚒̲𝚋̲𝚞̲𝚝̲𝚎̲𝚜̲:"
         text += "\n     • Room size: " + str(self.__size)
         text += "\n     • Game mode: " + self.__game_mode
@@ -1086,11 +1086,16 @@ class Game(Channel):
     def is_start_on_players_ready(self):
         return self.__start_on_players_ready
 
-    def set_autostart_timer(self, secs):
+    def set_autostart_timer(self, status, secs):
+        if not status:
+            secs = -1
         self.__autostart_timer = int(secs)
 
     def get_autostart_timer(self):
         return self.__autostart_timer
+
+    def is_autostart_timer(self):
+        return self.__autostart_timer > -1
 
     def maintain_password(self, status):
         self.__maintain_password = status
