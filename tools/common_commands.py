@@ -587,14 +587,16 @@ class CommonCommands:
         if user:
             if self.channel.has_user(user) and user.replace(" ", "_") != message["username"]:
                 self.channel.send_message(message["username"] + " ⚔ fights ⚔ " + user + "...")
-                actions = ["clobbered", "battered", "pulverized", "destroyed", "thrashed", "hammered", "annihilated", "served", "beat up", "killed", "murdered"]
                 contenders = [message["username"], user]
-                victor = random.choice(contenders)
+                actions = ["clobbered", "battered", "pulverized", "destroyed", "thrashed", "hammered", "annihilated", "served", "beat up", "killed", "murdered"]
+                choice = random.randint(0, len(actions))
+
+                victor = contenders[choice % 2]
                 if victor.replace(" ", "_") not in self.fights:
                     self.fights[victor.replace(" ", "_")] = 0
                 self.fights[victor.replace(" ", "_")] += 1
                 contenders.remove(victor)
-                self.channel.send_message("✊" + victor + " " + random.choice(actions) + " " + contenders[0] + "☠! | " + victor + " has defeated " + str(self.fights[victor]) + " opponents.")
+                self.channel.send_message("✊" + victor + " " + actions[choice] + " " + contenders[0] + "☠! | " + victor + " has defeated " + str(self.fights[victor]) + " opponents.")
             else:
                 self.channel.send_message("User not recognised")
         else:

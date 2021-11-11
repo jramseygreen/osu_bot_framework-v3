@@ -5,8 +5,9 @@ import threading
 
 # thread safe appending to file
 class Logger:
-    def __init__(self, *args):
+    def __init__(self, *args, **kwargs):
         self.args = args
+        self.kwargs = kwargs
         self.queue = Queue()
         self.finished = False
         threading.Thread(target=self.internal_writer).start()
@@ -21,11 +22,11 @@ class Logger:
             except Empty:
                 continue
             try:
-                f = open(*self.args)
+                f = open(*self.args, **self.kwargs)
                 f.write(data)
                 f.close()
             except Exception as e:
-                f = open(*self.args)
+                f = open(*self.args, **self.kwargs)
                 f.write("-- An error occured here: " + str(e) + " --")
                 f.close()
             self.queue.task_done()

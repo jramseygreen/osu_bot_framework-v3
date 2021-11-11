@@ -20,7 +20,7 @@ class Vote:
         self.__on_part_method = None
 
     def hold_vote(self, choices=[], threshold=None):
-        if not self.is_in_progress:
+        if not self.is_in_progress and not self.cooldown:
             if not self.__on_join_method:
                 self.__on_join_method = self.channel.get_logic()["on_join"]
             if not self.__on_part_method:

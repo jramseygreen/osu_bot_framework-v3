@@ -79,7 +79,7 @@ class AutoHostRotate:
                 self.queue.append(self.queue.pop(0))
                 self.channel.set_host(self.queue[0])
                 self.skip_vote.stop()
-        else:
+        elif not self.channel.in_progress():
             self.skip_vote.cast_ballot(message["username"], "Skip host")
 
     def carry_skip_vote(self, vote_manager):
@@ -91,7 +91,7 @@ class AutoHostRotate:
     def start(self, message):
         if message["username"] == self.channel.get_formatted_host():
             self.channel.common_commands.start_timer(message)
-        else:
+        elif not self.channel.in_progress():
             self.start_vote.cast_ballot(message["username"], "Start match")
 
     def abort(self, message):

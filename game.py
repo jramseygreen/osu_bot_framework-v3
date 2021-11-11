@@ -179,7 +179,7 @@ class Game(Channel):
                         threading.Thread(target=self.__on_clear_host_method).start()
                 self.__host = ""
 
-        elif message["username"] in [x.replace(" ", "_") for x in self.__referees]:
+        elif self.has_referee(message["username"]):
             message_arr = message["content"].lower().split(" ")
             if len(message_arr) >= 2:
                 command = " ".join(message_arr[:2]).strip()
@@ -801,7 +801,7 @@ class Game(Channel):
 
     # returns the link to the current room configuration and uploads to paste2.org if the configuration has changed
     def get_config_link(self):
-        text = self.__custom_config_text + "\n"
+        text = str(self.__custom_config_text) + "\n"
         text += "𝙶̲𝚊̲𝚖̲𝚎̲ ̲𝚁̲𝚘̲𝚘̲𝚖̲ ̲𝙲̲𝚘̲𝚗̲𝚏̲𝚒̲𝚐̲𝚞̲𝚛̲𝚊̲𝚝̲𝚒̲𝚘̲𝚗̲:"
         text += "\n     • Title: " + self.__title
         text += "\n     • Channel: " + self._channel
