@@ -30,6 +30,7 @@ class Sock:
         else:
             self.__semaphore.acquire()
             self.__lock.acquire()
+            time.sleep(0.1)
             self.__socket.sendall(self.__outbound_queue.pop(0))
             self.__lock.release()
             if time.time() - self.__then >= self.PERIOD:

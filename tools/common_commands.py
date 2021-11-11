@@ -1,4 +1,5 @@
 import os
+import random
 import time
 
 from GAME_ATTR import GAME_ATTR
@@ -17,6 +18,7 @@ class CommonCommands:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
+        self.fights = {}
 
     def config_link(self, message):
         self.channel.send_message("The configuration of the game room and available commands can be viewed [" + self.channel.get_config_link() + " here]")
@@ -548,7 +550,7 @@ class CommonCommands:
             self.channel.send_message("Allow unsubmitted beatmaps set to False")
 
     def make_room(self, message):
-        if self.channel.is_creator(message["username"]):
+        if self.bot.get_username() == message["username"]:
             command = message["content"].split(" ", 1)[0]
             title = message["content"].replace(command, "", 1).strip()
             channel = self.bot.make_room(title=title)
@@ -556,7 +558,7 @@ class CommonCommands:
             channel.set_command("*logic_profiles", self.get_logic_profiles, "Shows available logic profiles")
 
     def join(self, message):
-        if self.channel.is_creator(message["username"]):
+        if self.bot.get_username() == message["username"]:
             command = message["content"].split(" ", 1)[0]
             channel = message["content"].replace(command, "", 1).strip()
             if channel[0] != "#":
@@ -565,6 +567,40 @@ class CommonCommands:
             chan.set_command("*implement", self.implement_logic_profile, "Implements a logic profile")
             chan.set_command("*logic_profiles", self.get_logic_profiles, "Shows available logic profiles")
             self.bot.send_personal_message(self.bot.get_username(), "Bot joined: " + channel)
+
+    def clone(self, message):
+        if self.bot.get_username() == message["username"]:
+            command = message["content"].split(" ", 1)[0]
+            chan = message["content"].replace(command, "", 1).strip()
+            if chan:
+                if chan[0] != "#":
+                    chan = "#" + chan
+                if self.bot.has_channel(chan):
+                    self.bot.clone_channel(self.bot.get_channel(chan), self.channel)
+                    self.channel.send_message("Successfully cloned logic and attributes from " + chan)
+                else:
+                    self.channel.send_message("Channel: " + chan + " is not recognised. Maybe you need to join it first.")
+
+    def fight(self, message):
+        command = message["content"].split(" ", 1)[0]
+        user = message["content"].replace(command, "", 1).strip()
+        if user:
+            if self.channel.has_user(user) and user.replace(" ", "_") != message["username"]:
+                self.channel.send_message(message["username"] + " ⚔ fights ⚔ " + user + "...")
+                actions = ["clobbered", "battered", "pulverized", "destroyed", "thrashed", "hammered", "annihilated", "served", "beat up", "killed", "murdered"]
+                contenders = [message["username"], user]
+                victor = random.choice(contenders)
+                if victor.replace(" ", "_") not in self.fights:
+                    self.fights[victor.replace(" ", "_")] = 0
+                self.fights[victor.replace(" ", "_")] += 1
+                contenders.remove(victor)
+                self.channel.send_message("✊" + victor + " " + random.choice(actions) + " " + contenders[0] + "☠! | " + victor + " has defeated " + str(self.fights[victor]) + " opponents.")
+            else:
+                self.channel.send_message("User not recognised")
+        else:
+            if message["username"] not in self.fights:
+                self.fights[message["username"]] = 0
+            self.channel.send_message(message["username"] + " has defeated " + str(self.fights[message["username"]]) + " opponents.")
 
     # todo
     def upload_logic_profile(self, message):

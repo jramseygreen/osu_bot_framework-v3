@@ -23,6 +23,7 @@ class AutoHostRotate:
         channel.set_command("!abort", self.abort, "Starts vote to abort match")
         channel.set_command("!mp abort", self.mp_abort, "Starts vote to abort match")
         channel.set_command("!update", channel.common_commands.update_beatmap, "Updates current beatmap")
+        channel.set_command("!fight", channel.common_commands.fight, "Fight another user! Victories stack up.")
         channel.set_command("R̲e̲f̲e̲r̲e̲e̲ C̲o̲m̲m̲a̲n̲d̲s̲", "")
         channel.set_command("*skip", self.skip, "Changes the host to the next username in the queue")
         channel.set_command("*implement", channel.common_commands.implement_logic_profile, "Implements a logic profile")

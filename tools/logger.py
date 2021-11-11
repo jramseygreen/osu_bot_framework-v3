@@ -20,9 +20,14 @@ class Logger:
                 data = self.queue.get(True, 1)
             except Empty:
                 continue
-            f = open(*self.args)
-            f.write(data)
-            f.close()
+            try:
+                f = open(*self.args)
+                f.write(data)
+                f.close()
+            except Exception as e:
+                f = open(*self.args)
+                f.write("-- An error occured here: " + str(e) + " --")
+                f.close()
             self.queue.task_done()
 
     def close(self):
