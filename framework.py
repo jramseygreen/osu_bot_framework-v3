@@ -150,6 +150,9 @@ class Bot:
                             self.__controller.update()
                         # bad credentials
                         elif command == "464":
+                            if not self.verbose:
+                                print("There was an error connecting to " + self.__host + ":" + str(self.__port))
+                                print("Either your username or password is incorrect! Please restart the program.")
                             self.log("There was an error connecting to " + self.__host + ":" + str(self.__port))
                             self.log("Either your username or password is incorrect! Please restart the program.")
                             f = open("config" + os.sep + "bot_config.conf", "r+")

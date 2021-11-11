@@ -336,6 +336,10 @@ class Game(Channel):
             return True
         return False
 
+    # if map is the same accept
+    # if not map and allow unsubmitted accept w/ just id and url
+    # if map is tutorial accept
+    # if map passes checker accept
     def __check_beatmap_attributes(self, beatmapID, running=False):
         if not running:
             threading.Thread(target=self.__check_beatmap_attributes, args=(beatmapID, True,)).start()
