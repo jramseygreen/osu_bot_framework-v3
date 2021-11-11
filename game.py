@@ -407,7 +407,7 @@ class Game(Channel):
             elif self.__team_type != "any" and self.__team_type.lower() != match["team_type"]:
                 error = {"type": "team", "message": "The allowed team type is: " + self.__team_type}
                 abort = True
-            elif self.__beatmap_checker and self.__game_mode.lower() != "any" and match["playmode"] != self.__game_mode.lower():
+            elif self.__beatmap_checker and self.__game_mode.lower() != "any" and match["mode"] != self.__game_mode.lower():
                 error = {"type": "mode", "message": "The selected beatmap's mode must be: " + self.__game_mode}
                 abort = True
 
