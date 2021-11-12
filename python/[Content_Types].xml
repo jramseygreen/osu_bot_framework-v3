@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml" />
+  <Default Extension="psmdcp" ContentType="application/vnd.openxmlformats-package.core-properties+xml" />
+  <Default Extension="png" ContentType="application/octet" />
+  <Default Extension="py" ContentType="application/octet" />
+  <Default Extension="txt" ContentType="application/octet" />
+  <Default Extension="exe" ContentType="application/octet" />
+  <Default Extension="dll" ContentType="application/octet" />
+  <Default Extension="css" ContentType="application/octet" />
+  <Default Extension="pth" ContentType="application/octet" />
+  <Default Extension="typed" ContentType="application/octet" />
+  <Default Extension="pyd" ContentType="application/octet" />
+  <Default Extension="cat" ContentType="application/octet" />
+  <Default Extension="bat" ContentType="application/octet" />
+  <Default Extension="ctypes" ContentType="application/octet" />
+  <Default Extension="h" ContentType="application/octet" />
+  <Default Extension="tmpl" ContentType="application/octet" />
+  <Default Extension="rst" ContentType="application/octet" />
+  <Default Extension="xml" ContentType="application/octet" />
+  <Default Extension="pem" ContentType="application/octet" />
+  <Default Extension="ps1" ContentType="application/octet" />
+  <Default Extension="csh" ContentType="application/octet" />
+  <Default Extension="fish" ContentType="application/octet" />
+  <Default Extension="cfg" ContentType="application/octet" />
+  <Default Extension="whl" ContentType="application/octet" />
+  <Default Extension="lib" ContentType="application/octet" />
+  <Default Extension="pyw" ContentType="application/octet" />
+  <Default Extension="props" ContentType="application/octet" />
+  <Default Extension="nuspec" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/site-packages/pip-21.2.3.dist-info/INSTALLER" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/ctypes/macholib/fetch_macholib" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/site-packages/pip-21.2.3.dist-info/METADATA" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/site-packages/pip-21.2.3.dist-info/RECORD" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/site-packages/pip-21.2.3.dist-info/REQUESTED" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/site-packages/pip-21.2.3.dist-info/WHEEL" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/distutils/README" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/distutils/command/command_template" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/site-packages/setuptools-57.4.0.dist-info/INSTALLER" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/site-packages/setuptools-57.4.0.dist-info/LICENSE" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/site-packages/setuptools-57.4.0.dist-info/METADATA" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/site-packages/setuptools-57.4.0.dist-info/RECORD" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/site-packages/setuptools-57.4.0.dist-info/REQUESTED" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/site-packages/setuptools-57.4.0.dist-info/WHEEL" ContentType="application/octet" />
+  <Override PartName="/tools/Lib/venv/scripts/common/activate" ContentType="application/octet" />
+</Types>

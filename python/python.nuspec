@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>python</id>
+    <version>3.10.0</version>
+    <title>Python</title>
+    <authors>Python Software Foundation</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="file">tools\LICENSE.txt</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>images\python.png</icon>
+    <projectUrl>https://www.python.org/</projectUrl>
+    <iconUrl>https://www.python.org/static/favicon.ico</iconUrl>
+    <description>Installs 64-bit Python for use in build scenarios.</description>
+    <tags>python</tags>
+    <repository type="git" url="https://github.com/Python/CPython.git" commit="b494f59" />
+  </metadata>
+</package>
