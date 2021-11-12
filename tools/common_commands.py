@@ -451,7 +451,7 @@ class CommonCommands:
         if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
             args = message["content"].replace(command, "", 1).strip().split(" ")
-            if args[0].is_number():
+            if is_number(args[0]):
                 self.channel.set_autostart_timer(True, args[0])
                 if self.channel.is_autostart_timer():
                     self.channel.send_message("Autostart timer set to " + args[0])

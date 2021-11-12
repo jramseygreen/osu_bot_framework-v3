@@ -529,9 +529,6 @@ class Game(Channel):
         return slots
 
     def set_slot(self, slot, data):
-        for s in self.__slots:
-            if self.__slots[s] == data:
-                self.__slots[s] = {"username": "", "team": "", "score": {}}
         self.__slots[slot] = data
 
     def get_slot(self, username):
@@ -548,9 +545,15 @@ class Game(Channel):
         for i in range(offset, 16):
             if not self.__slots[i]["username"]:
                 return i
+        for i in range(0, offset):
+            if not self.__slots[i]["username"]:
+                return i
 
     def get_next_full_slot(self, offset=0):
         for i in range(offset, 16):
+            if self.__slots[i]["username"]:
+                return i
+        for i in range(0, offset):
             if self.__slots[i]["username"]:
                 return i
 
