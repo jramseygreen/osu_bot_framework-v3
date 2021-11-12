@@ -589,7 +589,7 @@ class CommonCommands:
                 self.channel.send_message(message["username"] + " ⚔ fights ⚔ " + user + "...")
                 contenders = [message["username"], user]
                 actions = ["clobbered", "battered", "pulverized", "destroyed", "thrashed", "hammered", "annihilated", "served", "beat up", "killed", "murdered"]
-                choice = random.randint(0, len(actions))
+                choice = random.randint(0, len(actions) - 1)
 
                 victor = contenders[choice % 2]
                 if victor.replace(" ", "_") not in self.fights:
