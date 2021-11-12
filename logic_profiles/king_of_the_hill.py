@@ -29,7 +29,7 @@ class KingOfTheHill:
                 self.channel.get_users().append(self.channel.get_users().pop(0))
                 self.channel.set_host(self.channel.get_users()[0])
 
-    def on_join(self, username, slot):
+    def on_join(self, username):
         if self.channel.get_users() == [username]:
             self.channel.set_host(username)
 

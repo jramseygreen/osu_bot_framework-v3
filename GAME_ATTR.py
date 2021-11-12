@@ -35,3 +35,18 @@ GAME_ATTR = {
     "wip": -1,
     "graveyard": -2
 }
+
+TUTORIAL = {'beatmapset_id': 3756, 'difficulty_rating': 0.67, 'id': 22538, 'mode': 'osu', 'status': 'graveyard',
+                  'total_length': 114, 'user_id': 2, 'version': 'Gameplay basics', 'accuracy': 0, 'ar': 0,
+                  'bpm': 160.38, 'convert': False, 'count_circles': 4, 'count_sliders': 3, 'count_spinners': 1, 'cs': 3,
+                  'deleted_at': None, 'drain': 0, 'hit_length': 18, 'is_scoreable': False,
+                  'last_updated': '2014-03-10T16:31:10+00:00', 'mode_int': 0, 'passcount': 202069, 'playcount': 209908,
+                  'ranked': -2, 'url': 'https://osu.ppy.sh/beatmaps/22538',
+                  'checksum': '3c8b50ebd781978beb39160c6aaf148c', 'failtimes': {
+        'fail': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 1, 0, 0, 0,
+                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                 0, 0, 0, 0, 1, 9, 2, 22, 6, 14, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        'exit': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 135, 153, 27, 18, 27,
+                 25, 13, 10, 7, 5, 2, 2, 2, 4, 1, 2, 2, 3, 1, 1, 1, 0, 2, 0, 1, 1, 1, 2, 1, 1, 0, 0, 2, 0, 0, 1, 1, 1,
+                 1, 0, 1, 1, 0, 0, 0, 1, 9, 18, 0, 1, 9, 2, 9, 9, 38, 5, 11, 4, 3, 4, 2, 1, 0, 3, 3, 1, 1, 0, 1, 0, 0,
+                 0, 0, 216]}, 'max_combo': 28}

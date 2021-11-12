@@ -25,12 +25,13 @@ class Sock:
     # lock used to guarantee message order.
     def sendall(self, message, running=False):
         if not running:
+            self.__lock.acquire()
             self.__outbound_queue.append(message)
+            self.__lock.release()
             threading.Thread(target=self.sendall, args=(message, True,)).start()
         else:
             self.__semaphore.acquire()
             self.__lock.acquire()
-            time.sleep(0.1)
             self.__socket.sendall(self.__outbound_queue.pop(0))
             self.__lock.release()
             if time.time() - self.__then >= self.PERIOD:

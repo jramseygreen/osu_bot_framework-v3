@@ -156,7 +156,7 @@ class Channel:
         return self._users != []
 
     def has_user(self, username):
-        return username.replace(" ", "_").lower() in [x.lower() for x in self.get_formatted_users()]
+        return username.replace(" ", "_") in self.get_formatted_users()
 
     def new_vote_manager(self, method):
         return Vote(self._bot, self, method)

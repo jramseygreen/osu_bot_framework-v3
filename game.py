@@ -3,7 +3,7 @@ import json
 import threading
 import time
 
-from GAME_ATTR import GAME_ATTR
+from GAME_ATTR import GAME_ATTR, TUTORIAL
 from channel import Channel
 import requests
 from requests.structures import CaseInsensitiveDict
@@ -18,7 +18,7 @@ class Game(Channel):
         self.__host = ""
         self.__in_progress = False
         # osu tutorial as default 22538
-        self.__beatmap = {'beatmapset_id': 3756, 'difficulty_rating': 0.67, 'id': 22538, 'mode': 'osu', 'status': 'graveyard', 'total_length': 114, 'user_id': 2, 'version': 'Gameplay basics', 'accuracy': 0, 'ar': 0, 'bpm': 160.38, 'convert': False, 'count_circles': 4, 'count_sliders': 3, 'count_spinners': 1, 'cs': 3, 'deleted_at': None, 'drain': 0, 'hit_length': 18, 'is_scoreable': False, 'last_updated': '2014-03-10T16:31:10+00:00', 'mode_int': 0, 'passcount': 202069, 'playcount': 209908, 'ranked': -2, 'url': 'https://osu.ppy.sh/beatmaps/22538', 'checksum': '3c8b50ebd781978beb39160c6aaf148c', 'failtimes': {'fail': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 9, 2, 22, 6, 14, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], 'exit': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 135, 153, 27, 18, 27, 25, 13, 10, 7, 5, 2, 2, 2, 4, 1, 2, 2, 3, 1, 1, 1, 0, 2, 0, 1, 1, 1, 2, 1, 1, 0, 0, 2, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 9, 18, 0, 1, 9, 2, 9, 9, 38, 5, 11, 4, 3, 4, 2, 1, 0, 3, 3, 1, 1, 0, 1, 0, 0, 0, 0, 216]}, 'max_combo': 28}
+        self.__beatmap = TUTORIAL
         self.__match_history = self.fetch_match_history()
         self.__size = 8
         self.__password = ""
@@ -163,7 +163,6 @@ class Game(Channel):
                 self.__check_beatmap_attributes(beatmapID)
             elif "Host is changing map..." == message["content"]:
                 self.abort_start_timer()
-                self.abort_start_timer()
                 if self.__on_changing_beatmap_method:
                     threading.Thread(target=self.__on_changing_beatmap_method).start()
             elif "All players are ready" == message["content"]:
@@ -302,8 +301,9 @@ class Game(Channel):
             self.__slots[score["match"]["slot"]]["score"] = score
 
     def get_score(self, username):
-        if self.get_slot(username):
-            return self.get_slot(username)["score"]
+        slot = self.get_slot(username)
+        if slot:
+            return slot["score"]
 
     def get_scores(self):
         scores = []
@@ -336,29 +336,31 @@ class Game(Channel):
             return True
         return False
 
-    # if map is the same accept
-    # if not map and allow unsubmitted accept w/ just id and url
-    # if map is tutorial accept
-    # if map passes checker accept
     def __check_beatmap_attributes(self, beatmapID, running=False):
         if not running:
             threading.Thread(target=self.__check_beatmap_attributes, args=(beatmapID, True,)).start()
         else:
+            self._bot.log("-- Beatmap checker started --")
+            beatmapID = int(beatmapID)
             accept_beatmap = False
-            beatmap = self.__fetch_beatmap(beatmapID)
-            if self.__beatmap_checker:
-                self._bot.log("-- Beatmap checker started --")
-                if beatmap != self.__beatmap:
-                    if not beatmap and self.__allow_unsubmitted:
-                        beatmap = {"id": int(beatmapID), "url": "https://osu.ppy.sh/b/" + str(beatmapID)}
-                        accept_beatmap = True
-                    elif int(beatmapID) == 22538:
+            beatmap = None
+            if beatmapID == self.__beatmap["id"]:
+                beatmap = self.__beatmap
+                accept_beatmap = True
+            elif beatmapID == TUTORIAL["id"]:
+                beatmap = TUTORIAL
+                accept_beatmap = True
+            else:
+                beatmap = self.__fetch_beatmap(beatmapID)
+                if self.__beatmap_checker:
+                    if self.__allow_unsubmitted and not beatmap:
+                        beatmap = {"id": beatmapID, "url": "https://osu.ppy.sh/b/" + str(beatmapID)}
                         accept_beatmap = True
                     else:
                         error = self.check_beatmap(beatmap)
                         if error:
+                            self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap","[" + beatmap["url"] + " selected beatmap]"))
                             self.set_beatmap(self.__beatmap)
-                            self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap", "[" + beatmap["url"] + " selected beatmap]"))
                             if self.__on_rule_violation_method:
                                 if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
                                     threading.Thread(target=self.__on_rule_violation_method, args=(error,)).start()
@@ -366,27 +368,28 @@ class Game(Channel):
                                     threading.Thread(target=self.__on_rule_violation_method).start()
                         else:
                             accept_beatmap = True
-            else:
-                if not beatmap:
-                    beatmap = {"id": int(beatmapID), "url": "https://osu.ppy.sh/b/" + str(beatmapID)}
-                accept_beatmap = True
+                else:
+                    if not beatmap:
+                        beatmap = {"id": beatmapID, "url": "https://osu.ppy.sh/b/" + str(beatmapID)}
+                    accept_beatmap = True
 
             if accept_beatmap:
-                if self.__autostart_timer > 0:
-                    self.start_match(self.__autostart_timer)
+                old_beatmap = self.__beatmap
                 self.__beatmap = beatmap
-
                 if self.__on_beatmap_change_method:
                     argnum = len(str(inspect.signature(self.__on_beatmap_change_method)).strip("()").split(", "))
                     if argnum == 2:
-                        threading.Thread(target=self.__on_beatmap_change_method, args=(self.__beatmap, beatmap,)).start()
+                        threading.Thread(target=self.__on_beatmap_change_method, args=(old_beatmap, beatmap,)).start()
                     elif str(inspect.signature(self.__on_beatmap_change_method)).strip("()").split(", ") != [""]:
-                        threading.Thread(target=self.__on_beatmap_change_method, args=(self.__beatmap, )).start()
+                        threading.Thread(target=self.__on_beatmap_change_method, args=(beatmap,)).start()
                     else:
                         threading.Thread(target=self.__on_beatmap_change_method).start()
 
-                if self.__auto_download["status"]:
+                if old_beatmap != beatmap and self.__auto_download["status"]:
                     self._bot.chimu.download_beatmap(beatmap["id"], path=self.__auto_download["path"], with_video=self.__auto_download["with_video"], auto_open=self.__auto_download["auto_open"])
+                if self.__autostart_timer > 0:
+                    self.start_match(self.__autostart_timer)
+            self._bot.log("-- Beatmap checker finished --")
 
     def __check_attributes(self, running=False):
         if not running:
@@ -434,6 +437,7 @@ class Game(Channel):
                 self.__in_progress = True
                 if self.__on_match_start_method:
                     threading.Thread(target=self.__on_match_start_method).start()
+            self._bot.log("-- Attribute checker finished --")
 
     def check_beatmap(self, beatmap):
         error = ""
@@ -532,16 +536,27 @@ class Game(Channel):
         self.__slots[slot] = data
 
     def get_slot(self, username):
-        for slot in self.__slots:
-            if self.__slots[slot]["username"].replace(" ", "_") == username.replace(" ", "_"):
-                return self.__slots[slot]
+        slotnum = self.get_slot_num(username)
+        if slotnum:
+            return self.__slots[slotnum]
+
+    def get_formatted_slot(self, username):
+        slotnum = self.get_slot_num(username)
+        if slotnum:
+            return self.get_formatted_slots()[slotnum]
+
+    def get_slot_username(self, number):
+        return self.__slots[number]["username"]
+
+    def get_formatted_slot_username(self, number):
+        return self.get_formatted_slots()[number]["username"]
 
     def get_slot_num(self, username):
         for i in range(16):
             if self.__slots[i]["username"].replace(" ", "_") == username.replace(" ", "_"):
                 return i
 
-    def get_next_empty_slot(self, offset=0):
+    def get_next_empty_slot_num(self, offset=0):
         for i in range(offset, 16):
             if not self.__slots[i]["username"]:
                 return i
@@ -549,7 +564,7 @@ class Game(Channel):
             if not self.__slots[i]["username"]:
                 return i
 
-    def get_next_full_slot(self, offset=0):
+    def get_next_full_slot_num(self, offset=0):
         for i in range(offset, 16):
             if self.__slots[i]["username"]:
                 return i
@@ -585,16 +600,16 @@ class Game(Channel):
         return self.__host.replace(" ", "_")
 
     def __set_host(self, username):
+        old_host = self.__host
+        self.__host = username
         if self.__on_host_change_method:
             argnum = len(str(inspect.signature(self.__on_host_change_method)).strip("()").split(", "))
             if argnum == 2:
-                threading.Thread(target=self.__on_host_change_method, args=(self.__host, username,)).start()
+                threading.Thread(target=self.__on_host_change_method, args=(old_host, username,)).start()
             elif str(inspect.signature(self.__on_host_change_method)).strip("()").split(", ") != [""]:
-                threading.Thread(target=self.__on_host_change_method, args=(self.__host,)).start()
+                threading.Thread(target=self.__on_host_change_method, args=(username,)).start()
             else:
                 threading.Thread(target=self.__on_host_change_method).start()
-
-        self.__host = username
 
     def set_host(self, username):
         self.__host = username
