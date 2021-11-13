@@ -596,7 +596,7 @@ class CommonCommands:
                     self.fights[victor.replace(" ", "_")] = 0
                 self.fights[victor.replace(" ", "_")] += 1
                 contenders.remove(victor)
-                self.channel.send_message("✊" + victor + " " + actions[choice] + " " + contenders[0] + "☠! | " + victor + " has defeated " + str(self.fights[victor]) + " opponents.")
+                self.channel.send_message("✊" + victor + " " + actions[choice] + " " + contenders[0] + "☠! | " + victor + " has defeated " + str(self.fights[victor.replace(" ", "_")]) + " opponents.")
             else:
                 self.channel.send_message("User not recognised")
         else:
