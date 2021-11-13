@@ -277,6 +277,7 @@ class Game(Channel):
         headers["Accept"] = "application/json"
 
         r = requests.get(url, headers=headers)
+        self._bot.log("-- Fetched match history --")
         return json.loads(r.text)
 
     def get_match_history(self):
@@ -305,9 +306,14 @@ class Game(Channel):
         return self._bot.fetch_beatmapset(beatmapID)
 
     def __fetch_scores(self):
+        self.clear_scores()
         self.__match_history = self.fetch_match_history()
         for score in self.get_match_data()["scores"]:
             self.__slots[score["match"]["slot"]]["score"] = score
+
+    def clear_scores(self):
+        for slot in self.__slots:
+            self.__slots[slot]["score"] = {}
 
     def get_score(self, username):
         slot = self.get_slot(username)
