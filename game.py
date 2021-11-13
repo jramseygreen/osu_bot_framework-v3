@@ -1058,13 +1058,11 @@ class Game(Channel):
         self.set_size(data["size"])
         self.set_password(data["password"])
         self.set_welcome_message(data["welcome_message"])
-        self.__commands = data["commands"]
         self.__autostart_timer = data["autostart_timer"]
         self.__maintain_password = data["maintain_password"]
         self.__maintain_size = data["maintain_size"]
         self.__beatmap_checker = data["beatmap_checker"]
         self.__start_on_players_ready = data["start_on_players_ready"]
-
 
         # limits and ranges (done)
         self.set_ar_range(data["ar_range"])

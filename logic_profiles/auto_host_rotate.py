@@ -136,7 +136,7 @@ class AutoHostRotate:
             self.skip_vote.stop()
 
     def on_room_close(self):
-        channel = self.bot.make_room(title=self.channel.get_title())
+        channel = self.bot.make_room(title=self.channel.get_title(), password=self.channel.get_password())
         self.bot.clone_channel(self.channel, channel)
 
     def mp_start(self, message):

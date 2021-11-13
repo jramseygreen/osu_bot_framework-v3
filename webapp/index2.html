@@ -1,69 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>OBFv3</title>
-    <script src="vue.js"></script>
-
+    <meta charset="utf-8"/>
+    <title>OBF3</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
-<div id="app">
-  <sidebar></sidebar>
-  <ul>
-    <li v-for="todo in todos">
-      {{ todo.text }}
-    </li>
-  </ul>
+<div class="container-fluid">
+    <!--    sidebar-->
+    <div class="row">
+        <div class="col d-flex flex-column text-white bg-dark" style="height: 100vh;">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32">
+                    <use xlink:href="#bootstrap"></use>
+                </svg>
+                <span class="fs-4">OBF-3</span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" aria-current="page">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#home"></use>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#speedometer2"></use>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#table"></use>
+                        </svg>
+                        Orders
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#grid"></use>
+                        </svg>
+                        Products
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#people-circle"></use>
+                        </svg>
+                        Customers
+                    </a>
+                </li>
+            </ul>
+            <hr>
+            <div class="btn-group dropup">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    Dropup
+                </button>
+                <div class="dropdown">
+                    <a class="dropdown-item" href="#">Action</a>
+                </div>
+            </div>
+        </div>
 
-  <input type="text" id="list-input">
-  <input type="submit" id="list-submit" v-on:click="addItem">
-  <span id="error" style="color: #ff0000; display: none;">Please Enter Text</span>
+        <!--        main content-->
+        <div class="col-10">
+            <div class="card text-white bg-dark mb-4">
+                <h2 class="card-header text-center">
+                    Channel_name
+                </h2>
+                <hr>
+                <div class="card-body text-center">
+                    attributes will go here
+                </div>
+            </div>
+            <div class="container">
+                <div class="row justify-content-between">
+                    <div class="col-3">
+                        <div class="card text-white bg-dark">
+                            players
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="card text-white bg-dark text-center">
+                            chat
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <ul>
-    <todoitem></todoitem>
-    <todoitem></todoitem>
-    <todoitem></todoitem>
-  </ul>
-
-  <h2 v-if="seen">SEEN</h2>
-  <button id="hide-seen" v-on:click="toggleSeen">{{ button.text }}</button>
-</div>
-
-<script>
-    // components
-    import sidebar from './sidebar.vue'
-    Vue.component('todoitem', {
-      template: "<li>Test Item</li>",
-    })
-    Vue.component('sidebar', sidebar)
-
-    // app code
-    var app = new Vue({
-      el: '#app',
-      data: {
-        todos: [
-          { text: 'Sample Item 1' },
-          { text: 'Sample Item 2' },
-          { text: 'Sample Item 3' }
-        ],
-        button: {
-          text: 'Hide'
-        },
-        seen: true
-      },
-      methods: {
-        addItem: function() {
-          let item = document.getElementById("list-input").value;
-          let error = document.getElementById("error");
-          if (item == "") {
-            error.style.display = "block";
-          } else {
-            app.todos.push({ text: item });
-            error.style.display = "none";
-          }
-        },
-        toggleSeen: function() {
-          app.seen = !app.seen;
-          app.button.text = app.seen ? 'Hide' : 'Show';
-        }
-      }
-    });
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
 </body>
+</html>

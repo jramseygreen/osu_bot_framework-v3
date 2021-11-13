@@ -41,10 +41,13 @@ class Chimu:
             return {}
 
     # return list of beatmapsets based on query + provided attributes
-    def search(self, query="", pages=10, **attributes):
+    def search(self, query="", pages=5, **attributes):
         # construct urls
+        start = 0
+        if "offset" in attributes:
+            start = round(attributes["offset"] / 100)
         urls = []
-        for i in range(0, pages):
+        for i in range(start, pages + start):
             url = self.url + "search?query=" + query.replace(" ", "%20")
             attributes["offset"] = i * 100
             for attribute in attributes:
@@ -118,7 +121,6 @@ class Chimu:
             if offset:
                 attributes["offset"] = offset
 
-        attributes["amount"] = 10000
         status = None
         if "status" in attributes:
             if type(attributes["status"]) == str:

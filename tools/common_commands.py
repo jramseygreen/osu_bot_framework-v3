@@ -27,12 +27,14 @@ class CommonCommands:
         command = message["content"].split(" ", 1)[0]
         if self.channel.get_formatted_host() == message["username"] or self.channel.has_referee(message["username"]):
             query = message["content"].replace(command, "", 1).strip()
+            offset = 0
             if query == "":
                 self.channel.send_message("Searching for beatmap...")
+                offset = random.randint(0, 500)
             else:
                 self.channel.send_message("Searching for '" + query + "'...")
 
-            beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query)
+            beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, query=query, offset=offset)
             if beatmap:
                 self.channel.change_beatmap(beatmap["BeatmapId"])
             else:

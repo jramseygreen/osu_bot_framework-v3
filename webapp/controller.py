@@ -35,7 +35,7 @@ class Controller:
                 conn, addr = self.__webapp_sock.accept()
                 conn.recv(1024)
                 # header
-                index = open("webapp/index.html", "r")
+                index = open("webapp/index2.html", "r")
                 text = 'HTTP/1.0 200 OK\n'
                 text += 'Content-Type: text/html\n'
                 text += 'Content-Type: text/html\n\n'
