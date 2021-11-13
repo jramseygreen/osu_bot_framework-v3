@@ -120,6 +120,7 @@ class Bot:
                                             threading.Thread(target=self.__on_personal_message_method, args=(message,)).start()
                                         else:
                                             threading.Thread(target=self.__on_personal_message_method).start()
+                                        self.log("-- on personal message method executed --")
                             self.__controller.update()
                     # functional information
                     else:

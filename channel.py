@@ -38,6 +38,7 @@ class Channel:
                     threading.Thread(target=self.__on_join_method, args=(username,)).start()
                 else:
                     threading.Thread(target=self.__on_join_method).start()
+                self._bot.log("-- on join method executed --")
 
     def del_user(self, username):
         slot = None
@@ -54,6 +55,7 @@ class Channel:
                     threading.Thread(target=self.__on_part_method, args=(username,)).start()
                 else:
                     threading.Thread(target=self.__on_part_method).start()
+                self._bot.log("-- on part method executed --")
 
     def process_message(self, message):
         if len(self._message_log) == self._message_log_length:
@@ -64,6 +66,7 @@ class Channel:
                 threading.Thread(target=self.__on_message_method, args=(message,)).start()
             else:
                 threading.Thread(target=self.__on_message_method).start()
+            self._bot.log("-- on message method executed --")
 
     def send_message(self, message):
         self._bot.get_sock().sendall(("PRIVMSG " + self._channel + " :" + str(message) + "\n").encode())
