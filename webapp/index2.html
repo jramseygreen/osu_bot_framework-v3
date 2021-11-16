@@ -12,19 +12,28 @@
     <div class="row">
         <div class="col d-flex flex-column text-white bg-dark" style="height: 100vh;">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                <svg class="bi me-2" width="40" height="32">
-                    <use xlink:href="#bootstrap"></use>
-                </svg>
-                <span class="fs-4">OBF-3</span>
+                <div class="row">
+                    <div class="col-3">
+                        <img src="https://cdn.discordapp.com/attachments/904455843813154837/909234894331334696/dunnoO-blue.png"
+                             width="50" height="50">
+                    </div>
+                    <div class="col-9">
+                        <h3 class="text-center">OBF-3</h3>
+                    </div>
+                </div>
             </a>
             <hr>
+            <span class="fs-4 mb-2">Channels</span>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
                     <a href="#" class="nav-link active" aria-current="page">
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#home"></use>
                         </svg>
-                        Home
+                        <span>Channel1
+                        <span class="badge rounded-pill bg-light text-dark">16
+                        </span>
+                        </span>
                     </a>
                 </li>
                 <li>
@@ -32,7 +41,8 @@
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#speedometer2"></use>
                         </svg>
-                        Dashboard
+                        Channel2
+                        <span class="badge rounded-pill bg-light text-dark">16</span>
                     </a>
                 </li>
                 <li>
@@ -40,7 +50,8 @@
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#table"></use>
                         </svg>
-                        Orders
+                        Channel3
+                        <span class="badge rounded-pill bg-light text-dark">16</span>
                     </a>
                 </li>
                 <li>
@@ -48,7 +59,8 @@
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#grid"></use>
                         </svg>
-                        Products
+                        Channel4
+                        <span class="badge rounded-pill bg-light text-dark">16</span>
                     </a>
                 </li>
                 <li>
@@ -56,50 +68,312 @@
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#people-circle"></use>
                         </svg>
-                        Customers
+                        Channel5
+                        <span class="badge rounded-pill bg-light text-dark">16</span>
                     </a>
                 </li>
             </ul>
             <hr>
-            <div class="btn-group dropup">
-                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false">
-                    Dropup
-                </button>
-                <div class="dropdown">
-                    <a class="dropdown-item" href="#">Action</a>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#makeRoom">
+                Make Room
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="makeRoom" tabindex="-1" role="dialog"
+                 aria-labelledby="#makeRoomLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-dark" id="makeRoomLabel">Make a new game room</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-dark">
+                            Room title input here
+                            <hr>
+                            attribute selection here
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                            </button>
+                            <button type="button" class="btn btn-primary">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#joinChannel">
+                Join Channel
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="joinChannel" tabindex="-1" role="dialog"
+                 aria-labelledby="#joinChannelLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-dark" id="joinChannelLabel">Join a channel</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-dark">
+                            channel to join here
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                            </button>
+                            <button type="button" class="btn btn-primary">Join</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!--        main content-->
         <div class="col-10">
-            <div class="card text-white bg-dark mb-4">
+            <div class="card text-white bg-dark" style="height: 100vh;">
                 <h2 class="card-header text-center">
                     Channel_name
                 </h2>
+                <span class="badge bg-success">In Progress...</span>
                 <hr>
-                <div class="card-body text-center">
-                    attributes will go here
-                </div>
-            </div>
-            <div class="container">
-                <div class="row justify-content-between">
-                    <div class="col-3">
-                        <div class="card text-white bg-dark">
-                            players
+                <!--                limits and ranges-->
+                <div class="container card-body text-center">
+                    <div class="row">
+                        <div class="col-1 card bg-secondary">
+                            AR range
+                            min
+                            <input type="range" class="form-range" min="0" max="10" step="1" id="arRangeMin">
+                            max
+                            <input type="range" class="form-range" min="0" max="10" step="1" id="arRangeMax">
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            OD range
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            CS range
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            HP range
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            BPM range
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            Length range
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            Difficulty range
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            Game Mode
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            Mods
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            Scoring Type
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            Team Type
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            Map Status
                         </div>
                     </div>
-                    <div class="col-9">
-                        <div class="card text-white bg-dark text-center">
-                            chat
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-2">
+                            <!--                        beatmap-->
+                            <div class="card bg-secondary">
+                                <h3 class="text-center">Beatmap</h3>
+                                <hr>
+                                <h5 class="text-center">Getty vs. DJ DiA - DropZ-Line- (Realazy) [fanzhen's
+                                    Extreme]</h5>
+                                <hr>
+                                <img src="https://assets.ppy.sh/beatmaps/727049/covers/card.jpg?1622132738"
+                                     class="rounded"
+                                     alt="..."
+                                     width="190">
+                                <hr>
+                                <!--                            buttons-->
+                                <div class="dropdown text-center">
+                                    <h6>Logic Profile</h6>
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="badge bg-secondary">AutoHostRotate</span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="logicProfiles">
+                                        <li><a class="dropdown-item" href="#">AutoHostRotate</a></li>
+                                        <li><a class="dropdown-item" href="#">KingOfTheHill</a></li>
+                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                    </ul>
+                                </div>
+                                <hr>
+                                <table class="table">
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-success">Start Game</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger">Abort Game</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <button type="button" class="btn btn-warning text-secondary">Advanced Options</button>
+                                <hr>
+                            </div>
+                        </div>
+                        <!--                    players-->
+                        <div class="col-3">
+                            <div class="card text-white bg-secondary">
+                                <h3 class="text-center">Players</h3>
+                                <hr>
+                                <table class="table table-sm text-white">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Badges</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>Mickey</td>
+                                        <td>Host</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2</th>
+                                        <td>Jacob</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">3</th>
+                                        <td>Lyle</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">4</th>
+                                        <td>Mark</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">5</th>
+                                        <td>Simon</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">6</th>
+                                        <td>Lucy</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">7</th>
+                                        <td>Jack</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">8</th>
+                                        <td>Victor</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">9</th>
+                                        <td>Oscar</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">10</th>
+                                        <td>Jay</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">11</th>
+                                        <td>Josh</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">12</th>
+                                        <td>Gerald</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">13</th>
+                                        <td>Martin</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">14</th>
+                                        <td>Sam</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">15</th>
+                                        <td>John</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">16</th>
+                                        <td>Joe</td>
+                                        <td></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!--                    chat-->
+                        <div class="col-7">
+                            <div class="card text-white bg-secondary text-center">
+                                <h3 class="card-title">Chat</h3>
+                                <hr>
+                                <div class="container">
+                                    <div class="card text-white bg-dark">
+                                        <div style="overflow-y: scroll; height: 60vh;">
+                                            <table id="chat" class="table text-white">
+                                                <tbody>
+                                                <tr>
+                                                    <th scope="row">Mickey</th>
+                                                    <td>this is a message that was sent</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Mickey</th>
+                                                    <td>this is a message that was sent</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Mickey</th>
+                                                    <td>this is a message that was sent</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <!--                                    input section-->
+                                    <div class="card">
+                                        <div class="input-group mt-1 mb-1">
+                                            <input type="text" class="form-control" placeholder="Say something..."
+                                                   aria-label="Chatbox" aria-describedby="button-addon2">
+                                            <button class="btn btn-dark" type="button" id="button-addon2">Send
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
