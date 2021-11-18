@@ -66,12 +66,12 @@ class Manager:
 
     def on_part(self, username):
         if username == self.channel.get_formatted_host() and self.channel.has_users():
-            self.channel.change_host(self.channel.get_next_full_slot()["username"])
+            self.channel.set_host(self.channel.get_next_full_slot()["username"])
 
     def on_message(self, message):
         if message["username"] == "BanchoBot":
             if "User not found" == message["content"] and self.channel.has_users():
-                self.channel.change_host(self.channel.get_next_full_slot()["username"])
+                self.channel.set_host(self.channel.get_next_full_slot()["username"])
 
     def toggle_tournament(self, message):
         if self.channel.has_referee(message["username"]):

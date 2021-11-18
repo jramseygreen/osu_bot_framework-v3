@@ -75,6 +75,36 @@
             </ul>
             <hr>
             <!-- Button trigger modal -->
+            <button class="nav-link text-white text-center rounded-pill bg-secondary" data-bs-toggle="modal"
+                    data-bs-target="#personalMessages">
+                Personal Messages
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="personalMessages" tabindex="-1" role="dialog"
+                 aria-labelledby="#personalMessagesLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-dark">
+                            Room title input here
+                            <hr>
+                            attribute selection here
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                            </button>
+                            <button type="button" class="btn btn-primary">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-- Button trigger modal -->
             <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#makeRoom">
                 Make Room
             </button>
@@ -188,54 +218,10 @@
                 </div>
                 <div class="container">
                     <div class="row">
-                        <div class="col-2">
-                            <!--                        beatmap-->
-                            <div class="card bg-secondary">
-                                <h3 class="text-center">Beatmap</h3>
-                                <hr>
-                                <h5 class="text-center">Getty vs. DJ DiA - DropZ-Line- (Realazy) [fanzhen's
-                                    Extreme]</h5>
-                                <hr>
-                                <img src="https://assets.ppy.sh/beatmaps/727049/covers/card.jpg?1622132738"
-                                     class="rounded"
-                                     alt="..."
-                                     width="190">
-                                <hr>
-                                <!--                            buttons-->
-                                <div class="dropdown text-center">
-                                    <h6>Logic Profile</h6>
-                                    <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="badge bg-secondary">AutoHostRotate</span>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="logicProfiles">
-                                        <li><a class="dropdown-item" href="#">AutoHostRotate</a></li>
-                                        <li><a class="dropdown-item" href="#">KingOfTheHill</a></li>
-                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                    </ul>
-                                </div>
-                                <hr>
-                                <table class="table">
-                                    <tbody>
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-success">Start Game</button>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger">Abort Game</button>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <button type="button" class="btn btn-warning text-secondary">Advanced Options</button>
-                                <hr>
-                            </div>
-                        </div>
                         <!--                    players-->
                         <div class="col-3">
                             <div class="card text-white bg-secondary">
-                                <h3 class="text-center">Players</h3>
-                                <hr>
+                                <h3 class="card-header text-center mb-2">Players</h3>
                                 <table class="table table-sm text-white">
                                     <thead>
                                     <tr>
@@ -336,7 +322,7 @@
                                 <hr>
                                 <div class="container">
                                     <div class="card text-white bg-dark">
-                                        <div style="overflow-y: scroll; height: 60vh;">
+                                        <div style="overflow-y: scroll; height: 50vh;">
                                             <table id="chat" class="table text-white">
                                                 <tbody>
                                                 <tr>
@@ -356,7 +342,7 @@
                                         </div>
                                     </div>
                                     <!--                                    input section-->
-                                    <div class="card">
+                                    <div class="card mb-4">
                                         <div class="input-group mt-1 mb-1">
                                             <input type="text" class="form-control" placeholder="Say something..."
                                                    aria-label="Chatbox" aria-describedby="button-addon2">
@@ -368,6 +354,56 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-2">
+                            <!--                        beatmap-->
+                            <div class="card bg-secondary mb-4">
+                                <h3 class="card-header text-center">Beatmap</h3>
+                                <h5 class="text-center mt-2">Getty vs. DJ DiA - DropZ-Line- (Realazy) [fanzhen's
+                                    Extreme]</h5>
+                                <hr>
+                                <img src="https://assets.ppy.sh/beatmaps/727049/covers/card.jpg?1622132738"
+                                     class="rounded"
+                                     alt="..."
+                                     width="190">
+                                <hr>
+                                <div class="mb-3">
+                                    <span class="badge rounded-pill bg-info text-dark">4.06 Star</span>
+                                    <span class="badge rounded-pill bg-info text-dark">2 min 22 sec</span>
+                                    <span class="badge rounded-pill bg-info text-dark">taiko</span>
+                                </div>
+                            </div>
+                            <div class="card bg-secondary">
+                                <!--                            buttons-->
+                                <div class="dropdown text-center">
+                                    <h6>Logic Profile</h6>
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="badge bg-secondary">AutoHostRotate</span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="logicProfiles">
+                                        <li><a class="dropdown-item" href="#">AutoHostRotate</a></li>
+                                        <li><a class="dropdown-item" href="#">KingOfTheHill</a></li>
+                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                    </ul>
+                                </div>
+                                <hr>
+                                <table class="table">
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-success">Start Game</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger">Abort Game</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <button type="button" class="btn rounded-pill btn-warning text-secondary mb-3">Advanced
+                                    Options
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -375,8 +411,10 @@
     </div>
 </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+
 </body>
 </html>

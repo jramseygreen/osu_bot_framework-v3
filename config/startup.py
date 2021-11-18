@@ -3,6 +3,8 @@ def startup(bot):
     bot.start()
     # Add below line
     # ---------------------------------------------
+    channel = bot.make_room(title="You are a QTPIE", password="abc")
+    channel.implement_logic_profile("Manager")
     # channel = bot.make_room(title="4* - 5.5* | qqzzy's AutoHostRotate", password="abc", size=16, beatmapID=22538, mods=["freemod"], game_mode="osu", team_type="head-to-head", scoring_type="score")
     # #channel = bot.join("#mp_93542641")
     # channel.set_diff_range((4, 5.5))

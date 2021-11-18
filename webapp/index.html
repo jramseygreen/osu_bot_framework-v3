@@ -10,9 +10,6 @@
     <script>
           var sock = new WebSocket("ws://localhost:9876/");
           var data;
-          function buttonClicked() {
-            sock.send('button clicked');
-          }
           window.onload = function() {
             sock.onopen = function () {
                 //sock.send("hello world");
