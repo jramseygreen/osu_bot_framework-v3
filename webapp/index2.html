@@ -7,7 +7,7 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
-<div class="container-fluid">
+<div id="app" class="container-fluid">
     <!--    sidebar-->
     <div class="row">
         <div class="col d-flex flex-column text-white bg-dark" style="height: 100vh;">
@@ -167,7 +167,7 @@
         <div class="col-10">
             <div class="card text-white bg-dark" style="height: 100vh;">
                 <h2 class="card-header text-center">
-                    Channel_name
+                    {{Channel_name}}
                 </h2>
                 <span class="badge bg-success">In Progress...</span>
                 <hr>
@@ -222,97 +222,99 @@
                         <div class="col-3">
                             <div class="card text-white bg-secondary">
                                 <h3 class="card-header text-center mb-2">Players</h3>
-                                <table class="table table-sm text-white">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Username</th>
-                                        <th scope="col">Badges</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Mickey</td>
-                                        <td>Host</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Jacob</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Lyle</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">4</th>
-                                        <td>Mark</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">5</th>
-                                        <td>Simon</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">6</th>
-                                        <td>Lucy</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">7</th>
-                                        <td>Jack</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">8</th>
-                                        <td>Victor</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">9</th>
-                                        <td>Oscar</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">10</th>
-                                        <td>Jay</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">11</th>
-                                        <td>Josh</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">12</th>
-                                        <td>Gerald</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">13</th>
-                                        <td>Martin</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">14</th>
-                                        <td>Sam</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">15</th>
-                                        <td>John</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">16</th>
-                                        <td>Joe</td>
-                                        <td></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                <div style="overflow-y: scroll; height: 59vh">
+                                    <table class="table table-sm text-white">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">Badges</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Mickey</td>
+                                            <td>Host</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">2</th>
+                                            <td>Jacob</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td>Lyle</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">4</th>
+                                            <td>Mark</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">5</th>
+                                            <td>Simon</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">6</th>
+                                            <td>Lucy</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">7</th>
+                                            <td>Jack</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">8</th>
+                                            <td>Victor</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">9</th>
+                                            <td>Oscar</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">10</th>
+                                            <td>Jay</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">11</th>
+                                            <td>Josh</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">12</th>
+                                            <td>Gerald</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">13</th>
+                                            <td>Martin</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">14</th>
+                                            <td>Sam</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">15</th>
+                                            <td>John</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">16</th>
+                                            <td>Joe</td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                         <!--                    chat-->
@@ -378,7 +380,7 @@
                                     <h6>Logic Profile</h6>
                                     <button class="btn btn-secondary dropdown-toggle" type="button"
                                             id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="badge bg-secondary">AutoHostRotate</span>
+                                        <span class="badge bg-secondary">{{logic_profile}}</span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="logicProfiles">
                                         <li><a class="dropdown-item" href="#">AutoHostRotate</a></li>
@@ -414,7 +416,39 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script>
+    var sock = new WebSocket("ws://localhost:9876/");
+    var data;
+    var channel = "#english";
+    var app;
+    window.onload = function () {
+        sock.onopen = function () {
+        };
 
+        sock.onerror = function (error) {
+            console.log('WebSocket Error ' + error);
+        };
+
+        sock.onmessage = function (e) {
+            console.log('Server: ' + e.data);
+            data = JSON.parse(e.data);
+            makeVue();
+        };
+    };
+
+    function makeVue() {
+        app = new Vue({
+        el: "#app",
+        data: {
+            channel_name: channel,
+            logic_profile: data["channels"][channel]["logic_profile"]
+
+
+        }
+    })
+    }
+</script>
 
 </body>
 </html>

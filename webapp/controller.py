@@ -53,10 +53,11 @@ class Controller:
             self.__ws.send(conn, message)
 
     def update(self):
-        data = {}
+        data = {"channels": {}}
         for channel in self.bot.get_channels():
-            data[channel] = self.bot.get_channel(channel).get_attributes()
-            del data[channel]["commands"]
+            data["channels"][channel] = self.bot.get_channel(channel).get_attributes()
+            if "commands" in data["channels"][channel]:
+                del data["channels"][channel]["commands"]
         data["pm"] = self.bot.get_personal_message_log()
         data["logic_profiles"] = list(self.bot.get_logic_profiles().keys())
         self.send_message(json.dumps(data))

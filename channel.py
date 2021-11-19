@@ -136,7 +136,7 @@ class Channel:
         return self._logic_profile
 
     def get_attributes(self):
-        return {"users": self._users, "messages": self._message_log}
+        return {"users": self._users, "messages": self._message_log, "logic_profile": self._logic_profile}
 
     def import_attributes(self, data):
         pass
