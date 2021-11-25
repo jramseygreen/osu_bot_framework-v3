@@ -14,7 +14,7 @@ class Game(Channel):
         super().__init__(bot, channel, verbose)
         self.__creator = ""
         self.__invite_link = ""
-        self.__slots = {i: {"username": "", "team": "", "score": {}} for i in range(16)}
+        self.__slots = {i: {"username": "", "team": "", "score": {}, "host": False} for i in range(16)}
         self.__host = ""
         self.__in_progress = False
         # osu tutorial as default 22538

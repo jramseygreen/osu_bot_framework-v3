@@ -56,6 +56,12 @@ class Controller:
         data = {"channels": {}}
         for channel in self.bot.get_channels():
             data["channels"][channel] = self.bot.get_channel(channel).get_attributes()
+            if "mp_" in channel:
+                data["channels"][channel]["host"] = self.bot.get_channel(channel).get_host()
+            else:
+                data["channels"][channel]["host"] = ""
+                data["channels"][channel]["in_progress"] = False
+                data["channels"][channel]["slots"] = {int(data["channels"][channel]["users"].index(user)): {"username": user, "host": False} for user in data["channels"][channel]["users"]}
             if "commands" in data["channels"][channel]:
                 del data["channels"][channel]["commands"]
         data["pm"] = self.bot.get_personal_message_log()

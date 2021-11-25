@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8"/>
     <title>OBF3</title>
@@ -25,51 +25,13 @@
             <hr>
             <span class="fs-4 mb-2">Channels</span>
             <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <a href="#" class="nav-link active" aria-current="page">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#home"></use>
-                        </svg>
-                        <span>Channel1
-                        <span class="badge rounded-pill bg-light text-dark">16
+                <li v-for="channel in channels" class="nav-item">
+                    <a :href="channel" class="nav-link active" aria-current="page" onclick="switchChannel(this)">
+                        <svg class="bi me-2" width="16" height="16"></svg>
+                        <span>{{channel}}
+                        <span class="badge rounded-pill bg-light text-dark">{{userNum}}
                         </span>
                         </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link text-white">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#speedometer2"></use>
-                        </svg>
-                        Channel2
-                        <span class="badge rounded-pill bg-light text-dark">16</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link text-white">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#table"></use>
-                        </svg>
-                        Channel3
-                        <span class="badge rounded-pill bg-light text-dark">16</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link text-white">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#grid"></use>
-                        </svg>
-                        Channel4
-                        <span class="badge rounded-pill bg-light text-dark">16</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link text-white">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#people-circle"></use>
-                        </svg>
-                        Channel5
-                        <span class="badge rounded-pill bg-light text-dark">16</span>
                     </a>
                 </li>
             </ul>
@@ -167,9 +129,11 @@
         <div class="col-10">
             <div class="card text-white bg-dark" style="height: 100vh;">
                 <h2 class="card-header text-center">
-                    {{Channel_name}}
+                    {{channel_name}}
                 </h2>
-                <span class="badge bg-success">In Progress...</span>
+                <div v-if="inProgress">
+                    <span class="badge bg-success">In Progress...</span>
+                </div>
                 <hr>
                 <!--                limits and ranges-->
                 <div class="container card-body text-center">
@@ -221,7 +185,11 @@
                         <!--                    players-->
                         <div class="col-3">
                             <div class="card text-white bg-secondary">
-                                <h3 class="card-header text-center mb-2">Players</h3>
+                                <h3 class="text-center mt-2">Players<span
+                                        class="card-header badge rounded-pill ms-4 bg-light text-dark">{{userNum}}</span>
+                                </h3>
+                                <hr>
+
                                 <div style="overflow-y: scroll; height: 59vh">
                                     <table class="table table-sm text-white">
                                         <thead>
@@ -232,86 +200,18 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td>Mickey</td>
-                                            <td>Host</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>Jacob</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>Lyle</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">4</th>
-                                            <td>Mark</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">5</th>
-                                            <td>Simon</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">6</th>
-                                            <td>Lucy</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">7</th>
-                                            <td>Jack</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">8</th>
-                                            <td>Victor</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">9</th>
-                                            <td>Oscar</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">10</th>
-                                            <td>Jay</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">11</th>
-                                            <td>Josh</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">12</th>
-                                            <td>Gerald</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">13</th>
-                                            <td>Martin</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">14</th>
-                                            <td>Sam</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">15</th>
-                                            <td>John</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">16</th>
-                                            <td>Joe</td>
-                                            <td></td>
-                                        </tr>
+                                        <template>
+                                            <tr v-for="(slot, index) in slots">
+                                                <th scope="row">{{parseInt(index) + 1}}</th>
+                                                <td>{{slot.username}}</td>
+                                                <div v-if="slot.host">
+                                                    <td>Host</td>
+                                                </div>
+                                                <div v-else>
+                                                    <td></td>
+                                                </div>
+                                            </tr>
+                                        </template>
                                         </tbody>
                                     </table>
                                 </div>
@@ -439,14 +339,24 @@
 
     function makeVue() {
         app = new Vue({
-        el: "#app",
-        data: {
-            channel_name: channel,
-            logic_profile: data["channels"][channel]["logic_profile"]
+            el: "#app",
+            data: {
+                channel_name: channel,
+                logic_profile: data["channels"][channel]["logic_profile"],
+                slots: data["channels"][channel]["slots"],
+                users: data["channels"][channel]["users"],
+                userNum: data["channels"][channel]["users"].length,
+                host: data["channels"][channel]["host"],
+                channels: Object.keys(data["channels"]),
+                inProgress: data["channels"][channel]["in_progreses"],
 
+            }
+        })
+    }
 
-        }
-    })
+    function switchChannel(data) {
+        channel = data.getAttribute("href");
+        makeVue();
     }
 </script>
 
