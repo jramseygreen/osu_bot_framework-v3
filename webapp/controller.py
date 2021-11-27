@@ -2,6 +2,7 @@ import json
 import os
 import socket
 import threading
+import time
 
 from webapp.ws_server import ws_server
 
@@ -17,8 +18,15 @@ class Controller:
         self.__webapp_port = webapp_port
 
     def __on_message(self, conn, msg):
-        if msg == "button clicked":
-            self.__ws.send(conn, "clicked")
+        data = json.loads(msg.lower())
+        if data["command"] == "update":
+            self.update()
+        elif data["command"] == "start_match":
+            self.bot.get_channel(data["channel"]).start_match()
+        elif data["command"] == "abort_match":
+            self.bot.get_channel(data["channel"]).abort_match()
+        elif data["command"] == "send_message":
+            self.bot.get_channel(data["channel"]).send_message(data["message"])
 
     def start(self, running=False):
         if not running:
@@ -53,6 +61,7 @@ class Controller:
             self.__ws.send(conn, message)
 
     def update(self):
+        time.sleep(1.2)
         data = {"channels": {}}
         for channel in self.bot.get_channels():
             data["channels"][channel] = self.bot.get_channel(channel).get_attributes()
@@ -61,7 +70,7 @@ class Controller:
             else:
                 data["channels"][channel]["host"] = ""
                 data["channels"][channel]["in_progress"] = False
-                data["channels"][channel]["slots"] = {int(data["channels"][channel]["users"].index(user)): {"username": user, "host": False} for user in data["channels"][channel]["users"]}
+                data["channels"][channel]["slots"] = {int(data["channels"][channel]["users"].index(user)): {"username": user} for user in data["channels"][channel]["users"]}
             if "commands" in data["channels"][channel]:
                 del data["channels"][channel]["commands"]
         data["pm"] = self.bot.get_personal_message_log()

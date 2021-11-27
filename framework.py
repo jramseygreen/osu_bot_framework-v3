@@ -398,3 +398,6 @@ class Bot:
 
     def set_logging(self, status):
         self.logging = status
+
+    def _get_controller(self):
+        return self.__controller

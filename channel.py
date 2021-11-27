@@ -73,6 +73,7 @@ class Channel:
         if len(self._message_log) == self._message_log_length:
             self._message_log = self._message_log[1:]
         self._message_log.append({"username": self._bot.get_username().replace(" ", "_"), "channel": self._channel, "content": message})
+        self._bot._get_controller().update()
         self._bot.log("-- sent message to " + self._channel + ": '" + str(message) + "' --")
 
     def is_game(self):

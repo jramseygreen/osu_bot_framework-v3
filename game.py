@@ -14,11 +14,12 @@ class Game(Channel):
         super().__init__(bot, channel, verbose)
         self.__creator = ""
         self.__invite_link = ""
-        self.__slots = {i: {"username": "", "team": "", "score": {}, "host": False} for i in range(16)}
+        self.__slots = {i: {"username": "", "team": "", "score": {}} for i in range(16)}
         self.__host = ""
         self.__in_progress = False
         # osu tutorial as default 22538
         self.__beatmap = TUTORIAL
+        self.__beatmap_name = ""
         self.__match_history = self.fetch_match_history()
         self.__size = 8
         self.__password = ""
@@ -100,6 +101,8 @@ class Game(Channel):
 
                 self.set_slot(int(message["content"].split("slot ", 1)[1].split(".", 1)[0].split(" ")[0]) - 1, {"username": username, "team": team, "score": {}})
                 self.add_user(username)
+                if self.has_referee(username):
+                    self.add_referee(username)
             elif "left the game" in message["content"]:
                 username = message["content"][:message["content"].find("left") - 1]
                 self.del_user(username)
@@ -108,6 +111,7 @@ class Game(Channel):
                 username = message["content"].replace(" moved to slot " + str(slot + 1), "")
                 team = self.get_team(username)
                 score = self.get_score(username)
+                self.del_slot(self.get_slot_num(username))
                 self.set_slot(slot, {"username": username, "team": team, "score": score})
                 if self.__on_slot_change_method:
                     argnum = len(str(inspect.signature(self.__on_slot_change_method)).strip("()").split(", "))
@@ -122,7 +126,8 @@ class Game(Channel):
             elif "changed to Blue" in message["content"]:
                 username = message["content"].replace(" changed to Blue", "")
                 slot = self.get_slot_num(username)
-                self.set_slot(slot, {"username": username, "team": "blue", "score": {}})
+                score = self.get_score(username)
+                self.set_slot(slot, {"username": username, "team": "red", "score": score})
                 if self.__on_team_change_method:
                     argnum = len(str(inspect.signature(self.__on_team_change_method)).strip("()").split(", "))
                     if argnum == 2:
@@ -136,7 +141,8 @@ class Game(Channel):
             elif "changed to Red" in message["content"]:
                 username = message["content"].replace(" changed to Red", "")
                 slot = self.get_slot_num(username)
-                self.set_slot(slot, {"username": username, "team": "red", "score": {}})
+                score = self.get_score(username)
+                self.set_slot(slot, {"username": username, "team": "red", "score": score})
                 if self.__on_team_change_method:
                     argnum = len(str(inspect.signature(self.__on_team_change_method)).strip("()").split(", "))
                     if argnum == 2:
@@ -166,6 +172,12 @@ class Game(Channel):
             elif "Beatmap changed to" in message["content"] or "Changed beatmap to" in message["content"]:
                 beatmapID = message["content"].split("/b/", 1)[1].split(" ", 1)[0].replace(")", "")
                 self.__check_beatmap_attributes(beatmapID)
+                line = message["content"].replace("Beatmap changed to:", "").replace("Changed beatmap to" ,"").split(" ")
+                for item in line:
+                    if "https://" in item:
+                        line.remove(item)
+
+                self.__beatmap_name = " ".join(line)
             elif "Host is changing map..." == message["content"]:
                 self.abort_start_timer()
                 if self.__on_changing_beatmap_method:
@@ -195,12 +207,13 @@ class Game(Channel):
                     if command == "!mp addref":
                         for arg in args:
                             if arg not in self.__referees:
-                                self.__referees.append(arg)
+                                self.add_referee(arg)
                     elif command == "!mp removeref":
                         for username in args:
                             if username != self.__creator.replace(" ", "_") and username in self.__referees:
-                                self.__referees.remove(username)
+                                self.del_referee(username)
                                 if username == self._bot.get_username():
+                                    self._bot.part(self._channel)
                                     self._bot.part(self._channel)
                 if command == "!mp password":
                     self.__invite_link = self.__invite_link.replace(self.__password, "")
@@ -555,6 +568,9 @@ class Game(Channel):
     def set_slot(self, slot, data):
         self.__slots[slot] = data
 
+    def del_slot(self, slot):
+        self.__slots[slot] = {"username": "", "team": "", "score": {}}
+
     def get_slot(self, username):
         slotnum = self.get_slot_num(username)
         if slotnum:
@@ -661,6 +677,10 @@ class Game(Channel):
     def add_referee(self, username):
         if username not in self.__referees:
             self.__referees.append(username)
+
+    def del_referee(self, username):
+        if username in self.__referees:
+            self.__referees.remove(username)
 
     def get_referees(self):
         return self.__referees
@@ -977,6 +997,7 @@ class Game(Channel):
         data["host"] = self.__host
         data["in_progress"] = self.__in_progress
         data["beatmap"] = self.__beatmap
+        data["beatmap_name"] = self.__beatmap_name
         data["size"] = self.__size
         data["password"] = self.__password
         data["title"] = self.__title
@@ -1210,3 +1231,6 @@ class Game(Channel):
 
     def is_allow_unsubmitted(self):
         return self.__allow_unsubmitted
+
+    def get_beatmap_name(self):
+        return self.__beatmap_name

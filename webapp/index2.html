@@ -26,7 +26,7 @@
             <span class="fs-4 mb-2">Channels</span>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li v-for="channel in channels" class="nav-item">
-                    <a :href="channel" class="nav-link active" aria-current="page" onclick="switchChannel(this)">
+                    <a :href="channel" class="nav-link active" aria-current="page" onclick="setChannel(this)">
                         <svg class="bi me-2" width="16" height="16"></svg>
                         <span>{{channel}}
                         <span class="badge rounded-pill bg-light text-dark">{{userNum}}
@@ -129,11 +129,9 @@
         <div class="col-10">
             <div class="card text-white bg-dark" style="height: 100vh;">
                 <h2 class="card-header text-center">
-                    {{channel_name}}
+                    {{channel}}
                 </h2>
-                <div v-if="inProgress">
-                    <span class="badge bg-success">In Progress...</span>
-                </div>
+                <span class="badge bg-success">{{inProgress}}</span>
                 <hr>
                 <!--                limits and ranges-->
                 <div class="container card-body text-center">
@@ -186,7 +184,7 @@
                         <div class="col-3">
                             <div class="card text-white bg-secondary">
                                 <h3 class="text-center mt-2">Players<span
-                                        class="card-header badge rounded-pill ms-4 bg-light text-dark">{{userNum}}</span>
+                                        class="card-header badge ms-4 bg-light text-dark">{{userNum}}</span>
                                 </h3>
                                 <hr>
 
@@ -204,12 +202,7 @@
                                             <tr v-for="(slot, index) in slots">
                                                 <th scope="row">{{parseInt(index) + 1}}</th>
                                                 <td>{{slot.username}}</td>
-                                                <div v-if="slot.host">
-                                                    <td>Host</td>
-                                                </div>
-                                                <div v-else>
-                                                    <td></td>
-                                                </div>
+                                                <td>{{slot.badges}}</td>
                                             </tr>
                                         </template>
                                         </tbody>
@@ -227,17 +220,9 @@
                                         <div style="overflow-y: scroll; height: 50vh;">
                                             <table id="chat" class="table text-white">
                                                 <tbody>
-                                                <tr>
-                                                    <th scope="row">Mickey</th>
-                                                    <td>this is a message that was sent</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">Mickey</th>
-                                                    <td>this is a message that was sent</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">Mickey</th>
-                                                    <td>this is a message that was sent</td>
+                                                <tr v-for="message in messages">
+                                                    <th scope="row">{{message.username}}</th>
+                                                    <td>{{message.content}}</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -245,12 +230,15 @@
                                     </div>
                                     <!--                                    input section-->
                                     <div class="card mb-4">
-                                        <div class="input-group mt-1 mb-1">
-                                            <input type="text" class="form-control" placeholder="Say something..."
-                                                   aria-label="Chatbox" aria-describedby="button-addon2">
-                                            <button class="btn btn-dark" type="button" id="button-addon2">Send
-                                            </button>
-                                        </div>
+                                            <form>
+                                                <div class="input-group mt-1 mb-1">
+                                                <input id="channel_message" type="text" class="form-control"
+                                                       placeholder="Say something...">
+                                                <button class="btn btn-dark" type="submit"
+                                                        onclick="send_message('channel_message', app.channel)">Send
+                                                </button>
+                                                </div>
+                                            </form>
                                     </div>
 
                                 </div>
@@ -260,18 +248,25 @@
                             <!--                        beatmap-->
                             <div class="card bg-secondary mb-4">
                                 <h3 class="card-header text-center">Beatmap</h3>
-                                <h5 class="text-center mt-2">Getty vs. DJ DiA - DropZ-Line- (Realazy) [fanzhen's
-                                    Extreme]</h5>
-                                <hr>
-                                <img src="https://assets.ppy.sh/beatmaps/727049/covers/card.jpg?1622132738"
-                                     class="rounded"
-                                     alt="..."
-                                     width="190">
+                                <a :href="beatmap.url" target="_blank" style="text-decoration: none;">
+                                    <h5 class="text-center text-light mt-2">{{beatmapName}}</h5>
+                                    <hr>
+                                    <img :src="beatmapImage"
+                                         class="rounded"
+                                         alt="..."
+                                         width="190">
+                                </a>
                                 <hr>
                                 <div class="mb-3">
-                                    <span class="badge rounded-pill bg-info text-dark">4.06 Star</span>
-                                    <span class="badge rounded-pill bg-info text-dark">2 min 22 sec</span>
-                                    <span class="badge rounded-pill bg-info text-dark">taiko</span>
+                                    <span class="badge rounded-pill bg-info text-dark">{{beatmap.difficulty_rating}} ★</span>
+                                    <span class="badge rounded-pill bg-info text-dark">{{beatmap.hit_length}} sec</span>
+                                    <span class="badge rounded-pill bg-info text-dark">{{beatmap.mode}}</span>
+                                    <span class="badge rounded-pill bg-info text-dark">{{beatmap.status}}</span>
+                                    <span class="badge rounded-pill bg-info text-dark">{{beatmap.bpm}} BPM</span>
+                                    <span class="badge rounded-pill bg-info text-dark">AR {{beatmap.ar}}</span>
+                                    <span class="badge rounded-pill bg-info text-dark">OD {{beatmap.accuracy}}</span>
+                                    <span class="badge rounded-pill bg-info text-dark">CS {{beatmap.cs}}</span>
+                                    <span class="badge rounded-pill bg-info text-dark">HP {{beatmap.drain}}</span>
                                 </div>
                             </div>
                             <div class="card bg-secondary">
@@ -293,10 +288,14 @@
                                     <tbody>
                                     <tr>
                                         <td>
-                                            <button type="button" class="btn btn-success">Start Game</button>
+                                            <button type="button" class="btn btn-success" onclick="start_match()">Start
+                                                Match
+                                            </button>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-danger">Abort Game</button>
+                                            <button type="button" class="btn btn-danger" onclick="abort_match()">Abort
+                                                Match
+                                            </button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -319,8 +318,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 <script>
     var sock = new WebSocket("ws://localhost:9876/");
-    var data;
-    var channel = "#english";
+    var buffer;
     var app;
     window.onload = function () {
         sock.onopen = function () {
@@ -332,31 +330,73 @@
 
         sock.onmessage = function (e) {
             console.log('Server: ' + e.data);
-            data = JSON.parse(e.data);
-            makeVue();
+            buffer = JSON.parse(e.data);
+            app.buffer = buffer;
+            app.channels = Object.keys(buffer["channels"]);
+            if (app.channel !== "") {
+                app.logic_profile = buffer["channels"][app.channel]["logic_profile"];
+                app.slots = buffer["channels"][app.channel]["slots"];
+                app.users = buffer["channels"][app.channel]["users"];
+                app.userNum = buffer["channels"][app.channel]["users"].length;
+                app.host = buffer["channels"][app.channel]["host"];
+
+                app.inProgress = (buffer["channels"][app.channel]["in_progress"] ? "In Progress..." : "");
+                app.messages = buffer["channels"][app.channel]["messages"];
+                app.beatmap = buffer["channels"][app.channel]["beatmap"];
+                app.beatmapName = buffer["channels"][app.channel]["beatmap_name"]
+                app.beatmapImage = "https://assets.ppy.sh/beatmaps/" + buffer["channels"][app.channel]["beatmap"]["beatmapset_id"] + "/covers/card.jpg";
+            }
         };
     };
 
-    function makeVue() {
-        app = new Vue({
-            el: "#app",
-            data: {
-                channel_name: channel,
-                logic_profile: data["channels"][channel]["logic_profile"],
-                slots: data["channels"][channel]["slots"],
-                users: data["channels"][channel]["users"],
-                userNum: data["channels"][channel]["users"].length,
-                host: data["channels"][channel]["host"],
-                channels: Object.keys(data["channels"]),
-                inProgress: data["channels"][channel]["in_progreses"],
+    app = new Vue({
+        el: "#app",
+        data: {
+            buffer: {},
+            channel: "",
+            logic_profile: "",
+            slots: {},
+            users: [],
+            userNum: 0,
+            host: "",
+            channels: [],
+            inProgress: "",
+            messages: [],
+            beatmap: {},
+            beatmapName: "",
+            beatmapImage: "",
+        }
+    })
 
-            }
-        })
+    function setChannel(data) {
+        app.channel = data.getAttribute("href");
     }
 
-    function switchChannel(data) {
-        channel = data.getAttribute("href");
-        makeVue();
+    function start_match() {
+        payload = {
+            "command": "start_match",
+            "channel": app.channel
+        };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function abort_match() {
+        payload = {
+            "command": "abort_match",
+            "channel": app.channel
+        };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function send_message(inputObj, channel) {
+        message = document.getElementById(inputObj).value;
+        document.getElementById(inputObj).value = "";
+        payload = {
+            "command": "send_message",
+            "channel": channel,
+            "message": message
+        };
+        sock.send(JSON.stringify(payload));
     }
 </script>
 
