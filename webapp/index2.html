@@ -24,11 +24,11 @@
             </a>
             <hr>
             <span class="fs-4 mb-2">Channels</span>
-            <ul class="nav nav-pills flex-column mb-auto">
+            <ul class="nav nav-pills flex-column mb-auto" id="channels">
                 <li v-for="channel in channels" class="nav-item">
-                    <a :href="channel" class="nav-link active" aria-current="page" onclick="setChannel(this)">
+                    <a :href="channel" class="nav-link" aria-current="page" onclick="setChannel(this)">
                         <svg class="bi me-2" width="16" height="16"></svg>
-                        <span>{{channel}}
+                        <span class="text-light">{{channel}}
                         <span class="badge rounded-pill bg-light text-dark">{{userNum}}
                         </span>
                         </span>
@@ -45,7 +45,7 @@
             <!-- Modal -->
             <div class="modal fade" id="personalMessages" tabindex="-1" role="dialog"
                  aria-labelledby="#personalMessagesLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -53,9 +53,47 @@
                             </button>
                         </div>
                         <div class="modal-body text-dark">
-                            Room title input here
-                            <hr>
-                            attribute selection here
+                            <div class="card text-white bg-secondary text-center">
+                                <h3 class="card-title">Personal Messages</h3>
+                                <hr>
+                                <div class="container">
+                                    <div class="card text-white bg-dark">
+                                        <div style="overflow-y: scroll; height: 50vh;">
+                                            <table class="table text-white">
+                                                <thead>
+                                                <tr>
+                                                    <th>From</th>
+                                                    <th>To</th>
+                                                    <th>Message</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="message in personal_messages">
+                                                    <th scope="row">{{message.username}}</th>
+                                                    <th>{{message.channel}}</th>
+                                                    <td style="max-width: 100%;">{{message.content}}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <!--                                    input section-->
+                                    <div class="card mb-4">
+                                        <form>
+                                            <div class="input-group mt-1 mb-1">
+                                                <input type="text" class="form-control"
+                                                       placeholder="Username" style="max-width: 15%;" id="pm_username">
+                                                <input type="text" class="form-control"
+                                                       placeholder="Say something..." id="personal_message">
+                                                <button class="btn btn-dark" type="submit"
+                                                        onclick="send_message('personal_message', document.getElementById('pm_username').value)">Send
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
@@ -66,12 +104,12 @@
                 </div>
             </div>
             <hr>
-            <!-- Button trigger modal -->
+            <!-- make room -->
             <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#makeRoom">
                 Make Room
             </button>
 
-            <!-- Modal -->
+            <!-- make room Modal -->
             <div class="modal fade" id="makeRoom" tabindex="-1" role="dialog"
                  aria-labelledby="#makeRoomLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -82,26 +120,30 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body text-dark">
-                            Room title input here
-                            <hr>
-                            attribute selection here
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                            </button>
-                            <button type="button" class="btn btn-primary">Create</button>
-                        </div>
+                        <!--                        modal body-->
+                        <form id="make_room_form">
+                            <div class="mb-3">
+                                <h5 class="text-dark">Room Title</h5>
+                                <input type="text" class="form-control" id="make_room_title">
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="make_room(this.form)">Create
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
 
-            <!-- Button trigger modal -->
+            <!-- join channel -->
             <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#joinChannel">
                 Join Channel
             </button>
 
-            <!-- Modal -->
+            <!-- join channel Modal -->
             <div class="modal fade" id="joinChannel" tabindex="-1" role="dialog"
                  aria-labelledby="#joinChannelLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -112,13 +154,23 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
+                        <!--                        modal body-->
                         <div class="modal-body text-dark">
-                            channel to join here
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                            </button>
-                            <button type="button" class="btn btn-primary">Join</button>
+
+                            <form id="join_channel_form">
+                                <div class="mb-3">
+                                    <h5 class="text-dark">Channel to join</h5>
+                                    <input type="text" class="form-control" id="join_form_channel">
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    </button>
+                                    <button type="button" class="btn btn-primary" onclick="join_channel(this.form)">
+                                        Join
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -222,7 +274,7 @@
                                                 <tbody>
                                                 <tr v-for="message in messages">
                                                     <th scope="row">{{message.username}}</th>
-                                                    <td>{{message.content}}</td>
+                                                    <td style="max-width: 100%;">{{message.content}}</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -230,15 +282,15 @@
                                     </div>
                                     <!--                                    input section-->
                                     <div class="card mb-4">
-                                            <form>
-                                                <div class="input-group mt-1 mb-1">
+                                        <form>
+                                            <div class="input-group mt-1 mb-1">
                                                 <input id="channel_message" type="text" class="form-control"
                                                        placeholder="Say something...">
                                                 <button class="btn btn-dark" type="submit"
                                                         onclick="send_message('channel_message', app.channel)">Send
                                                 </button>
-                                                </div>
-                                            </form>
+                                            </div>
+                                        </form>
                                     </div>
 
                                 </div>
@@ -322,6 +374,14 @@
     var app;
     window.onload = function () {
         sock.onopen = function () {
+            sock.send(JSON.stringify({"command": "update"}));
+        };
+
+        sock.onclose = function () {
+            var new_sock = new WebSocket("ws://localhost:9876/");
+            new_sock.onopen = function () {
+                sock = new_sock;
+            };
         };
 
         sock.onerror = function (error) {
@@ -331,20 +391,22 @@
         sock.onmessage = function (e) {
             console.log('Server: ' + e.data);
             buffer = JSON.parse(e.data);
-            app.buffer = buffer;
             app.channels = Object.keys(buffer["channels"]);
-            if (app.channel !== "") {
+            app.personal_messages = buffer["pm"];
+            if (app.channel !== "" && app.channels.includes(app.channel)) {
                 app.logic_profile = buffer["channels"][app.channel]["logic_profile"];
                 app.slots = buffer["channels"][app.channel]["slots"];
+                app.messages = buffer["channels"][app.channel]["messages"];
                 app.users = buffer["channels"][app.channel]["users"];
                 app.userNum = buffer["channels"][app.channel]["users"].length;
-                app.host = buffer["channels"][app.channel]["host"];
+                if (app.channel.includes("#mp_")) {
+                    app.host = buffer["channels"][app.channel]["host"];
+                    app.inProgress = (buffer["channels"][app.channel]["in_progress"] ? "In Progress..." : "");
+                    app.beatmap = buffer["channels"][app.channel]["beatmap"];
+                    app.beatmapName = buffer["channels"][app.channel]["beatmap_name"]
+                    app.beatmapImage = "https://assets.ppy.sh/beatmaps/" + buffer["channels"][app.channel]["beatmap"]["beatmapset_id"] + "/covers/card.jpg";
+                }
 
-                app.inProgress = (buffer["channels"][app.channel]["in_progress"] ? "In Progress..." : "");
-                app.messages = buffer["channels"][app.channel]["messages"];
-                app.beatmap = buffer["channels"][app.channel]["beatmap"];
-                app.beatmapName = buffer["channels"][app.channel]["beatmap_name"]
-                app.beatmapImage = "https://assets.ppy.sh/beatmaps/" + buffer["channels"][app.channel]["beatmap"]["beatmapset_id"] + "/covers/card.jpg";
             }
         };
     };
@@ -352,7 +414,6 @@
     app = new Vue({
         el: "#app",
         data: {
-            buffer: {},
             channel: "",
             logic_profile: "",
             slots: {},
@@ -365,11 +426,20 @@
             beatmap: {},
             beatmapName: "",
             beatmapImage: "",
+            personal_messages: [],
         }
     })
 
     function setChannel(data) {
         app.channel = data.getAttribute("href");
+        var ul = document.getElementById("channels");
+        var items = ul.getElementsByTagName("li");
+        for (var i = 0; i < items.length; ++i) {
+            // do something with items[i], which is a <li> element
+            items[i].firstElementChild.classList.remove("active");
+        }
+        data.classList.add("active")
+        sock.send(JSON.stringify({"command": "update"}));
     }
 
     function start_match() {
@@ -388,11 +458,29 @@
         sock.send(JSON.stringify(payload));
     }
 
+    function make_room(form) {
+        payload = {
+            "command": "make_room",
+            "title": form.elements.make_room_title.value,
+        };
+        sock.send(JSON.stringify(payload));
+        form.reset();
+    }
+
+    function join_channel(form) {
+        payload = {
+            "command": "join",
+            "channel": form.elements.join_form_channel.value,
+        };
+        sock.send(JSON.stringify(payload));
+        form.reset();
+    }
+
     function send_message(inputObj, channel) {
         message = document.getElementById(inputObj).value;
         document.getElementById(inputObj).value = "";
         payload = {
-            "command": "send_message",
+            "command": inputObj,
             "channel": channel,
             "message": message
         };

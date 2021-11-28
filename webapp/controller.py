@@ -18,15 +18,28 @@ class Controller:
         self.__webapp_port = webapp_port
 
     def __on_message(self, conn, msg):
+        print(msg)
         data = json.loads(msg.lower())
         if data["command"] == "update":
             self.update()
         elif data["command"] == "start_match":
-            self.bot.get_channel(data["channel"]).start_match()
+            channel = self.bot.get_channel(data["channel"])
+            if channel:
+                channel.start_match()
         elif data["command"] == "abort_match":
-            self.bot.get_channel(data["channel"]).abort_match()
+            channel = self.bot.get_channel(data["channel"])
+            if channel:
+                channel.abort_match()
         elif data["command"] == "send_message":
-            self.bot.get_channel(data["channel"]).send_message(data["message"])
+            channel = self.bot.get_channel(data["channel"])
+            if channel:
+                channel.send_message(data["message"])
+        elif data["command"] == "personal_message":
+            self.bot.send_personal_message(data["channel"], data["message"])
+        elif data["command"] == "make_room":
+            self.bot.make_room(title=data["title"])
+        elif data["command"] == "join":
+            self.bot.join(data["channel"])
 
     def start(self, running=False):
         if not running:
@@ -38,6 +51,7 @@ class Controller:
             # start webapp server
             self.__webapp_sock.bind((self.__host, self.__webapp_port))
             self.__webapp_sock.listen()
+            self.__update_loop()
             if self.bot.verbose:
                 print("-- Webapp server started --")
             while True:
@@ -61,7 +75,6 @@ class Controller:
             self.__ws.send(conn, message)
 
     def update(self):
-        time.sleep(1.2)
         data = {"channels": {}}
         for channel in self.bot.get_channels():
             data["channels"][channel] = self.bot.get_channel(channel).get_attributes()
@@ -76,6 +89,14 @@ class Controller:
         data["pm"] = self.bot.get_personal_message_log()
         data["logic_profiles"] = list(self.bot.get_logic_profiles().keys())
         self.send_message(json.dumps(data))
+
+    def __update_loop(self, running=False):
+        if not running:
+            threading.Thread(target=self.__update_loop, args=(True,)).start()
+        else:
+            while True:
+                time.sleep(2)
+                self.update()
 
     def set_ws_port(self, port):
         self.__ws.set_port(port)
