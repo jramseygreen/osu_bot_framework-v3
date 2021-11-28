@@ -24,6 +24,7 @@ class AutoSong:
         channel.set_command("*logic_profiles", channel.common_commands.get_logic_profiles, "Shows available logic profiles")
         channel.set_command("*aborttimer", channel.common_commands.abort_start_timer, "Aborts start timer")
         channel.set_command("*skip", self.skip, "Skips the current beatmap")
+        channel.set_command("*game_mode", channel.common_commands.game_mode, "Sets the game mode of the lobby")
         channel.set_command("*diff_range", channel.common_commands.diff_range,"Sets the difficulty range for the room. e.g. *diff_range 4 5.99")
         channel.set_command("*map_status", channel.common_commands.map_status, "Sets the allowed map statuses for the room. e.g. *map_status ranked loved")
         channel.set_command("*add_artist_whitelist", channel.common_commands.add_artist_whitelist,"Adds an artist to the whitelist. e.g. *add_artist_whitelist eminem")
@@ -55,15 +56,14 @@ class AutoSong:
         self.vote.stop()
 
     def next_round(self):
-        beatmap = self.bot.chimu.fetch_random_beatmap(self.channel, offset=random.randint(0, 1000))
-        if beatmap in self.played:
-            beatmap = self.bot.chimu.fetch_random_beatmap(self.channel)
-        while not self.bot.fetch_beatmap(beatmap["BeatmapId"]):
-            beatmap = self.bot.chimu.fetch_random_beatmap(self.channel)
+        beatmap = self.bot.chimu.fetch_random_beatmap(self.channel)
+        if beatmap:
+            if beatmap in self.played:
+                beatmap = self.bot.chimu.fetch_random_beatmap(self.channel)
             self.played.append(beatmap)
-
-        self.played.append(beatmap["BeatmapId"])
-        self.channel.send_message("!mp map " + str(beatmap["BeatmapId"]) + " | The next beatmap is [https://osu.ppy.sh" + beatmap["DownloadPath"] + " " + beatmap["OsuFile"][:-4] + "] | Type '!skip' to vote to skip this beatmap.")
+            self.channel.send_message("!mp map " + str(beatmap["BeatmapId"]) + " | The next beatmap is [https://osu.ppy.sh" + beatmap["DownloadPath"] + " " + beatmap["OsuFile"][:-4] + "] | Type '!skip' to vote to skip this beatmap.")
+        else:
+            self.channel.send_message("Could not find any beatmaps matching your criteria!")
 
     def carry_vote(self, vote_manager):
         self.channel.send_message("Beatmap skipped!")
