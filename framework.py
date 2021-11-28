@@ -205,7 +205,7 @@ class Bot:
             channel = "#" + channel
         if channel in self.__channels:
             del self.__channels[channel]
-            self.__sock.sendall(("PART :" + channel + "\n").encode())
+            self.__sock.sendall(("PART " + channel + "\n").encode())
 
     # sends a personal message to a username
     def send_personal_message(self, username, message):
