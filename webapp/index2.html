@@ -26,16 +26,18 @@
             <span class="fs-4 mb-2">Channels</span>
             <ul class="nav nav-pills flex-column mb-auto" id="channels">
                 <li v-for="channel in channels" class="nav-item">
-                    <span class="nav-link">
-                    <a :name="channel" href="#" aria-current="page" onclick="setChannel(this)"
-                       style="text-decoration: none;">
-                        <svg class="bi me-2" width="16" height="16"></svg>
-                        <span class="text-light">{{channel}}
+                    <span :id="channel" class="nav-link">
+                        <a :name="channel" href="#" aria-current="page" onclick="setChannel(this)"
+                           style="text-decoration: none;">
+                            <svg class="bi me-2" width="16" height="16"></svg>
+                            <span class="text-light">{{channel}}
                         <span class="badge rounded-pill bg-light text-dark">{{userNum}}
                         </span>
                         </span>
-                    </a>
-                        <button :name="channel" type="button" class="btn btn-danger btn-sm pull-right" onclick="part_channel(this)">X</button>
+                        </a>
+                        <button :name="channel" type="button" class="btn btn-danger btn-sm pull-right"
+                                onclick="part_channel(this)">X
+                        </button>
                     </span>
                 </li>
             </ul>
@@ -454,7 +456,7 @@
         for (var i = 0; i < items.length; ++i) {
             items[i].firstElementChild.classList.remove("active");
         }
-        data.classList.add("active")
+        document.getElementById(app.channel).classList.add("active");
         sock.send(JSON.stringify({"command": "update"}));
     }
 

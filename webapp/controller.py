@@ -82,7 +82,7 @@ class Controller:
 
     def update(self):
         data = {"channels": {}}
-        for channel in self.bot.get_channels():
+        for channel in self.bot.get_channels().copy():
             data["channels"][channel] = self.bot.get_channel(channel).get_attributes()
             if "mp_" in channel:
                 data["channels"][channel]["host"] = self.bot.get_channel(channel).get_host()
