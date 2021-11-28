@@ -19,7 +19,7 @@ class Controller:
 
     def __on_message(self, conn, msg):
         print(msg)
-        data = json.loads(msg.lower())
+        data = json.loads(msg)
         if data["command"] == "update":
             self.update()
         elif data["command"] == "start_match":
@@ -30,7 +30,7 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel:
                 channel.abort_match()
-        elif data["command"] == "send_message":
+        elif data["command"] == "channel_message":
             channel = self.bot.get_channel(data["channel"])
             if channel:
                 channel.send_message(data["message"])
@@ -40,6 +40,10 @@ class Controller:
             self.bot.make_room(title=data["title"])
         elif data["command"] == "join":
             self.bot.join(data["channel"])
+        elif data["command"] == "set_logic_profile":
+            channel = self.bot.get_channel(data["channel"])
+            if channel:
+                channel.implement_logic_profile(data["profile"])
 
     def start(self, running=False):
         if not running:

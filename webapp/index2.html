@@ -86,7 +86,8 @@
                                                 <input type="text" class="form-control"
                                                        placeholder="Say something..." id="personal_message">
                                                 <button class="btn btn-dark" type="submit"
-                                                        onclick="send_message('personal_message', document.getElementById('pm_username').value)">Send
+                                                        onclick="send_message('personal_message', document.getElementById('pm_username').value)">
+                                                    Send
                                                 </button>
                                             </div>
                                         </form>
@@ -306,12 +307,12 @@
                                     <img :src="beatmapImage"
                                          class="rounded"
                                          alt="..."
-                                         width="190">
+                                         width="190" style="max-width: 100%;">
                                 </a>
                                 <hr>
                                 <div class="mb-3">
                                     <span class="badge rounded-pill bg-info text-dark">{{beatmap.difficulty_rating}} ★</span>
-                                    <span class="badge rounded-pill bg-info text-dark">{{beatmap.hit_length}} sec</span>
+                                    <span class="badge rounded-pill bg-info text-dark">{{beatmapLength}}</span>
                                     <span class="badge rounded-pill bg-info text-dark">{{beatmap.mode}}</span>
                                     <span class="badge rounded-pill bg-info text-dark">{{beatmap.status}}</span>
                                     <span class="badge rounded-pill bg-info text-dark">{{beatmap.bpm}} BPM</span>
@@ -330,15 +331,15 @@
                                         <span class="badge bg-secondary">{{logic_profile}}</span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="logicProfiles">
-                                        <li><a class="dropdown-item" href="#">AutoHostRotate</a></li>
-                                        <li><a class="dropdown-item" href="#">KingOfTheHill</a></li>
-                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                        <li v-for="profile in logic_profiles"><a class="dropdown-item" href="#" :id="profile"
+                                                                                 onclick="set_logic_profile(this)">{{profile}}</a>
+                                        </li>
                                     </ul>
                                 </div>
                                 <hr>
                                 <table class="table">
                                     <tbody>
-                                    <tr>
+                                    <tr style="max-width: 100%;">
                                         <td>
                                             <button type="button" class="btn btn-success" onclick="start_match()">Start
                                                 Match
@@ -391,30 +392,42 @@
         sock.onmessage = function (e) {
             console.log('Server: ' + e.data);
             buffer = JSON.parse(e.data);
-            app.channels = Object.keys(buffer["channels"]);
-            app.personal_messages = buffer["pm"];
-            if (app.channel !== "" && app.channels.includes(app.channel)) {
-                app.logic_profile = buffer["channels"][app.channel]["logic_profile"];
-                app.slots = buffer["channels"][app.channel]["slots"];
-                app.messages = buffer["channels"][app.channel]["messages"];
-                app.users = buffer["channels"][app.channel]["users"];
-                app.userNum = buffer["channels"][app.channel]["users"].length;
-                if (app.channel.includes("#mp_")) {
-                    app.host = buffer["channels"][app.channel]["host"];
-                    app.inProgress = (buffer["channels"][app.channel]["in_progress"] ? "In Progress..." : "");
-                    app.beatmap = buffer["channels"][app.channel]["beatmap"];
-                    app.beatmapName = buffer["channels"][app.channel]["beatmap_name"]
-                    app.beatmapImage = "https://assets.ppy.sh/beatmaps/" + buffer["channels"][app.channel]["beatmap"]["beatmapset_id"] + "/covers/card.jpg";
-                }
+            if (e.data !== JSON.stringify(app.buffer)) {
+                app.buffer = buffer;
+                app.channels = Object.keys(buffer["channels"]);
+                app.personal_messages = buffer["pm"];
+                if (app.channel !== "" && app.channels.includes(app.channel)) {
+                    app.logic_profiles = buffer["logic_profiles"];
+                    app.logic_profile = buffer["channels"][app.channel]["logic_profile"];
+                    app.slots = buffer["channels"][app.channel]["slots"];
+                    app.messages = buffer["channels"][app.channel]["messages"];
+                    app.users = buffer["channels"][app.channel]["users"];
+                    app.userNum = buffer["channels"][app.channel]["users"].length;
+                    if (app.channel.includes("#mp_")) {
+                        app.host = buffer["channels"][app.channel]["host"];
+                        app.inProgress = (buffer["channels"][app.channel]["in_progress"] ? "In Progress..." : "");
+                        app.beatmap = buffer["channels"][app.channel]["beatmap"];
+                        app.beatmapName = buffer["channels"][app.channel]["beatmap_name"];
+                        app.beatmapImage = "https://assets.ppy.sh/beatmaps/" + buffer["channels"][app.channel]["beatmap"]["beatmapset_id"] + "/covers/card.jpg";
+                        if (Math.floor(app.beatmap["hit_length"] / 60) > 0) {
+                            app.beatmapLength = Math.floor(app.beatmap["hit_length"] / 60) + "min " + app.beatmap["hit_length"] % 60 + "sec";
+                        } else {
+                            app.beatmapLength = app.beatmap["hit_length"] + "sec"
+                        }
+                    }
 
+                }
             }
+
         };
     };
 
     app = new Vue({
         el: "#app",
         data: {
+            buffer: {},
             channel: "",
+            logic_profiles: [],
             logic_profile: "",
             slots: {},
             users: [],
@@ -426,6 +439,7 @@
             beatmap: {},
             beatmapName: "",
             beatmapImage: "",
+            beatmapLength: "",
             personal_messages: [],
         }
     })
@@ -435,10 +449,19 @@
         var ul = document.getElementById("channels");
         var items = ul.getElementsByTagName("li");
         for (var i = 0; i < items.length; ++i) {
-            // do something with items[i], which is a <li> element
             items[i].firstElementChild.classList.remove("active");
         }
         data.classList.add("active")
+        sock.send(JSON.stringify({"command": "update"}));
+    }
+
+    function set_logic_profile(profile) {
+        payload = {
+            "command": "set_logic_profile",
+            "channel": app.channel,
+            "profile": profile.getAttribute("id")
+        };
+        sock.send(JSON.stringify(payload));
         sock.send(JSON.stringify({"command": "update"}));
     }
 
