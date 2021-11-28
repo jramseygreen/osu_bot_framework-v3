@@ -276,13 +276,13 @@
                                 <h3 class="card-title">Chat</h3>
                                 <hr>
                                 <div class="container">
-                                    <div class="card text-white bg-dark">
+                                    <div class="card text-white bg-dark text-start">
                                         <div style="overflow-y: scroll; height: 50vh;">
-                                            <table id="chat" class="table text-white">
+                                            <table id="chat" class="table table-sm text-white">
                                                 <tbody>
                                                 <tr v-for="message in messages">
-                                                    <th scope="row">{{message.username}}</th>
-                                                    <td style="display: block; max-width: 100%">{{message.content}}</td>
+                                                    <td style="display:block; max-width: 34vw;"><span class="badge bg-secondary">{{message.username}}</span><p class="ms-1">{{message.content}}</p>
+                                                    </td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -347,7 +347,7 @@
                                 <hr>
                                 <table class="table">
                                     <tbody>
-                                    <tr style="max-width: 100%;">
+                                    <tr>
                                         <td>
                                             <button type="button" class="btn btn-success" onclick="start_match()">Start
                                                 Match
@@ -421,6 +421,8 @@
                         }
                     }
 
+                } else {
+                    //clear
                 }
             }
 

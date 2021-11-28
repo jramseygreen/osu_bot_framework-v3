@@ -44,8 +44,8 @@ class Channel:
         slot = None
         if self.is_game():
             slot = self.get_slot_num(username)
-        if username in self.get_users():
-            self._users.remove(username)
+        if username.replace(" ", "_") in self.get_formatted_users():
+            del self._users[self.get_formatted_users().index(username.replace(" ", "_"))]
             self._bot.log("-- Removed user: " + username + " --")
             if self.__on_part_method:
                 argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))

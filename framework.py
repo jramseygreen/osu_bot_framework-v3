@@ -73,95 +73,98 @@ class Bot:
                     line = line.split(" ")
                     username = line[0].replace("!cho@ppy.sh", "")[1:]
                     command = line[1]
-                    if command != "QUIT":
+
+                    if command == "PIVMSG":
                         self.log("--- Received: " + " ".join(line))
 
-                        # JOIN, PART, PRIVMSG
-                        if command.isalpha():
-                            if command != "QUIT":
-                                channel = line[2].replace(":", "")
-                                if command == "JOIN":
-                                    if username == self.__username and channel not in self.__channels and "#mp_" in channel:
-                                        self.join(channel)
-                                        self.__new_tournament = channel
-                                    if channel in self.__channels and not self.__channels[channel].is_game():
-                                        self.__channels[channel].add_user(username)
-                                elif command == "PART":
-                                    if channel in self.__channels:
-                                        if self.__channels[channel].is_game():
-                                            if self.__channels[channel].get_logic()["on_room_close"]:
-                                                threading.Thread(target=self.__channels[channel].get_logic()["on_room_close"]).start()
-                                            del self.__channels[channel]
-                                        elif username in self.__channels[channel].get_formatted_users():
-                                            self.__channels[channel].del_user(username)
-                                elif command == "PRIVMSG":
-                                    content = " ".join(line[3:]).replace(":", "", 1)
-                                    message = {"username": username, "channel": channel, "content": content}
-                                    # channel messages
-                                    if channel in self.__channels:
-                                        self.__channels[channel].process_message(message)
-                                    # personal messages
-                                    elif channel == self.__username:
-                                        if len(self.__personal_message_log) == self.__personal_message_log_length:
-                                            self.__personal_message_log = self.__personal_message_log[1:]
-                                        self.__personal_message_log.append(message)
-                                        # pass data to front end
-                                        if message["username"] == "BanchoBot":
-                                            if message["content"] == "You cannot create any more tournament matches. Please close any previous tournament matches you have open.":
-                                                self.__room_limit_reached = True
-                                        for channel in self.__channels:
-                                            if self.__channels[channel].get_on_personal_message_method():
-                                                if str(inspect.signature(self.__channels[channel].get_on_personal_message_method())).strip("()").split(", ") != [""]:
-                                                    threading.Thread(target=self.__channels[channel].get_on_personal_message_method(), args=(message,)).start()
-                                                else:
-                                                    threading.Thread(target=self.__channels[channel].get_on_personal_message_method()).start()
-                                        if self.__on_personal_message_method:
-                                            if str(inspect.signature(self.__on_personal_message_method)).strip("()").split(", ") != [""]:
-                                                threading.Thread(target=self.__on_personal_message_method, args=(message,)).start()
-                                            else:
-                                                threading.Thread(target=self.__on_personal_message_method).start()
-                                            self.log("-- on personal message method executed --")
-                        # functional information
-                        else:
-                            # users already in channel
-                            if command == "353":
-                                channel = line[4]
-                                if channel in self.__channels:
-                                    users = line[5:]
-                                    users[0] = users[0][1:]
-                                    for username in users:
-                                        if username != "" and username[0] != "+" and username[0] != "@":
-                                            if self.__channels[channel].is_game():
-                                                # game users are added from match history
-                                                self.__channels[channel].get_users().append(username)
-                                            else:
-                                                self.__channels[channel].add_user(username)
-
-                            # invite link
-                            elif command == "332":
-                                channel = line[3]
+                    # JOIN, PART, PRIVMSG
+                    if command.isalpha():
+                        channel = line[2].replace(":", "")
+                        if command == "JOIN":
+                            if username == self.__username and channel not in self.__channels and "#mp_" in channel:
+                                self.join(channel)
+                                self.__new_tournament = channel
+                            if channel in self.__channels and not self.__channels[channel].is_game():
+                                self.__channels[channel].add_user(username)
+                        elif command == "PART":
+                            if channel in self.__channels:
                                 if self.__channels[channel].is_game():
-                                    self.__channels[channel].set_invite_link("osump://" + line[-1][1:] + "/")
-                            # users already in game channel
-                            elif command == "366":
-                                channel = line[3]
-                                if channel in self.__channels and self.__channels[channel].is_game():
-                                    self.__channels[channel].get_existing_attributes()
-                            # bad credentials
-                            elif command == "464":
-                                if not self.verbose:
-                                    print("There was an error connecting to " + self.__host + ":" + str(self.__port))
-                                    print("Either your username or password is incorrect! Please restart the program.")
-                                self.log("There was an error connecting to " + self.__host + ":" + str(self.__port))
-                                self.log("Either your username or password is incorrect! Please restart the program.")
-                                f = open("config" + os.sep + "bot_config.conf", "r+")
-                                config = json.loads(f.read())
-                                f.seek(0)
-                                f.truncate(0)
-                                config["username"] = "username"
-                                config["password"] = "password"
-                                f.write(json.dumps(config).replace(", ", ",\n").replace("{", "{\n", 1).replace("}", "\n}"))
-                                f.close()
+                                    if self.__channels[channel].get_logic()["on_room_close"]:
+                                        threading.Thread(target=self.__channels[channel].get_logic()["on_room_close"]).start()
+                                    del self.__channels[channel]
+                                elif username in self.__channels[channel].get_formatted_users():
+                                    self.__channels[channel].del_user(username)
+                        elif command == "QUIT":
+                            for channel in self.__channels:
+                                self.__channels[channel].del_user(username)
+                        elif command == "PRIVMSG":
+                            content = " ".join(line[3:]).replace(":", "", 1)
+                            message = {"username": username, "channel": channel, "content": content}
+                            # channel messages
+                            if channel in self.__channels:
+                                self.__channels[channel].process_message(message)
+                            # personal messages
+                            elif channel == self.__username:
+                                if len(self.__personal_message_log) == self.__personal_message_log_length:
+                                    self.__personal_message_log = self.__personal_message_log[1:]
+                                self.__personal_message_log.append(message)
+                                # pass data to front end
+                                if message["username"] == "BanchoBot":
+                                    if message["content"] == "You cannot create any more tournament matches. Please close any previous tournament matches you have open.":
+                                        self.__room_limit_reached = True
+                                for channel in self.__channels:
+                                    if self.__channels[channel].get_on_personal_message_method():
+                                        if str(inspect.signature(self.__channels[channel].get_on_personal_message_method())).strip("()").split(", ") != [""]:
+                                            threading.Thread(target=self.__channels[channel].get_on_personal_message_method(), args=(message,)).start()
+                                        else:
+                                            threading.Thread(target=self.__channels[channel].get_on_personal_message_method()).start()
+                                if self.__on_personal_message_method:
+                                    if str(inspect.signature(self.__on_personal_message_method)).strip("()").split(", ") != [""]:
+                                        threading.Thread(target=self.__on_personal_message_method, args=(message,)).start()
+                                    else:
+                                        threading.Thread(target=self.__on_personal_message_method).start()
+                                    self.log("-- on personal message method executed --")
+                    # functional information
+                    else:
+                        # users already in channel
+                        if command == "353":
+                            channel = line[4]
+                            if channel in self.__channels:
+                                users = line[5:]
+                                users[0] = users[0][1:]
+                                for username in users:
+                                    if username != "" and username[0] != "+" and username[0] != "@":
+                                        if self.__channels[channel].is_game():
+                                            # game users are added from match history
+                                            self.__channels[channel].get_users().append(username)
+                                        else:
+                                            self.__channels[channel].add_user(username)
+
+                        # invite link
+                        elif command == "332":
+                            channel = line[3]
+                            if self.__channels[channel].is_game():
+                                self.__channels[channel].set_invite_link("osump://" + line[-1][1:] + "/")
+                        # users already in game channel
+                        elif command == "366":
+                            channel = line[3]
+                            if channel in self.__channels and self.__channels[channel].is_game():
+                                self.__channels[channel].get_existing_attributes()
+                        # bad credentials
+                        elif command == "464":
+                            if not self.verbose:
+                                print("There was an error connecting to " + self.__host + ":" + str(self.__port))
+                                print("Either your username or password is incorrect! Please restart the program.")
+                            self.log("There was an error connecting to " + self.__host + ":" + str(self.__port))
+                            self.log("Either your username or password is incorrect! Please restart the program.")
+                            f = open("config" + os.sep + "bot_config.conf", "r+")
+                            config = json.loads(f.read())
+                            f.seek(0)
+                            f.truncate(0)
+                            config["username"] = "username"
+                            config["password"] = "password"
+                            f.write(json.dumps(config).replace(", ", ",\n").replace("{", "{\n", 1).replace("}", "\n}"))
+                            f.close()
 
     # attempts to connect to osu using the provided credentials
     def start(self):
