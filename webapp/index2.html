@@ -26,13 +26,17 @@
             <span class="fs-4 mb-2">Channels</span>
             <ul class="nav nav-pills flex-column mb-auto" id="channels">
                 <li v-for="channel in channels" class="nav-item">
-                    <a :href="channel" class="nav-link" aria-current="page" onclick="setChannel(this)">
+                    <span class="nav-link">
+                    <a :name="channel" href="#" aria-current="page" onclick="setChannel(this)"
+                       style="text-decoration: none;">
                         <svg class="bi me-2" width="16" height="16"></svg>
                         <span class="text-light">{{channel}}
                         <span class="badge rounded-pill bg-light text-dark">{{userNum}}
                         </span>
                         </span>
                     </a>
+                        <button :name="channel" type="button" class="btn btn-danger btn-sm ms-4" onclick="part_channel(this)">X</button>
+                    </span>
                 </li>
             </ul>
             <hr>
@@ -42,7 +46,7 @@
                 Personal Messages
             </button>
 
-            <!-- Modal -->
+            <!-- personal messages -->
             <div class="modal fade" id="personalMessages" tabindex="-1" role="dialog"
                  aria-labelledby="#personalMessagesLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl" role="document">
@@ -71,7 +75,7 @@
                                                 <tr v-for="message in personal_messages">
                                                     <th scope="row">{{message.username}}</th>
                                                     <th>{{message.channel}}</th>
-                                                    <td style="max-width: 100%;">{{message.content}}</td>
+                                                    <td style="display: block; max-width: 100%">{{message.content}}</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -99,7 +103,6 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
                             </button>
-                            <button type="button" class="btn btn-primary">Create</button>
                         </div>
                     </div>
                 </div>
@@ -131,7 +134,8 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
                                 </button>
-                                <button type="button" class="btn btn-primary" onclick="make_room(this.form)">Create
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                                        onclick="make_room(this.form)">Create
                                 </button>
                             </div>
                         </form>
@@ -167,7 +171,8 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
                                     </button>
-                                    <button type="button" class="btn btn-primary" onclick="join_channel(this.form)">
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                                            onclick="join_channel(this.form)">
                                         Join
                                     </button>
                                 </div>
@@ -275,7 +280,7 @@
                                                 <tbody>
                                                 <tr v-for="message in messages">
                                                     <th scope="row">{{message.username}}</th>
-                                                    <td style="max-width: 100%;">{{message.content}}</td>
+                                                    <td style="display: block; max-width: 100%">{{message.content}}</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -331,7 +336,8 @@
                                         <span class="badge bg-secondary">{{logic_profile}}</span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="logicProfiles">
-                                        <li v-for="profile in logic_profiles"><a class="dropdown-item" href="#" :id="profile"
+                                        <li v-for="profile in logic_profiles"><a class="dropdown-item" href="#"
+                                                                                 :id="profile"
                                                                                  onclick="set_logic_profile(this)">{{profile}}</a>
                                         </li>
                                     </ul>
@@ -379,10 +385,7 @@
         };
 
         sock.onclose = function () {
-            var new_sock = new WebSocket("ws://localhost:9876/");
-            new_sock.onopen = function () {
-                sock = new_sock;
-            };
+            document.body.innerHTML = '<span class="badge bg-danger text-light">The connection to the back end was lost! Please <a href="">refresh</a> the page!</span>'
         };
 
         sock.onerror = function (error) {
@@ -445,7 +448,7 @@
     })
 
     function setChannel(data) {
-        app.channel = data.getAttribute("href");
+        app.channel = data.getAttribute("name");
         var ul = document.getElementById("channels");
         var items = ul.getElementsByTagName("li");
         for (var i = 0; i < items.length; ++i) {
@@ -497,6 +500,15 @@
         };
         sock.send(JSON.stringify(payload));
         form.reset();
+    }
+
+    function part_channel(data) {
+        payload = {
+            "command": "part",
+            "channel": data.getAttribute("name"),
+        };
+        sock.send(JSON.stringify(payload));
+        sock.send(JSON.stringify({"command": "update"}));
     }
 
     function send_message(inputObj, channel) {

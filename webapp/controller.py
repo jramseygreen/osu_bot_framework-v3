@@ -40,6 +40,8 @@ class Controller:
             self.bot.make_room(title=data["title"])
         elif data["command"] == "join":
             self.bot.join(data["channel"])
+        elif data["command"] == "part":
+            self.bot.part(data["channel"])
         elif data["command"] == "set_logic_profile":
             channel = self.bot.get_channel(data["channel"])
             if channel:
