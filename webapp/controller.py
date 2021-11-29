@@ -34,30 +34,35 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel:
                 channel.send_message(data["message"])
-                message_arr = data["message"].lower().split(" ")
-                if len(message_arr) >= 2:
-                    command = " ".join(message_arr[:2]).strip()
-                    args = message_arr[2:]
-                    if command == "!mp addref":
-                        for arg in args:
-                            if arg not in channel.get_referees():
-                                channel.add_referee(arg)
-                    elif command == "!mp removeref":
-                        for username in args:
-                            if username != channel.get_creator().replace(" ", "_") and username in channel.get_referees():
-                                channel.del_referee(username)
-                                if username == self.bot.get_username():
-                                    self.bot.part(data["channel"])
-                    elif command == "!mp password":
-                        channel.set_invite_link(channel.get_invite_link().replace(channel.get_password(), ""))
-                        if args:
-                            channel.set_password(args[0])
-                            channel.set_invite_link(channel.get_invite_link() + args[0])
-                        else:
-                            channel.set_password("")
-                    elif command == "!mp size":
-                        if args:
-                            channel.set_size(int(args[0]))
+                if channel.is_game():
+                    message_arr = data["message"].lower().split(" ")
+                    if len(message_arr) >= 2:
+                        command = " ".join(message_arr[:2]).strip()
+                        args = message_arr[2:]
+                        if command == "!mp addref":
+                            for arg in args:
+                                if arg not in channel.get_referees():
+                                    channel.add_referee(arg)
+                        elif command == "!mp removeref":
+                            for username in args:
+                                if username != channel.get_creator().replace(" ", "_") and username in channel.get_referees():
+                                    channel.del_referee(username)
+                                    if username == self.bot.get_username():
+                                        self.bot.part(data["channel"])
+                        elif command == "!mp password":
+                            channel.set_invite_link(channel.get_invite_link().replace(channel.get_password(), ""))
+                            if args:
+                                channel.set_password(args[0])
+                                channel.set_invite_link(channel.get_invite_link() + args[0])
+                            else:
+                                channel.set_password("")
+                        elif command == "!mp size":
+                            if args:
+                                channel.set_size(int(args[0]))
+                        elif command == "!abort":
+                            if channel.get_logic()["on_match_abort"]:
+                                threading.Thread(target=channel.get_logic()["on_match_abort"]).start()
+                                self.bot.log("-- on match abort method executed --")
         elif data["command"] == "personal_message":
             self.bot.send_personal_message(data["channel"], data["message"])
         elif data["command"] == "make_room":
@@ -70,6 +75,10 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel:
                 channel.implement_logic_profile(data["profile"])
+        elif data["command"] == "close_room":
+            channel = self.bot.get_channel(data["channel"])
+            if channel:
+                channel.close_room()
 
     def start(self, running=False):
         if not running:
