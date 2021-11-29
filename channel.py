@@ -13,7 +13,7 @@ class Channel:
         self._message_log = []
         self._message_log_length = bot.get_default_message_log_length()
         self._users = []
-        self._commands = {"!info": {"response": "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "Built with osu_bot_framework v3"}}
+        self._commands = {}
         self.verbose = verbose
         self._logic_profile = ""
         self.common_commands = CommonCommands(bot, self)
@@ -141,7 +141,7 @@ class Channel:
         return self._logic_profile
 
     def get_attributes(self):
-        return {"users": self._users, "messages": self._message_log, "logic_profile": self._logic_profile}
+        return {"users": self._users, "messages": self._message_log, "logic_profile": self._logic_profile, "commands": self._commands, "command_descriptions": {command: self._commands[command]["description"] for command in self._commands}}
 
     def import_attributes(self, data):
         pass

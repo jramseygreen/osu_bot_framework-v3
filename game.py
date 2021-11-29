@@ -37,6 +37,8 @@ class Game(Channel):
         self.__maintain_size = False
         self.__player_blacklist = bot.get_player_blacklist()
         self.__auto_download = {"status": False, "path": "", "auto_open": False, "with_video": False}
+        self._commands = {"!info": {"response": "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "Built with osu_bot_framework v3"}}
+
 
         # limits and ranges (done)
         self.__ar_range = (0.0, 10.0)
@@ -987,8 +989,6 @@ class Game(Channel):
         data["password"] = self.__password
         data["title"] = self.__title
         data["welcome_message"] = self.__welcome_message
-        data["commands"] = self._commands
-        data["command_descriptions"] = {command: self._commands[command]["description"] for command in self._commands}
         data["referees"] = self.__referees
         data["config_link"] = self.__config_link
         data["beatmap_checker"] = self.__beatmap_checker
