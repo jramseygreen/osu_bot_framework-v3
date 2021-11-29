@@ -167,7 +167,8 @@
                             <form id="join_channel_form">
                                 <div class="mb-3">
                                     <h5 class="text-dark">Channel to join</h5>
-                                    <input type="text" placeholder="e.g. #mp_1234567, #osu, #lobby" class="form-control" id="join_form_channel">
+                                    <input type="text" placeholder="e.g. #mp_1234567, #osu, #lobby" class="form-control"
+                                           id="join_form_channel">
                                 </div>
 
                                 <div class="modal-footer">
@@ -194,7 +195,7 @@
                 <span class="badge bg-success">{{inProgress}}</span>
                 <hr>
                 <!--                limits and ranges-->
-                <div class="container card-body text-center">
+                <div v-show="channel.includes('#mp_')" class="container card-body text-center">
                     <div class="row">
                         <div class="col-1 card bg-secondary">
                             AR range
@@ -281,7 +282,8 @@
                                             <table id="chat" class="table table-sm text-white">
                                                 <tbody>
                                                 <tr v-for="message in messages">
-                                                    <td class="col-12"><span class="badge bg-secondary">{{message.username}}</span><p class="ms-1">{{message.content}}</p>
+                                                    <td class="col-12"><span class="badge bg-secondary">{{message.username}}</span>
+                                                        <p class="ms-1">{{message.content}}</p>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -306,7 +308,7 @@
                         </div>
                         <div class="col-2">
                             <!--                        beatmap-->
-                            <div class="card bg-secondary mb-4">
+                            <div v-show="channel.includes('#mp_')" class="card bg-secondary mb-4">
                                 <h3 class="card-header text-center">Beatmap</h3>
                                 <a :href="beatmap.url" target="_blank" style="text-decoration: none;">
                                     <h5 class="text-center text-light mt-2">{{beatmapName}}</h5>
@@ -338,33 +340,41 @@
                                         <span class="badge bg-secondary">{{logic_profile}}</span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="logicProfiles">
-                                        <li v-for="profile in logic_profiles"><a class="dropdown-item" href="javascript:void(0);"
+                                        <li v-for="profile in logic_profiles"><a class="dropdown-item"
+                                                                                 href="javascript:void(0);"
                                                                                  :id="profile"
                                                                                  onclick="set_logic_profile(this)">{{profile}}</a>
                                         </li>
                                     </ul>
                                 </div>
-                                <hr>
-                                <table class="table">
-                                    <tbody>
-                                    <tr>
-                                        <button type="button" class="btn btn-dark col-11 mx-auto" onclick="close_room()">Close Room</button>
-                                        <td>
-                                            <button type="button" class="btn btn-success" onclick="start_match()">Start
-                                                Match
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger" onclick="abort_match()">Abort
-                                                Match
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <button type="button" class="btn rounded-pill btn-warning text-secondary mb-3">Advanced
-                                    Options
-                                </button>
+                                <div v-show="channel.includes('#mp_')">
+                                    <hr>
+                                    <button type="button" class="btn btn-dark col-11 ms-2"
+                                            onclick="close_room()">Close Room
+                                    </button>
+                                    <table class="table">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <button type="button" class="btn btn-success" onclick="start_match()">
+                                                    Start
+                                                    Match
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger" onclick="abort_match()">
+                                                    Abort
+                                                    Match
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="btn rounded-pill btn-warning text-secondary mb-3">
+                                        Advanced
+                                        Options
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
