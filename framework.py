@@ -74,7 +74,7 @@ class Bot:
                     username = line[0].replace("!cho@ppy.sh", "")[1:]
                     command = line[1]
 
-                    if command == "PIVMSG":
+                    if command == "PRIVMSG":
                         self.log("--- Received: " + " ".join(line))
 
                     # JOIN, PART, PRIVMSG

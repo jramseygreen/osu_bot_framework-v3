@@ -86,7 +86,7 @@ class ws_server:
         self.__clients.append(conn)
         try:
             while True:
-                msg = conn.recv(5024)
+                msg = conn.recv(2046)
                 self.__on_message_function(conn, self.__ws_decode(msg))
         except:
             self.__clients.remove(conn)
