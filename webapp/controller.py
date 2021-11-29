@@ -70,6 +70,10 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel:
                 channel.implement_logic_profile(data["profile"])
+        elif data["command"] == "close_room":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.close_room()
 
     def start(self, running=False):
         if not running:
