@@ -278,6 +278,7 @@
                                             <tr v-for="(slot, index) in slots">
                                                 <th scope="row">{{parseInt(index) + 1}}</th>
                                                 <td>{{slot.username}}</td>
+                                                <!--badges-->
                                                 <td>
                                                     <span v-show="slot.username === host && host !== '' && channel.includes('mp_')"
                                                           :slot="slot" title="Host"

@@ -127,7 +127,7 @@ class Game(Channel):
                 username = message["content"].replace(" changed to Blue", "")
                 slot = self.get_slot_num(username)
                 score = self.get_score(username)
-                self.set_slot(slot, {"username": username, "team": "red", "score": score})
+                self.set_slot(slot, {"username": username, "team": "blue", "score": score})
                 if self.__on_team_change_method:
                     argnum = len(str(inspect.signature(self.__on_team_change_method)).strip("()").split(", "))
                     if argnum == 2:
