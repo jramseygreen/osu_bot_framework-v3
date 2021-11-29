@@ -77,7 +77,7 @@
                                                 <tr v-for="message in personal_messages">
                                                     <th scope="row">{{message.username}}</th>
                                                     <th>{{message.channel}}</th>
-                                                    <td style="display: block; max-width: 100%">{{message.content}}</td>
+                                                    <td>{{message.content}}</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -281,7 +281,7 @@
                                             <table id="chat" class="table table-sm text-white">
                                                 <tbody>
                                                 <tr v-for="message in messages">
-                                                    <td style="display:block; max-width: 34vw;"><span class="badge bg-secondary">{{message.username}}</span><p class="ms-1">{{message.content}}</p>
+                                                    <td class="col-12"><span class="badge bg-secondary">{{message.username}}</span><p class="ms-1">{{message.content}}</p>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -348,7 +348,7 @@
                                 <table class="table">
                                     <tbody>
                                     <tr>
-                                        <button type="button" class="btn btn-dark" onclick="close_room()">Close Room</button>
+                                        <button type="button" class="btn btn-dark col-11 mx-auto" onclick="close_room()">Close Room</button>
                                         <td>
                                             <button type="button" class="btn btn-success" onclick="start_match()">Start
                                                 Match

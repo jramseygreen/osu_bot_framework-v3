@@ -2,9 +2,6 @@ class AutoHostRotate:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
-        channel.set_beatmap_checker(True)
-        channel.maintain_password(True)
-        channel.maintain_size(True)
         self.queue = channel.get_users().copy()
         self.skip_vote = channel.new_vote_manager(self.carry_skip_vote)
         self.start_vote = channel.new_vote_manager(self.carry_start_vote)

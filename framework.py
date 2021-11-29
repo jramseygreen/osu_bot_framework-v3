@@ -92,7 +92,7 @@ class Bot:
                                     if self.__channels[channel].get_logic()["on_room_close"]:
                                         threading.Thread(target=self.__channels[channel].get_logic()["on_room_close"]).start()
                                     del self.__channels[channel]
-                                elif username in self.__channels[channel].get_formatted_users():
+                                elif self.__channels[channel].has_user(username):
                                     self.__channels[channel].del_user(username)
                         elif command == "QUIT":
                             for channel in self.__channels:

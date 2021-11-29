@@ -52,13 +52,13 @@ class Controller:
                         elif command == "!mp password":
                             channel.set_invite_link(channel.get_invite_link().replace(channel.get_password(), ""))
                             if args:
-                                channel.set_password(args[0])
+                                channel._password = args[0]
                                 channel.set_invite_link(channel.get_invite_link() + args[0])
                             else:
-                                channel.set_password("")
+                                channel._password = ""
                         elif command == "!mp size":
                             if args:
-                                channel.set_size(int(args[0]))
+                                channel._size = int(args[0])
                         elif command == "!abort":
                             if channel.get_logic()["on_match_abort"]:
                                 threading.Thread(target=channel.get_logic()["on_match_abort"]).start()

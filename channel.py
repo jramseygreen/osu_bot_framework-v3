@@ -27,7 +27,7 @@ class Channel:
     def add_user(self, username):
         if username not in self.get_users():
             self._users.append(username)
-            self._bot.log("-- Added user: " + username + " --")
+            self._bot.log("-- Added user: " + username + " to: " + self._channel + " --")
             if self.__on_join_method:
                 slot = None
                 if self.is_game():
@@ -42,12 +42,12 @@ class Channel:
                 self._bot.log("-- on join method executed --")
 
     def del_user(self, username):
-        slot = None
-        if self.is_game():
-            slot = self.get_slot_num(username)
-        if username.replace(" ", "_") in self.get_formatted_users():
+        if self.has_user(username):
+            slot = None
+            if self.is_game():
+                slot = self.get_slot_num(username)
             del self._users[self.get_formatted_users().index(username.replace(" ", "_"))]
-            self._bot.log("-- Removed user: " + username + " --")
+            self._bot.log("-- Removed user: " + username + " from: " + self._channel + " --")
             if self.__on_part_method:
                 argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
                 if argnum == 2:

@@ -22,7 +22,7 @@ class Game(Channel):
         self.__beatmap_name = ""
         self.__match_history = self.fetch_match_history()
         self.__size = 8
-        self.__password = ""
+        self._password = ""
         self.__title = ""
         self.__welcome_message = ""
         self.__referees = [bot.get_username()]
@@ -166,7 +166,7 @@ class Game(Channel):
                 if self.__maintain_size:
                     self.set_size(self.__size)
                 if self.__maintain_password:
-                    self.set_password(self.__password)
+                    self.set_password(self._password)
             elif "Aborted the match" == message["content"]:
                 self.__in_progress = False
             elif "Beatmap changed to" in message["content"] or "Changed beatmap to" in message["content"]:
@@ -215,12 +215,12 @@ class Game(Channel):
                                 if username == self._bot.get_username():
                                     self._bot.part(self._channel)
                 if command == "!mp password":
-                    self.__invite_link = self.__invite_link.replace(self.__password, "")
+                    self.__invite_link = self.__invite_link.replace(self._password, "")
                     if args:
-                        self.__password = args[0]
+                        self._password = args[0]
                         self.__invite_link = self.__invite_link + args[0]
                     else:
-                        self.__password = ""
+                        self._password = ""
                 elif command == "!mp size":
                     if args:
                         self.__size = int(args[0])
@@ -249,17 +249,18 @@ class Game(Channel):
 
     def del_user(self, username):
         # remove from slots
-        for slot in self.__slots:
-            if self.__slots[slot]["username"].replace(" ", "_") == username.replace(" ", "_"):
-                self.__slots[slot] = {"username": "", "team": "", "score": {}}
-                break
-        super().del_user(username)
-        if not self.has_users():
-            self.abort_start_timer()
-            if self.__maintain_size:
-                self.set_size(self.__size)
-            if self.__maintain_password:
-                self.set_password(self.__password)
+        if self.has_user(username):
+            for slot in self.__slots:
+                if self.__slots[slot]["username"].replace(" ", "_") == username.replace(" ", "_"):
+                    self.__slots[slot] = {"username": "", "team": "", "score": {}}
+                    break
+            super().del_user(username)
+            if not self.has_users():
+                self.abort_start_timer()
+                if self.__maintain_size:
+                    self.set_size(self.__size)
+                if self.__maintain_password:
+                    self.set_password(self._password)
 
     def add_user(self, username):
         super().add_user(username)
@@ -652,13 +653,13 @@ class Game(Channel):
         self.send_message("!mp host " + username.replace(" ", "_"))
 
     def set_password(self, password):
-        self.__invite_link = self.__invite_link.replace(self.__password, "")
-        self.__password = password
+        self.__invite_link = self.__invite_link.replace(self._password, "")
+        self._password = password
         self.__invite_link = self.__invite_link + password
-        self.send_message("!mp password " + self.__password)
+        self.send_message("!mp password " + self._password)
 
     def get_password(self):
-        return self.__password
+        return self._password
 
     def add_referee(self, username):
         if username not in self.__referees:
@@ -985,7 +986,7 @@ class Game(Channel):
         data["beatmap"] = self.__beatmap
         data["beatmap_name"] = self.__beatmap_name
         data["size"] = self.__size
-        data["password"] = self.__password
+        data["password"] = self._password
         data["title"] = self.__title
         data["welcome_message"] = self.__welcome_message
         data["referees"] = self.__referees
