@@ -635,6 +635,9 @@ class Game(Channel):
     def get_formatted_host(self):
         return self.__host.replace(" ", "_")
 
+    def is_host(self, username):
+        return username.replace(" ", "_") == self.get_formatted_host()
+
     def __set_host(self, username):
         old_host = self.__host
         self.__host = username

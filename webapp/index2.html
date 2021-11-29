@@ -14,7 +14,7 @@
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                 <div class="row">
                     <div class="col-3">
-                        <img src="https://cdn.discordapp.com/attachments/904455843813154837/909234894331334696/dunnoO-blue.png"
+                        <img src="https://media.discordapp.net/attachments/902919147929886830/909331674540691466/bitmap.png"
                              width="50" height="50">
                     </div>
                     <div class="col-9">
@@ -187,11 +187,18 @@
         </div>
 
         <!--        main content-->
-<!--        start page-->
+        <!--        start page-->
         <div v-if="channel === ''" class="col-10">
-            start page
+            <div class="card text-white bg-dark" style="height: 100vh;">
+                <div class="text-center">
+                <h2 class="card-header">
+                    Welcome to Osu Bot Framework v3!
+                </h2>
+                <img src="https://media.discordapp.net/attachments/902919147929886830/909331674540691466/bitmap.png" width="600" height="600" class="mt-4">
+            </div>
+                </div>
         </div>
-<!--        channel view-->
+        <!--        channel view-->
         <div v-else class="col-10">
             <div class="card text-white bg-dark" style="height: 100vh;">
                 <h2 class="card-header text-center">
@@ -375,7 +382,8 @@
                                         </tr>
                                         </tbody>
                                     </table>
-                                    <button type="button" class="btn rounded-pill btn-warning text-secondary col-11 ms-2 mb-3">
+                                    <button type="button"
+                                            class="btn rounded-pill btn-warning text-secondary col-11 ms-2 mb-3">
                                         Advanced
                                         Options
                                     </button>
