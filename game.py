@@ -39,7 +39,6 @@ class Game(Channel):
         self.__auto_download = {"status": False, "path": "", "auto_open": False, "with_video": False}
         self._commands = {"!info": {"response": "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "Built with osu_bot_framework v3"}}
 
-
         # limits and ranges (done)
         self.__ar_range = (0.0, 10.0)
         self.__od_range = (0.0, 10.0)
