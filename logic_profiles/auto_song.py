@@ -8,12 +8,7 @@ class AutoSong:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
-        channel.start_on_players_ready(True)
-        channel.clear_host()
-        channel.set_allow_unsubmitted(False)
-        channel.set_autostart_timer(True, 120)
-        self.vote = channel.new_vote_manager(self.carry_vote)
-        self.played = []
+
         channel.set_custom_config("In this lobby beatmaps are selected for you at random by the bot.\nYou can vote to skip a beatmap with the !skip command.\n\n\n")
         channel.set_command("!info", "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3] | Type '!config' to view room configuration and commands", "Built with osu bot framework v3")
         channel.set_command("!skip", self.skip, "Vote to skip the current beatmap.")
@@ -37,7 +32,15 @@ class AutoSong:
         channel.set_command("*del_creator_blacklist", channel.common_commands.del_beatmap_creator_blacklist,"Removes a beatmap creator from the blacklist. e.g. *del_creator_blacklist sotarks")
         channel.set_command("*welcome", channel.common_commands.welcome_message, "Sets the welcome message for the room. e.g. *welcome welcome to my osu room!")
 
+        self.vote = channel.new_vote_manager(self.carry_vote)
+        self.played = []
+
         channel.set_beatmap_checker(False)
+        channel.start_on_players_ready(True)
+        channel.clear_host()
+        channel.set_allow_unsubmitted(False)
+        channel.set_autostart_timer(True, 120)
+        self.next_round()
 
     def skip(self, message):
         if self.channel.has_referee(message["username"]) and message["content"] == "*skip":
