@@ -187,7 +187,10 @@
         </div>
 
         <!--        main content-->
-        <div class="col-10">
+        <div v-if="channel === ''" class="col-10">
+            start page
+        </div>
+        <div v-else class="col-10">
             <div class="card text-white bg-dark" style="height: 100vh;">
                 <h2 class="card-header text-center">
                     {{channel}}
@@ -428,12 +431,12 @@
                         if (Math.floor(app.beatmap["hit_length"] / 60) > 0) {
                             app.beatmapLength = Math.floor(app.beatmap["hit_length"] / 60) + "min " + app.beatmap["hit_length"] % 60 + "sec";
                         } else {
-                            app.beatmapLength = app.beatmap["hit_length"] + "sec"
+                            app.beatmapLength = app.beatmap["hit_length"] + "sec";
                         }
                     }
 
                 } else {
-                    //clear
+                    app.channel = "";
                 }
             }
 
