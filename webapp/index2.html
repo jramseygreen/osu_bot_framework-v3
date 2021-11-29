@@ -278,8 +278,15 @@
                                             <tr v-for="(slot, index) in slots">
                                                 <th scope="row">{{parseInt(index) + 1}}</th>
                                                 <td>{{slot.username}}</td>
-                                                <td v-if="slot.username === host && host" :slot="slot"><span title="Host" class="badge bg-dark text-warning">♔</span></td>
-                                                <td v-else></td>
+                                                <td>
+                                                    <span v-show="slot.username === host && host !== '' && channel.includes('mp_')"
+                                                          :slot="slot" title="Host"
+                                                          class="badge bg-dark text-warning">♔</span>
+                                                    <span v-show="referees.includes(slot.username.replace(' ', '')) && channel.includes('mp_')"
+                                                          :slot="slot" title="Referee"
+                                                          class="badge bg-dark text-success">🛡️</span>
+
+                                                </td>
                                             </tr>
                                         </template>
                                         </tbody>
@@ -440,6 +447,7 @@
                     if (app.channel.includes("#mp_")) {
                         app.title += " - " + buffer["channels"][app.channel]["title"];
                         app.host = buffer["channels"][app.channel]["host"];
+                        app.referees = buffer["channels"][app.channel]["referees"];
                         app.inProgress = (buffer["channels"][app.channel]["in_progress"] ? "In Progress..." : "");
                         app.beatmap = buffer["channels"][app.channel]["beatmap"];
                         app.beatmapName = buffer["channels"][app.channel]["beatmap_name"];
@@ -469,6 +477,7 @@
             slots: {},
             users: [],
             userNum: 0,
+            referees: [],
             host: "",
             channels: [],
             inProgress: "",
@@ -537,7 +546,7 @@
             "command": "join",
             "channel": form.elements.join_form_channel.value,
         };
-        if (!(!payload["channel"].includes("#mp_") && !confirm("Whilst joining public channels such as '" + payload["channel"] + "' is possible and supported, be aware that the sheer volume of players may cause this page to lag considerably.\n\nDo you still wish to join '" + payload["channel"] + "'?"))) {
+        if (!(!payload["channel"].includes("mp_") && !confirm("Whilst joining public channels such as '" + payload["channel"] + "' is possible and supported, be aware that the sheer volume of players may cause this page to lag considerably.\n\nDo you still wish to join '" + payload["channel"] + "'?"))) {
             sock.send(JSON.stringify(payload));
         }
         form.reset();
