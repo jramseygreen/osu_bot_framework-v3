@@ -68,7 +68,7 @@ class Controller:
         elif data["command"] == "personal_message":
             self.bot.send_personal_message(data["channel"], data["message"])
         elif data["command"] == "make_room":
-            self.bot.make_room(title=data["title"])
+            self.bot.make_room(title=data["title"], password=data["password"])
         elif data["command"] == "join":
             self.bot.join(data["channel"])
         elif data["command"] == "part":

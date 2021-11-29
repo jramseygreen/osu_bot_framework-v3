@@ -35,7 +35,8 @@
                             <span class="text-light">{{channel}}
                         </span>
                         </a>
-                        <button :name="channel" type="button" title="Leave Channel" class="badge badge-sm bg-danger float-end"
+                        <button :name="channel" type="button" title="Leave Channel"
+                                class="badge badge-sm bg-danger float-end"
                                 onclick="part_channel(this)">X
                         </button>
                     </span>
@@ -128,20 +129,24 @@
                             </button>
                         </div>
                         <!--                        modal body-->
-                        <form id="make_room_form">
-                            <div class="mb-3">
-                                <h5 class="text-dark">Room Title</h5>
-                                <input type="text" class="form-control" id="make_room_title">
-                            </div>
+                        <div class="modal-body text-dark">
+                            <form id="make_room_form">
+                                <div class="mb-3">
+                                    <h5 class="text-dark">Room Title</h5>
+                                    <input type="text" class="form-control" id="make_room_title">
+                                </div>
+                                <h5 class="text-dark">Password</h5>
+                                    <input type="text" class="form-control" id="make_room_password">
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                </button>
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                                        onclick="make_room(this.form)">Create
-                                </button>
-                            </div>
-                        </form>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    </button>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                                            onclick="make_room(this.form)">Create
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -537,6 +542,7 @@
         payload = {
             "command": "make_room",
             "title": form.elements.make_room_title.value,
+            "password": form.elements.make_room_password.value,
         };
         form.reset();
         if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
