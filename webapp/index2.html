@@ -113,7 +113,8 @@
             </div>
             <hr>
             <!-- make room -->
-            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#makeRoom">
+            <button id="make_room_button" type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
+                    data-bs-target="#makeRoom">
                 Make Room
             </button>
 
@@ -524,8 +525,12 @@
             "command": "make_room",
             "title": form.elements.make_room_title.value,
         };
-        sock.send(JSON.stringify(payload));
         form.reset();
+        if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
+            sock.send(JSON.stringify(payload));
+        } else {
+            alert("Sorry, special characters are not currently supported!");
+        }
     }
 
     function join_channel(form) {
@@ -556,7 +561,11 @@
             "channel": channel,
             "message": message
         };
-        sock.send(JSON.stringify(payload));
+        if (/^[\u0000-\u007f]*$/.test(payload["message"])) {
+            sock.send(JSON.stringify(payload));
+        } else {
+            alert("Sorry, special characters are not currently supported!");
+        }
     }
 
     function close_room() {
