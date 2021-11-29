@@ -280,7 +280,8 @@
                                             <tr v-for="(slot, index) in slots">
                                                 <th scope="row">{{parseInt(index) + 1}}</th>
                                                 <td>{{slot.username}}</td>
-                                                <td>{{slot.badges}}</td>
+                                                <td v-if="slot.username === host" :slot="slot">Host</td>
+                                                <td v-else></td>
                                             </tr>
                                         </template>
                                         </tbody>
