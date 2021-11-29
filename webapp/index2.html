@@ -35,7 +35,7 @@
                             <span class="text-light">{{channel}}
                         </span>
                         </a>
-                        <button :name="channel" type="button" class="badge badge-sm bg-danger float-end"
+                        <button :name="channel" type="button" title="Leave Channel" class="badge badge-sm bg-danger float-end"
                                 onclick="part_channel(this)">X
                         </button>
                     </span>
@@ -260,7 +260,7 @@
                         <div class="col-3">
                             <div class="card text-white bg-secondary">
                                 <h3 class="text-center mt-2">Players<span
-                                        class="card-header badge ms-4 bg-light text-dark">{{userNum}}</span>
+                                        class="card-header badge ms-4 bg-light text-dark">{{users.length}}</span>
                                 </h3>
                                 <hr>
 
@@ -450,7 +450,6 @@
                     app.slots = buffer["channels"][app.channel]["slots"];
                     app.messages = buffer["channels"][app.channel]["messages"];
                     app.users = buffer["channels"][app.channel]["users"];
-                    app.userNum = buffer["channels"][app.channel]["users"].length;
                     if (app.channel.includes("#mp_")) {
                         app.title += " - " + buffer["channels"][app.channel]["title"];
                         app.host = buffer["channels"][app.channel]["host"];
@@ -483,7 +482,6 @@
             logic_profile: "",
             slots: {},
             users: [],
-            userNum: 0,
             referees: [],
             host: "",
             channels: [],
