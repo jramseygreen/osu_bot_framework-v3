@@ -324,7 +324,10 @@ class Game(Channel):
         self.clear_scores()
         self.__match_history = self.fetch_match_history()
         for score in self.get_match_data()["scores"]:
-            self.__slots[score["match"]["slot"]]["score"] = score
+            if self.__slots[score["match"]["slot"]]["username"]:
+                self.__slots[score["match"]["slot"]]["score"] = score
+                if not self.__slots[score["match"]["slot"]]["team"]:
+                    self.__slots[score["match"]["slot"]]["team"] = score["match"]["team"]
 
     def clear_scores(self):
         for slot in self.__slots:
