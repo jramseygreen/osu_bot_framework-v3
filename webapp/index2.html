@@ -282,6 +282,12 @@
                                                     <span v-show="slot.username === host && host !== '' && channel.includes('mp_')"
                                                           :slot="slot" title="Host"
                                                           class="badge bg-dark text-warning">♔</span>
+                                                    <span v-show="slot.team === 'red' && channel.includes('mp_')"
+                                                          :slot="slot" title="Red Team"
+                                                          class="badge bg-danger text-light">Red</span>
+                                                    <span v-show="slot.team === 'blue' && channel.includes('mp_')"
+                                                          :slot="slot" title="Blue Team"
+                                                          class="badge bg-primary text-light">Blue</span>
                                                     <span v-show="referees.includes(slot.username.replace(' ', '')) && channel.includes('mp_')"
                                                           :slot="slot" title="Referee"
                                                           class="badge bg-dark text-success">🛡️</span>
