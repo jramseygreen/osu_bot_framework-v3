@@ -187,13 +187,15 @@
         </div>
 
         <!--        main content-->
+<!--        start page-->
         <div v-if="channel === ''" class="col-10">
             start page
         </div>
+<!--        channel view-->
         <div v-else class="col-10">
             <div class="card text-white bg-dark" style="height: 100vh;">
                 <h2 class="card-header text-center">
-                    {{channel}}
+                    {{title}}
                 </h2>
                 <span class="badge bg-success">{{inProgress}}</span>
                 <hr>
@@ -416,6 +418,7 @@
                 app.channels = Object.keys(buffer["channels"]);
                 app.personal_messages = buffer["pm"];
                 if (app.channel !== "" && app.channels.includes(app.channel)) {
+                    app.title = app.channel;
                     app.logic_profiles = buffer["logic_profiles"];
                     app.logic_profile = buffer["channels"][app.channel]["logic_profile"];
                     app.slots = buffer["channels"][app.channel]["slots"];
@@ -423,6 +426,7 @@
                     app.users = buffer["channels"][app.channel]["users"];
                     app.userNum = buffer["channels"][app.channel]["users"].length;
                     if (app.channel.includes("#mp_")) {
+                        app.title += " - " + buffer["channels"][app.channel]["title"];
                         app.host = buffer["channels"][app.channel]["host"];
                         app.inProgress = (buffer["channels"][app.channel]["in_progress"] ? "In Progress..." : "");
                         app.beatmap = buffer["channels"][app.channel]["beatmap"];
@@ -462,6 +466,7 @@
             beatmapImage: "",
             beatmapLength: "",
             personal_messages: [],
+            title: "",
         }
     })
 
