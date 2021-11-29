@@ -116,20 +116,23 @@ class Controller:
             self.__ws.send(conn, message)
 
     def update(self):
-        data = {"channels": {}}
-        for channel in self.bot.get_channels().copy():
-            data["channels"][channel] = self.bot.get_channel(channel).get_attributes()
-            if "mp_" in channel:
-                data["channels"][channel]["host"] = self.bot.get_channel(channel).get_host()
-            else:
-                data["channels"][channel]["host"] = ""
-                data["channels"][channel]["in_progress"] = False
-                data["channels"][channel]["slots"] = {int(data["channels"][channel]["users"].index(user)): {"username": user} for user in data["channels"][channel]["users"]}
-            if "commands" in data["channels"][channel]:
-                del data["channels"][channel]["commands"]
-        data["pm"] = self.bot.get_personal_message_log()
-        data["logic_profiles"] = list(self.bot.get_logic_profiles().keys())
-        self.send_message(json.dumps(data))
+        try:
+            data = {"channels": {}}
+            for channel in self.bot.get_channels().copy():
+                data["channels"][channel] = self.bot.get_channel(channel).get_attributes()
+                if "mp_" in channel:
+                    data["channels"][channel]["host"] = self.bot.get_channel(channel).get_host()
+                else:
+                    data["channels"][channel]["host"] = ""
+                    data["channels"][channel]["in_progress"] = False
+                    data["channels"][channel]["slots"] = {int(data["channels"][channel]["users"].index(user)): {"username": user} for user in data["channels"][channel]["users"]}
+                if "commands" in data["channels"][channel]:
+                    del data["channels"][channel]["commands"]
+            data["pm"] = self.bot.get_personal_message_log()
+            data["logic_profiles"] = list(self.bot.get_logic_profiles().keys())
+            self.send_message(json.dumps(data))
+        except:
+            pass
 
     def __update_loop(self, running=False):
         if not running:
@@ -137,7 +140,6 @@ class Controller:
         else:
             while True:
                 time.sleep(2)
-
                 self.update()
 
     def set_ws_port(self, port):
