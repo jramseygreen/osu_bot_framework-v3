@@ -89,6 +89,8 @@ class Game(Channel):
                     team = "blue"
                 elif "for team red" in message["content"]:
                     team = "red"
+                else:
+                    self.clear_teams()
                 if self.__on_team_addition_method:
                     argnum = len(str(inspect.signature(self.__on_team_addition_method)).strip("()").split(", "))
                     if argnum == 2:
@@ -469,6 +471,8 @@ class Game(Channel):
                 if self.__on_match_start_method:
                     threading.Thread(target=self.__on_match_start_method).start()
                     self._bot.log("-- on match start method executed --")
+                if "team" not in match["team_type"]:
+                    self.clear_teams()
             self._bot.log("-- Attribute checker finished --")
 
     def check_beatmap(self, beatmap):
@@ -607,6 +611,10 @@ class Game(Channel):
         for i in range(0, offset):
             if self.__slots[i]["username"]:
                 return i
+
+    def clear_teams(self):
+        for slot in self.__slots:
+            self.__slots[slot]["team"] = ""
 
     def get_red_team(self):
         users = []
@@ -815,6 +823,13 @@ class Game(Channel):
         self.__team_type = team_type.lower().replace(" ", "-").replace("co-op", "coop")
         if self.__team_type != "any":
             self.send_message("!mp set " + str(GAME_ATTR[self.__team_type]))
+            for i in range(16):
+                if self.__slots[i]["username"]:
+                    if i % 2 == 0:
+                        self.__slots[i]["team"] = "blue"
+                    else:
+                        self.__slots[i]["team"] = "red"
+
 
     # returns the tracked team type of the room
     def get_team_type(self):
