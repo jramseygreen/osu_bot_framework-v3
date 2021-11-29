@@ -35,7 +35,7 @@
                             <span class="text-light">{{channel}}
                         </span>
                         </a>
-                        <button :name="channel" type="button" class="btn btn-danger btn-sm float-end"
+                        <button :name="channel" type="button" class="badge badge-sm bg-danger float-end"
                                 onclick="part_channel(this)">X
                         </button>
                     </span>
@@ -278,7 +278,7 @@
                                             <tr v-for="(slot, index) in slots">
                                                 <th scope="row">{{parseInt(index) + 1}}</th>
                                                 <td>{{slot.username}}</td>
-                                                <td v-if="slot.username === host" :slot="slot">Host</td>
+                                                <td v-if="slot.username === host && host" :slot="slot"><span title="Host" class="badge bg-dark text-warning">♔</span></td>
                                                 <td v-else></td>
                                             </tr>
                                         </template>
