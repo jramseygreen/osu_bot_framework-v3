@@ -28,12 +28,13 @@ class BroadcastController:
 
     # deletes a broadcast given its id
     def del_broadcast(self, id):
-        for channel in self.__channels:
-            for broadcast in self.__channels[channel]:
+        channels = self.__channels.copy()
+        for channel in channels:
+            for broadcast in channels[channel]:
                 if broadcast["id"] == int(id):
-                    self.__channels[channel].remove(broadcast)
-                    if self.__channels[channel] == []:
-                        del self.__channels[channel]
+                    channels[channel].remove(broadcast)
+                    if channels[channel] == []:
+                        del channels[channel]
                     return
 
     # returns true if id is currently broadcasting
@@ -42,8 +43,9 @@ class BroadcastController:
 
     # gets a broadcast based on its id
     def get_broadcast(self, id):
-        for channel in self.__channels:
-            for broadcast in self.__channels[channel]:
+        channels = self.__channels.copy()
+        for channel in channels:
+            for broadcast in channels[channel]:
                 if broadcast["id"] == int(id):
                     return broadcast
 

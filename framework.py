@@ -95,8 +95,9 @@ class Bot:
                                 elif self.__channels[channel].has_user(username):
                                     self.__channels[channel].del_user(username)
                         elif command == "QUIT":
-                            for channel in self.__channels:
-                                self.__channels[channel].del_user(username)
+                            channels = self.__channels.copy()
+                            for channel in channels:
+                                channels[channel].del_user(username)
                         elif command == "PRIVMSG":
                             content = " ".join(line[3:]).replace(":", "", 1)
                             message = {"username": username, "channel": channel, "content": content}
@@ -112,12 +113,13 @@ class Bot:
                                 if message["username"] == "BanchoBot":
                                     if message["content"] == "You cannot create any more tournament matches. Please close any previous tournament matches you have open.":
                                         self.__room_limit_reached = True
-                                for channel in self.__channels:
-                                    if self.__channels[channel].get_on_personal_message_method():
-                                        if str(inspect.signature(self.__channels[channel].get_on_personal_message_method())).strip("()").split(", ") != [""]:
-                                            threading.Thread(target=self.__channels[channel].get_on_personal_message_method(), args=(message,)).start()
+                                channels = self.__channels.copy()
+                                for channel in channels:
+                                    if channels[channel].get_on_personal_message_method():
+                                        if str(inspect.signature(channels[channel].get_on_personal_message_method())).strip("()").split(", ") != [""]:
+                                            threading.Thread(target=channels[channel].get_on_personal_message_method(), args=(message,)).start()
                                         else:
-                                            threading.Thread(target=self.__channels[channel].get_on_personal_message_method()).start()
+                                            threading.Thread(target=channels[channel].get_on_personal_message_method()).start()
                                 if self.__on_personal_message_method:
                                     if str(inspect.signature(self.__on_personal_message_method)).strip("()").split(", ") != [""]:
                                         threading.Thread(target=self.__on_personal_message_method, args=(message,)).start()
@@ -372,23 +374,26 @@ class Bot:
 
     def set_player_blacklist(self, blacklist):
         self.__player_blacklist = blacklist
-        for channel in self.__channels:
-            if self.__channels[channel].is_game():
-                self.__channels[channel].set_player_blacklist(blacklist)
+        channels = self.__channels.copy()
+        for channel in channels:
+            if channels[channel].is_game():
+                channels[channel].set_player_blacklist(blacklist)
 
     def add_player_blacklist(self, username):
         if username.replace(" ", "_") not in self.get_formatted_player_blacklist():
             self.__player_blacklist.append(username)
-            for channel in self.__channels:
-                if self.__channels[channel].is_game():
-                    self.__channels[channel].add_player_blacklist(username)
+            channels = self.__channels.copy()
+            for channel in channels:
+                if channels[channel].is_game():
+                    channels[channel].add_player_blacklist(username)
 
     def del_player_blacklist(self, username):
         if username.replace(" ", "_") in self.get_formatted_player_blacklist():
             del self.__player_blacklist[self.get_formatted_player_blacklist().index(username.replace(" ", "_"))]
-            for channel in self.__channels:
-                if self.__channels[channel].is_game():
-                    self.__channels[channel].del_player_blacklist(username)
+            channels = self.__channels.copy()
+            for channel in channels:
+                if channels[channel].is_game():
+                    channels[channel].del_player_blacklist(username)
 
     def get_player_blacklist(self):
         return self.__player_blacklist
