@@ -348,7 +348,6 @@
                                 <table class="table">
                                     <tbody>
                                     <tr>
-                                        <button type="button" class="btn btn-dark" onclick="close_room()">Close Room</button>
                                         <td>
                                             <button type="button" class="btn btn-success" onclick="start_match()">Start
                                                 Match
@@ -523,14 +522,6 @@
             "command": inputObj,
             "channel": channel,
             "message": message
-        };
-        sock.send(JSON.stringify(payload));
-    }
-
-    function close_room() {
-        payload = {
-            "command": "close_room",
-            "channel": app.channel
         };
         sock.send(JSON.stringify(payload));
     }

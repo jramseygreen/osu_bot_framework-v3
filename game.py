@@ -1233,6 +1233,3 @@ class Game(Channel):
 
     def get_beatmap_name(self):
         return self.__beatmap_name
-
-    def close_room(self):
-        self.send_message("!mp close")
