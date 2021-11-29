@@ -823,16 +823,16 @@ class Game(Channel):
 
     # sets the team type of the room
     def set_team_type(self, team_type):
+        old = self.__team_type
         self.__team_type = team_type.lower().replace(" ", "-").replace("co-op", "coop")
         if self.__team_type != "any":
             self.send_message("!mp set " + str(GAME_ATTR[self.__team_type]))
-            if "team" in self.__team_type:
-                for i in range(16):
-                    if self.__slots[i]["username"]:
-                        if i % 2 == 0:
-                            self.__slots[i]["team"] = "blue"
-                        else:
-                            self.__slots[i]["team"] = "red"
+            if "team" in self.__team_type and "team" not in old:
+                for user in self._users:
+                    if self._users.index(user) % 2 == 0:
+                        self.__slots[self.get_slot_num(user)]["team"] = "blue"
+                    else:
+                        self.__slots[self.get_slot_num(user)]["team"] = "red"
             else:
                 self.clear_teams()
 
