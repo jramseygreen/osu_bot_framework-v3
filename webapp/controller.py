@@ -24,11 +24,11 @@ class Controller:
             self.update()
         elif data["command"] == "start_match":
             channel = self.bot.get_channel(data["channel"])
-            if channel:
+            if channel and channel.is_game():
                 channel.start_match()
         elif data["command"] == "abort_match":
             channel = self.bot.get_channel(data["channel"])
-            if channel:
+            if channel and channel.is_game():
                 channel.abort_match()
         elif data["command"] == "channel_message":
             channel = self.bot.get_channel(data["channel"])
@@ -77,7 +77,7 @@ class Controller:
                 channel.implement_logic_profile(data["profile"])
         elif data["command"] == "close_room":
             channel = self.bot.get_channel(data["channel"])
-            if channel:
+            if channel and channel.is_game():
                 channel.close_room()
 
     def start(self, running=False):

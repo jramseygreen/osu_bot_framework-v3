@@ -200,6 +200,7 @@ class Bot:
             else:
                 self.__channels[channel] = Channel(self, channel, self.verbose)
             self.__sock.sendall(("JOIN " + channel + "\n").encode())
+            self.log("-- Joined: " + channel + " --")
         return self.__channels[channel]
 
     # parts a channel
@@ -209,6 +210,7 @@ class Bot:
         if channel in self.__channels:
             del self.__channels[channel]
             self.__sock.sendall(("PART " + channel + "\n").encode())
+            self.log("-- Parted: " + channel + " --")
 
     # sends a personal message to a username
     def send_personal_message(self, username, message):

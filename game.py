@@ -25,7 +25,6 @@ class Game(Channel):
         self.__password = ""
         self.__title = ""
         self.__welcome_message = ""
-        self.__commands = {"!info": {"response": "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "Built with osu_bot_framework v3"}}
         self.__referees = [bot.get_username()]
         self.__config_link = ""
         self.__config_text = ""
@@ -232,15 +231,15 @@ class Game(Channel):
         self.__execute_commands(message)
 
     def __execute_commands(self, message):
-        for command in self.__commands:
+        for command in self._commands:
             if not message["content"].replace(command, "") or message["content"].replace(command, "")[0] == " ":
-                if callable(self.__commands[command]["response"]):
-                    if str(inspect.signature(self.__commands[command]["response"])).strip("()").split(", ") != [""]:
-                        threading.Thread(target=self.__commands[command]["response"], args=(message,)).start()
+                if callable(self._commands[command]["response"]):
+                    if str(inspect.signature(self._commands[command]["response"])).strip("()").split(", ") != [""]:
+                        threading.Thread(target=self._commands[command]["response"], args=(message,)).start()
                     else:
-                        threading.Thread(target=self.__commands[command]["response"]).start()
+                        threading.Thread(target=self._commands[command]["response"]).start()
                 else:
-                    self.send_message(str(self.__commands[command]["response"]))
+                    self.send_message(str(self._commands[command]["response"]))
                 self._bot.log("-- Command '" + command + "' Executed --")
 
     def send_message(self, message):
@@ -524,8 +523,8 @@ class Game(Channel):
                 self.__start_timer = True
                 if self.has_users():
                     msg = ("Queued the match to start in " + str(secs // 60) + " minutes " + str(secs % 60) + " seconds").replace(" 0 minutes", "").replace(" 0 seconds", "").replace("1 minutes", "1 minute")
-                    for command in self.__commands:
-                        if self.__commands[command]["response"] == self.common_commands.abort_start_timer:
+                    for command in self._commands:
+                        if self._commands[command]["response"] == self.common_commands.abort_start_timer:
                             msg += " (" + command + " to stop)"
                             break
                     self.send_message(msg)
@@ -659,19 +658,6 @@ class Game(Channel):
 
     def get_password(self):
         return self.__password
-
-    def set_command(self, command, response, description=""):
-        self.__commands[command] = {"response": response, "description": description}
-
-    def del_command(self, command):
-        if command in self.__commands:
-            del self.__commands[command]
-
-    def get_commands(self):
-        return self.__commands
-
-    def has_command(self, command):
-        return command in self.__commands
 
     def add_referee(self, username):
         if username not in self.__referees:
@@ -906,8 +892,8 @@ class Game(Channel):
             text += " " + str([str(x // 60) + "min, " + str(x % 60) + "sec" for x in self.__length_range])
 
         text += "\n\n 𝙲̲𝚘̲𝚖̲𝚖̲𝚊̲𝚗̲𝚍̲𝚜̲:"
-        for command in self.__commands:
-            text += "\n     • " + command + ": " + self.__commands[command]["description"]
+        for command in self._commands:
+            text += "\n     • " + command + ": " + self._commands[command]["description"]
 
         text += "\n\n 𝚃̲𝚑̲𝚎̲ ̲𝚏̲𝚘̲𝚕̲𝚕̲𝚘̲𝚠̲𝚒̲𝚗̲𝚐̲ ̲𝚖̲𝚎̲𝚜̲𝚜̲𝚊̲𝚐̲𝚎̲𝚜̲ ̲𝚊̲𝚛̲𝚎̲ ̲𝚋̲𝚎̲𝚒̲𝚗̲𝚐̲ ̲𝚋̲𝚛̲𝚘̲𝚊̲𝚍̲𝚌̲𝚊̲𝚜̲𝚝̲ ̲𝚘̲𝚗̲ ̲𝚊̲ ̲𝚝̲𝚒̲𝚖̲𝚎̲𝚛̲:"
         text += "\n\n     𝙸̲𝙳̲   𝙼̲𝚎̲𝚜̲𝚜̲𝚊̲𝚐̲𝚎̲"
@@ -1001,8 +987,8 @@ class Game(Channel):
         data["password"] = self.__password
         data["title"] = self.__title
         data["welcome_message"] = self.__welcome_message
-        data["commands"] = self.__commands
-        data["command_descriptions"] = {command: self.__commands[command]["description"] for command in self.__commands}
+        data["commands"] = self._commands
+        data["command_descriptions"] = {command: self._commands[command]["description"] for command in self._commands}
         data["referees"] = self.__referees
         data["config_link"] = self.__config_link
         data["beatmap_checker"] = self.__beatmap_checker
@@ -1070,7 +1056,7 @@ class Game(Channel):
         return logic
 
     def clear_commands(self):
-        self.__commands = {"!info": {"response": "built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "built with osu_bot_framework v3"}}
+        self._commands = {"!info": {"response": "built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "built with osu_bot_framework v3"}}
 
     # overwrites certain room attributes
     def import_attributes(self, data):

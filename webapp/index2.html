@@ -27,7 +27,7 @@
             <ul class="nav nav-pills flex-column mb-auto" id="channels">
                 <li v-for="channel in channels" class="nav-item">
                     <span :id="channel" class="nav-link">
-                        <a :name="channel" href="#" aria-current="page" onclick="setChannel(this)"
+                        <a :name="channel" href="javascript:void(0);" aria-current="page" onclick="setChannel(this)"
                            style="text-decoration: none;">
                             <svg class="bi me-2" width="16" height="16"></svg>
                             <span class="text-light">{{channel}}
@@ -85,7 +85,7 @@
                                     </div>
                                     <!--                                    input section-->
                                     <div class="card mb-4">
-                                        <form>
+                                        <form onsubmit="return false">
                                             <div class="input-group mt-1 mb-1">
                                                 <input type="text" class="form-control"
                                                        placeholder="Username" style="max-width: 15%;" id="pm_username">
@@ -290,7 +290,7 @@
                                     </div>
                                     <!--                                    input section-->
                                     <div class="card mb-4">
-                                        <form>
+                                        <form onsubmit="return false">
                                             <div class="input-group mt-1 mb-1">
                                                 <input id="channel_message" type="text" class="form-control"
                                                        placeholder="Say something...">
@@ -338,7 +338,7 @@
                                         <span class="badge bg-secondary">{{logic_profile}}</span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="logicProfiles">
-                                        <li v-for="profile in logic_profiles"><a class="dropdown-item" href="#"
+                                        <li v-for="profile in logic_profiles"><a class="dropdown-item" href="javascript:void(0);"
                                                                                  :id="profile"
                                                                                  onclick="set_logic_profile(this)">{{profile}}</a>
                                         </li>

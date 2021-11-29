@@ -13,6 +13,7 @@ class Channel:
         self._message_log = []
         self._message_log_length = bot.get_default_message_log_length()
         self._users = []
+        self._commands = {"!info": {"response": "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "Built with osu_bot_framework v3"}}
         self.verbose = verbose
         self._logic_profile = ""
         self.common_commands = CommonCommands(bot, self)
@@ -91,6 +92,9 @@ class Channel:
     def set_message_log_length(self, length):
         self._message_log_length = length
 
+    def set_command(self, command, response, description=""):
+        self._commands[command] = {"response": response, "description": description}
+
     def get_message_log(self, username=""):
         if username:
             message_log = []
@@ -164,3 +168,17 @@ class Channel:
 
     def new_vote_manager(self, method):
         return Vote(self._bot, self, method)
+
+    def del_command(self, command):
+        if command in self._commands:
+            del self._commands[command]
+
+    def get_commands(self):
+        return self._commands
+
+    def has_command(self, command):
+        return command in self._commands
+
+    def get_command(self, command):
+        if command in self._commands:
+            return self._commands["command"]
