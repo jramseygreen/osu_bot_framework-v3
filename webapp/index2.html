@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-<!--    custom scroll bar-->
+    <!--    custom scroll bar-->
     <style>
         /* width */
         ::-webkit-scrollbar {
@@ -17,12 +17,12 @@
 
         /* Track */
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #888;
         }
 
         /* Handle */
         ::-webkit-scrollbar-thumb {
-            background: #888;
+            background: #f1f1f1;
         }
 
         /* Handle on hover */
@@ -401,13 +401,131 @@
                         </div>
                         <div class="col-1 card bg-secondary">
                             Mods
-                            <button class="btn btn-dark btn-sm rounded-pill">Select</button>
+                            <!-- mod select modal -->
+                            <button type="button" class="btn btn-dark btn-sm rounded-pill" data-bs-toggle="modal"
+                                    data-bs-target="#modselect">Select
+                            </button>
                             <hr>
                             <span style="overflow-x: hidden; max-height: 5vh">
                                 <span v-for="mod in mods" class="badge bg-dark badge-sm text-light" disabled>
                                     {{mod}}
                                 </span>
                             </span>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="modselect" tabindex="-1" aria-labelledby="modselectLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content bg-secondary">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title text-light" id="modselectLabel">Mod Select</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-dark">
+                                            <!--row 1-->
+                                            <div class="row pb-4">
+                                                <div class="col-2">
+                                                    <button class="btn btn-success" onclick="mod_select_toggle('ez')">EZ
+                                                    </button>
+                                                    <span v-show="mod_select.includes('ez')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col-2">
+                                                    <button class="btn btn-primary" onclick="mod_select_toggle('nf')">NF
+                                                    </button>
+                                                    <span v-show="mod_select.includes('nf')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col-2">
+                                                    <button class="btn btn-info"
+                                                            onclick="mod_select_toggle('ht')">
+                                                        HT
+                                                    </button>
+                                                    <span v-show="mod_select.includes('ht')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                            </div>
+                                            <!--row 2-->
+                                            <div class="row pb-4">
+                                                <div class="col">
+                                                    <button class="btn btn-danger"
+                                                            onclick="mod_select_toggle('hr')">HR
+                                                    </button>
+                                                    <span v-show="mod_select.includes('hr')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col">
+                                                    <button class="btn btn-primary"
+                                                            onclick="mod_select_toggle('sd')">SD
+                                                    </button>
+                                                    <span v-show="mod_select.includes('sd')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col">
+                                                    <button class="btn btn-info"
+                                                            onclick="mod_select_toggle('dt')">DT
+                                                    </button>
+                                                    <span v-show="mod_select.includes('dt')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col">
+                                                    <button class="btn btn-info"
+                                                            onclick="mod_select_toggle('nc')">NC
+                                                    </button>
+                                                    <span v-show="mod_select.includes('nc')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col">
+                                                    <button class="btn btn-warning text-secondary"
+                                                            onclick="mod_select_toggle('hd')">HD
+                                                    </button>
+                                                    <span v-show="mod_select.includes('hd')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col">
+                                                    <button class="btn btn-warning text-secondary"
+                                                            onclick="mod_select_toggle('fl')">FL
+                                                    </button>
+                                                    <span v-show="mod_select.includes('fl')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                            </div>
+                                            <!--row 3-->
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <button class="btn btn-success"
+                                                            onclick="mod_select_toggle('rx')">RX
+                                                    </button>
+                                                    <span v-show="mod_select.includes('rx')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col-2">
+                                                    <button class="btn btn-primary"
+                                                            onclick="mod_select_toggle('ap')">AP
+                                                    </button>
+                                                    <span v-show="mod_select.includes('ap')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col-2">
+                                                    <button class="btn btn-info"
+                                                            onclick="mod_select_toggle('so')">SO
+                                                    </button>
+                                                    <span v-show="mod_select.includes('so')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal" onclick="set_mods()">Save changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="col-1 card bg-secondary">
                             Scoring Type
@@ -596,7 +714,8 @@
                                 <div class="dropdown text-center">
                                     <h6>Logic Profile</h6>
                                     <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                            id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
                                         <span class="badge bg-secondary">{{logic_profile}}</span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="logicProfiles">
@@ -616,13 +735,15 @@
                                         <tbody>
                                         <tr>
                                             <td>
-                                                <button type="button" class="btn btn-success" onclick="start_match()">
+                                                <button type="button" class="btn btn-success"
+                                                        onclick="start_match()">
                                                     Start
                                                     Match
                                                 </button>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-danger" onclick="abort_match()">
+                                                <button type="button" class="btn btn-danger"
+                                                        onclick="abort_match()">
                                                     Abort
                                                     Match
                                                 </button>
@@ -632,8 +753,7 @@
                                     </table>
                                     <button type="button"
                                             class="btn rounded-pill btn-warning text-secondary col-11 ms-2 mb-3">
-                                        Advanced
-                                        Options
+                                        Advanced Options
                                     </button>
                                 </div>
                             </div>
@@ -739,6 +859,7 @@
             scoring_type: "",
             team_type: "",
             mods: [],
+            mod_select: [],
             map_status: [],
         }
     })
@@ -750,6 +871,7 @@
         for (var i = 0; i < items.length; ++i) {
             items[i].firstElementChild.classList.remove("active");
         }
+        app.mod_select = [];
         document.getElementById(app.channel).classList.add("active");
         sock.send(JSON.stringify({"command": "update"}));
     }
@@ -871,6 +993,29 @@
             "channel": app.channel,
             "scoring_type": type
         };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function mod_select_toggle(mod) {
+        if (app.mod_select.includes(mod)) {
+            for (i = 0; i < app.mod_select.length; i++) {
+                if (app.mod_select[i] === mod) {
+                    delete app.mod_select[i];
+                    break;
+                }
+            }
+        } else {
+            app.mod_select.push(mod);
+        }
+    }
+
+    function set_mods() {
+        payload = {
+            "command": "set_mods",
+            "channel": app.channel,
+            "mods": app.mod_select
+        };
+        app.mod_select = [];
         sock.send(JSON.stringify(payload));
     }
 </script>

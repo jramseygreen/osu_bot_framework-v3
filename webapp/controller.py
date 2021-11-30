@@ -66,7 +66,8 @@ class Controller:
                                     threading.Thread(target=channel.get_logic()["on_match_abort"]).start()
                                     self.bot.log("-- on match abort method executed --")
         elif data["command"] == "personal_message":
-            self.bot.send_personal_message(data["channel"], data["message"])
+            if data["message"]:
+                self.bot.send_personal_message(data["channel"], data["message"])
         elif data["command"] == "make_room":
             if data["scoring_type"] == "catch":
                 data["scoring_type"] = "fruits"
@@ -95,6 +96,10 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.set_scoring_type(data["scoring_type"])
+        elif data["command"] == "set_mods":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.set_mods(data["mods"])
 
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
