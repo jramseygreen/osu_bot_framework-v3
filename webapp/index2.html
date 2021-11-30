@@ -135,8 +135,68 @@
                                     <h5 class="text-dark">Room Title</h5>
                                     <input type="text" class="form-control" id="make_room_title">
                                 </div>
-                                <h5 class="text-dark">Password</h5>
+                                <div class="mb-3">
+                                    <h5 class="text-dark">Password</h5>
                                     <input type="text" class="form-control" id="make_room_password">
+                                </div>
+                                <div class="container mb-4">
+                                    <div class="row text-center justify-content-center">
+                                        <div class="card col-3">
+                                            <h5>Game Mode</h5>
+                                            <div class="btn-group mb-3">
+                                                <button type="button" class="btn btn-dark" disabled>{{make_room.game_mode}}</button>
+                                                <button type="button"
+                                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('game_mode', 'any')">any</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('game_mode', 'osu')">osu</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('game_mode', 'taiko')">taiko</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('game_mode', 'mania')">mania</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('game_mode', 'catch')">catch</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="card col-3 mx-2">
+                                            <h5>Team Type</h5>
+                                            <div class="btn-group mb-3">
+                                                <button type="button" class="btn btn-dark" disabled>{{make_room.team_type}}</button>
+                                                <button type="button"
+                                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('team_type', 'any')">any</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('team_type', 'head-to-head')">head-to-head</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('team_type', 'tag-coop')">tag-coop</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('team_type', 'team-vs')">team-vs</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('team_type', 'tag-team-vs')">tag-team-vs</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="card col-3">
+                                            <h5>Scoring Type</h5>
+                                            <div class="btn-group mb-3">
+                                                <button type="button" class="btn btn-dark" disabled>{{make_room.scoring_type}}</button>
+                                                <button type="button"
+                                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('scoring_type', 'any')">any</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('scoring_type', 'score')">score</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('scoring_type', 'scorev2')">scorev2</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('scoring_type', 'accuracy')">accuracy</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="make_room_dropdown('scoring_type', 'combo')">combo</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
@@ -498,6 +558,11 @@
             beatmapLength: "",
             personal_messages: [],
             title: "",
+            make_room: {
+                "game_mode": "any",
+                "scoring_type": "any",
+                "team_type": "any"
+            },
         }
     })
 
@@ -543,6 +608,9 @@
             "command": "make_room",
             "title": form.elements.make_room_title.value,
             "password": form.elements.make_room_password.value,
+            "game_mode": app.make_room["game_mode"],
+            "team_type": app.make_room["team_type"],
+            "scoring_type": app.make_room["scoring_type"],
         };
         form.reset();
         if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
@@ -550,6 +618,10 @@
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
+    }
+
+    function make_room_dropdown(dropdown, option) {
+        app["make_room"][dropdown] = option
     }
 
     function join_channel(form) {
