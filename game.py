@@ -757,7 +757,7 @@ class Game(Channel):
         self.__mods = mods
         if self.__mods != ["ANY"]:
             msg = " ".join([GAME_ATTR[x] for x in self.__mods]).lower()
-            if len(self.__mods) == 2 and "EZ" in self.__mods and "HR" in self.__mods:
+            if "EZ" in self.__mods and "HR" in self.__mods:
                 msg = ("18 " + msg.replace("hr", "").replace("ez", "").strip()).strip()
 
             self.send_message("!mp mods " + msg)
