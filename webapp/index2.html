@@ -303,9 +303,20 @@
         <div v-else class="col-10">
             <div class="card text-white bg-dark" style="height: 100vh;">
                 <div class="card-header text-center">
-                    <h2 v-show="!title.includes('mp_')">{{title}}</h2>
-                    <a :href="'https://osu.ppy.sh/mp/' + channel.replace('#mp_', '')" target="_blank" class="text-light" style="text-decoration: none;"><h2 v-show="title.includes('mp_')">{{title}}</h2></a>
-                    <a :href="config_link" target="_blank" class="text-light"><small>View configuration page</small></a>
+                    <template>
+                        <div v-if="title.includes('mp_')">
+                            <a :href="'https://osu.ppy.sh/mp/' + channel.replace('#mp_', '')" target="_blank"
+                               class="text-light" style="text-decoration: none;">
+                                <h2>{{title}}</h2>
+                            </a>
+                            <a :href="config_link" target="_blank" class="text-light">
+                                <small>View configuration page</small>
+                            </a>
+                        </div>
+                        <div v-else>
+                            <h2>{{title}}</h2>
+                        </div>
+                    </template>
                 </div>
                 <span class="badge bg-success">{{inProgress}}</span>
                 <hr>
@@ -450,15 +461,20 @@
                                 </a>
                                 <hr>
                                 <div class="mb-3">
-                                    <span class="badge rounded-pill bg-info text-dark">{{beatmap.difficulty_rating}} ★</span>
-                                    <span class="badge rounded-pill bg-info text-dark">{{beatmapLength}}</span>
-                                    <span class="badge rounded-pill bg-info text-dark">{{beatmap.mode}}</span>
-                                    <span class="badge rounded-pill bg-info text-dark">{{beatmap.status}}</span>
-                                    <span class="badge rounded-pill bg-info text-dark">{{beatmap.bpm}} BPM</span>
-                                    <span class="badge rounded-pill bg-info text-dark">AR {{beatmap.ar}}</span>
-                                    <span class="badge rounded-pill bg-info text-dark">OD {{beatmap.accuracy}}</span>
-                                    <span class="badge rounded-pill bg-info text-dark">CS {{beatmap.cs}}</span>
-                                    <span class="badge rounded-pill bg-info text-dark">HP {{beatmap.drain}}</span>
+                                    <div v-if="Object.keys(beatmap).length > 2">
+                                        <span class="badge rounded-pill bg-info text-dark">{{beatmap.difficulty_rating}} ★</span>
+                                        <span class="badge rounded-pill bg-info text-dark">{{beatmapLength}}</span>
+                                        <span class="badge rounded-pill bg-info text-dark">{{beatmap.mode}}</span>
+                                        <span class="badge rounded-pill bg-info text-dark">{{beatmap.status}}</span>
+                                        <span class="badge rounded-pill bg-info text-dark">{{beatmap.bpm}} BPM</span>
+                                        <span class="badge rounded-pill bg-info text-dark">AR {{beatmap.ar}}</span>
+                                        <span class="badge rounded-pill bg-info text-dark">OD {{beatmap.accuracy}}</span>
+                                        <span class="badge rounded-pill bg-info text-dark">CS {{beatmap.cs}}</span>
+                                        <span class="badge rounded-pill bg-info text-dark">HP {{beatmap.drain}}</span>
+                                    </div>
+                                    <div v-else>
+                                        <span class="badge rounded-pill bg-info text-dark">Unsubmitted</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card bg-secondary">
