@@ -477,7 +477,7 @@
                                                     <span v-show="slot.team === 'blue' && channel.includes('mp_')"
                                                           :slot="slot" title="Blue Team"
                                                           class="badge bg-primary text-light">Blue</span>
-                                                    <span v-show="referees.includes(slot.username.replace(' ', '')) && channel.includes('mp_')"
+                                                    <span v-show="referees.includes(slot.username.replace(' ', '_')) && channel.includes('mp_')"
                                                           :slot="slot" title="Referee"
                                                           class="badge bg-dark text-success">🛡️</span>
 
@@ -537,7 +537,7 @@
                                          width="190" style="max-width: 100%;">
                                 </a>
                                 <hr>
-                                <div class="mb-3">
+                                <div class="mb-3 text-center">
                                     <div v-if="Object.keys(beatmap).length > 2">
                                         <span class="badge rounded-pill bg-info text-dark">{{beatmap.difficulty_rating}} ★</span>
                                         <span class="badge rounded-pill bg-info text-dark">{{beatmapLength}}</span>

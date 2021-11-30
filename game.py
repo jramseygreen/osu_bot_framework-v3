@@ -574,11 +574,11 @@ class Game(Channel):
         return slots
 
     def set_slot(self, slot, data):
-        if slot.isnumeric():
+        if slot:
             self.__slots[slot] = data
 
     def del_slot(self, slot):
-        if slot.isnumeric():
+        if slot:
             self.__slots[slot] = {"username": "", "team": "", "score": {}}
 
     def get_slot(self, username):
