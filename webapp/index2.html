@@ -164,7 +164,7 @@
                                                            onclick="make_room_dropdown('game_mode', 'mania')">mania</a>
                                                     </li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('game_mode', 'catch')">catch</a>
+                                                           onclick="make_room_dropdown('game_mode', 'fruits')">fruits</a>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -350,15 +350,92 @@
                         </div>
                         <div class="col-1 card bg-secondary">
                             Game Mode
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark" disabled>
+                                    {{game_mode}}
+                                </button>
+                                <button type="button"
+                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_game_mode('any')">any</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_game_mode('osu')">osu</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_game_mode('taiko')">taiko</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_game_mode('mania')">mania</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_game_mode('fruits')">fruits</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="col-1 card bg-secondary">
                             Mods
                         </div>
                         <div class="col-1 card bg-secondary">
                             Scoring Type
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark" disabled>
+                                    {{scoring_type}}
+                                </button>
+                                <button type="button"
+                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_scoring_type('any')">any</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_scoring_type('score')">score</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_scoring_type('scorev2')">scorev2</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_scoring_type('accuracy')">accuracy</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_scoring_type('combo')">combo</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="col-1 card bg-secondary">
                             Team Type
+                            <div class="btn-group mt-4">
+                                <button type="button" class="btn btn-dark" disabled>
+                                    {{team_type}}
+                                </button>
+                                <button type="button"
+                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_team_type('any')">any</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_team_type('head-to-head')">head-to-head</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_team_type('tag-coop')">tag-coop</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_team_type('team-vs')">team-vs</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_team_type('tag-team-vs')">tag-team-vs</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="col-1 card bg-secondary">
                             Map Status
@@ -580,6 +657,9 @@
                         } else {
                             app.beatmapLength = app.beatmap["hit_length"] + "sec";
                         }
+                        app.game_mode = buffer["channels"][app.channel]["game_mode"];
+                        app.team_type = buffer["channels"][app.channel]["team_type"];
+                        app.scoring_type = buffer["channels"][app.channel]["scoring_type"];
                     }
 
                 } else {
@@ -616,6 +696,9 @@
                 "scoring_type": "any",
                 "team_type": "any"
             },
+            game_mode: "",
+            scoring_type: "",
+            team_type: "",
         }
     })
 
@@ -719,6 +802,33 @@
         payload = {
             "command": "close_room",
             "channel": app.channel
+        };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function set_game_mode(mode) {
+        payload = {
+            "command": "set_game_mode",
+            "channel": app.channel,
+            "game_mode": mode
+        };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function set_team_type(type) {
+        payload = {
+            "command": "set_team_type",
+            "channel": app.channel,
+            "team_type": type
+        };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function set_scoring_type(type) {
+        payload = {
+            "command": "set_scoring_type",
+            "channel": app.channel,
+            "scoring_type": type
         };
         sock.send(JSON.stringify(payload));
     }

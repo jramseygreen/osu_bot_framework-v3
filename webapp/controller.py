@@ -68,6 +68,8 @@ class Controller:
         elif data["command"] == "personal_message":
             self.bot.send_personal_message(data["channel"], data["message"])
         elif data["command"] == "make_room":
+            if data["scoring_type"] == "catch":
+                data["scoring_type"] = "fruits"
             self.bot.make_room(title=data["title"], password=data["password"], game_mode=data["game_mode"], scoring_type=data["scoring_type"], team_type=data["team_type"])
         elif data["command"] == "join":
             self.bot.join(data["channel"])
@@ -81,6 +83,19 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.close_room()
+        elif data["command"] == "set_game_mode":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.set_game_mode(data["game_mode"])
+        elif data["command"] == "set_team_type":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.set_team_type(data["team_type"])
+        elif data["command"] == "set_scoring_type":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.set_scoring_type(data["scoring_type"])
+
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
