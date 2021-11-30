@@ -974,33 +974,34 @@ class Game(Channel):
     def implement_logic_profile(self, profile):
         self.abort_start_timer()
         self.clear_commands()
-        profile = super().implement_logic_profile(profile)
-        if hasattr(profile, "on_match_start") and callable(getattr(profile, "on_match_start")):
-            self.on_match_start(profile.on_match_start)
-        if hasattr(profile, "on_match_finish") and callable(getattr(profile, "on_match_finish")):
-            self.on_match_finish(profile.on_match_finish)
-        if hasattr(profile, "on_match_abort") and callable(getattr(profile, "on_match_abort")):
-            self.on_match_abort(profile.on_match_abort)
-        if hasattr(profile, "on_host_change") and callable(getattr(profile, "on_host_change")):
-            self.on_host_change(profile.on_host_change)
-        if hasattr(profile, "on_team_addition") and callable(getattr(profile, "on_team_addition")):
-            self.on_team_addition(profile.on_team_addition)
-        if hasattr(profile, "on_team_change") and callable(getattr(profile, "on_team_change")):
-            self.on_team_change(profile.on_team_change)
-        if hasattr(profile, "on_slot_change") and callable(getattr(profile, "on_slot_change")):
-            self.on_slot_change(profile.on_slot_change)
-        if hasattr(profile, "on_all_players_ready") and callable(getattr(profile, "on_all_players_ready")):
-            self.on_all_players_ready(profile.on_all_players_ready)
-        if hasattr(profile, "on_beatmap_change") and callable(getattr(profile, "on_beatmap_change")):
-            self.on_beatmap_change(profile.on_beatmap_change)
-        if hasattr(profile, "on_changing_beatmap") and callable(getattr(profile, "on_changing_beatmap")):
-            self.on_changing_beatmap(profile.on_changing_beatmap)
-        if hasattr(profile, "on_room_close") and callable(getattr(profile, "on_room_close")):
-            self.on_room_close(profile.on_room_close)
-        if hasattr(profile, "on_clear_host") and callable(getattr(profile, "on_clear_host")):
-            self.on_clear_host(profile.on_clear_host)
-        if hasattr(profile, "on_rule_violation") and callable(getattr(profile, "on_rule_violation")):
-            self.on_rule_violation(profile.on_rule_violation)
+        if profile:
+            profile = super().implement_logic_profile(profile)
+            if hasattr(profile, "on_match_start") and callable(getattr(profile, "on_match_start")):
+                self.on_match_start(profile.on_match_start)
+            if hasattr(profile, "on_match_finish") and callable(getattr(profile, "on_match_finish")):
+                self.on_match_finish(profile.on_match_finish)
+            if hasattr(profile, "on_match_abort") and callable(getattr(profile, "on_match_abort")):
+                self.on_match_abort(profile.on_match_abort)
+            if hasattr(profile, "on_host_change") and callable(getattr(profile, "on_host_change")):
+                self.on_host_change(profile.on_host_change)
+            if hasattr(profile, "on_team_addition") and callable(getattr(profile, "on_team_addition")):
+                self.on_team_addition(profile.on_team_addition)
+            if hasattr(profile, "on_team_change") and callable(getattr(profile, "on_team_change")):
+                self.on_team_change(profile.on_team_change)
+            if hasattr(profile, "on_slot_change") and callable(getattr(profile, "on_slot_change")):
+                self.on_slot_change(profile.on_slot_change)
+            if hasattr(profile, "on_all_players_ready") and callable(getattr(profile, "on_all_players_ready")):
+                self.on_all_players_ready(profile.on_all_players_ready)
+            if hasattr(profile, "on_beatmap_change") and callable(getattr(profile, "on_beatmap_change")):
+                self.on_beatmap_change(profile.on_beatmap_change)
+            if hasattr(profile, "on_changing_beatmap") and callable(getattr(profile, "on_changing_beatmap")):
+                self.on_changing_beatmap(profile.on_changing_beatmap)
+            if hasattr(profile, "on_room_close") and callable(getattr(profile, "on_room_close")):
+                self.on_room_close(profile.on_room_close)
+            if hasattr(profile, "on_clear_host") and callable(getattr(profile, "on_clear_host")):
+                self.on_clear_host(profile.on_clear_host)
+            if hasattr(profile, "on_rule_violation") and callable(getattr(profile, "on_rule_violation")):
+                self.on_rule_violation(profile.on_rule_violation)
 
     def get_attributes(self):
         data = super().get_attributes()
