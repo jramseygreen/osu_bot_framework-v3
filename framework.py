@@ -199,6 +199,7 @@ class Bot:
         if channel not in self.__channels:
             if "#mp_" == channel[:4]:
                 self.__channels[channel] = Game(self, channel, self.verbose)
+                self.__channels[channel].get_config_link()
             else:
                 self.__channels[channel] = Channel(self, channel, self.verbose)
             self.__sock.sendall(("JOIN " + channel + "\n").encode())
@@ -243,7 +244,7 @@ class Bot:
         return self.__broadcast_controller.get_broadcasts(channel)
 
     # makes a tournament lobby and returns the channel object
-    def make_room(self, title="game room", password="", size=8, beatmapID=22538, mods=["ANY"], game_mode="any", team_type="any", scoring_type="any", allow_convert=True):
+    def make_room(self, title="game room", password="", size=16, beatmapID=22538, mods=["ANY"], game_mode="any", team_type="any", scoring_type="any", allow_convert=True):
         self.__make_room_lock.acquire()
         self.__room_limit_reached = False
         self.send_personal_message("BanchoBot", "!mp make " + title)
@@ -264,6 +265,7 @@ class Bot:
         channel.set_scoring_type(scoring_type)
         if beatmapID != 22538:
             channel.change_beatmap(beatmapID)
+        channel.get_config_link()
         self.send_personal_message(self.__username, self.__username + " a game room was created: [" + channel.get_invite_link() + " " + title + "]")
         return channel
 

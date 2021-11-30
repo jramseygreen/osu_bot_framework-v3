@@ -21,7 +21,7 @@ class Game(Channel):
         self.__beatmap = TUTORIAL
         self.__beatmap_name = ""
         self.__match_history = self.fetch_match_history()
-        self.__size = 8
+        self.__size = 16
         self._password = ""
         self.__title = ""
         self.__welcome_message = ""
@@ -85,23 +85,24 @@ class Game(Channel):
             if "joined in slot" in message["content"]:
                 username = message["content"][:message["content"].find("joined") - 1]
                 team = ""
-                if "for team blue" in message["content"]:
-                    team = "blue"
-                elif "for team red" in message["content"]:
-                    team = "red"
+                if "for team" in message["content"]:
+                    if "for team blue" in message["content"]:
+                        team = "blue"
+                    elif "for team red" in message["content"]:
+                        team = "red"
+                    if self.__on_team_addition_method:
+                        argnum = len(str(inspect.signature(self.__on_team_addition_method)).strip("()").split(", "))
+                        if argnum == 2:
+                            threading.Thread(target=self.__on_team_addition_method, args=(username, team,)).start()
+                        elif str(inspect.signature(self.__on_team_addition_method)).strip("()").split(", ") != [""]:
+                            threading.Thread(target=self.__on_team_addition_method, args=(username,)).start()
+                        else:
+                            threading.Thread(target=self.__on_team_addition_method).start()
+                        self._bot.log("-- on team addition method executed --")
                 else:
                     self.clear_teams()
-                if self.__on_team_addition_method:
-                    argnum = len(str(inspect.signature(self.__on_team_addition_method)).strip("()").split(", "))
-                    if argnum == 2:
-                        threading.Thread(target=self.__on_team_addition_method, args=(username, team,)).start()
-                    elif str(inspect.signature(self.__on_team_addition_method)).strip("()").split(", ") != [""]:
-                        threading.Thread(target=self.__on_team_addition_method, args=(username,)).start()
-                    else:
-                        threading.Thread(target=self.__on_team_addition_method).start()
-                    self._bot.log("-- on team addition method executed --")
-
-                self.set_slot(int(message["content"].split("slot ", 1)[1].split(".", 1)[0].split(" ")[0]) - 1, {"username": username, "team": team, "score": {}})
+                slot_num = int(message["content"].split("slot ", 1)[1].split(".", 1)[0].split(" ")[0]) - 1
+                self.set_slot(slot_num, {"username": username, "team": team, "score": {}})
                 self.add_user(username)
                 if self.has_referee(username):
                     self.add_referee(username)
