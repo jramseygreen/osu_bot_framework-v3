@@ -81,7 +81,7 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.close_room()
-        elif "channel" in data:
+        if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.get_config_link()
