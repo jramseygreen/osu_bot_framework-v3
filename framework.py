@@ -194,11 +194,15 @@ class Bot:
 
     # joins a channel and also returns a channel or game object
     def join(self, channel):
+        if "osu.ppy.sh" in channel:
+            channel = "#mp_" + channel.split("/")[-1]
         if channel[0] != "#":
             channel = "#" + channel
+        # rejoin bugfix
         self.__sock.sendall(("PART " + channel + "\n").encode())
         return self.__join_helper(channel)
 
+    # splitting join operation fixes rejoining game channels when program is killed
     def __join_helper(self, channel):
         if channel not in self.__channels:
             if "#mp_" == channel[:4]:

@@ -291,7 +291,7 @@
 
                             <form id="join_channel_form">
                                 <div class="mb-3">
-                                    <h5 class="text-dark">Channel to join</h5>
+                                    <h5 class="text-dark">Channel or Match History url to join</h5>
                                     <input type="text" placeholder="e.g. #mp_1234567, #osu, #lobby" class="form-control"
                                            id="join_form_channel">
                                 </div>
@@ -344,7 +344,8 @@
                         </div>
                     </template>
                 </div>
-                <span v-show="in_progress && channel.includes('#mp_')" class="badge bg-success">Match In Progress...</span>
+                <span v-show="in_progress && channel.includes('#mp_')"
+                      class="badge bg-success">Match In Progress...</span>
                 <hr>
                 <!--                limits and ranges-->
                 <div v-show="channel.includes('#mp_')" class="container card-body text-center">
@@ -702,7 +703,7 @@
                                 </h3>
                                 <hr>
 
-                                <div style="overflow-y: scroll; height: 59vh">
+                                <div style="overflow-y: scroll; height: 59vh; max-height: 600px">
                                     <table class="table table-sm text-white">
                                         <thead>
                                         <tr>
@@ -746,7 +747,7 @@
                                 <hr>
                                 <div class="container">
                                     <div class="card text-white bg-dark text-start">
-                                        <div style="overflow-y: scroll; height: 50vh;">
+                                        <div id="chat_div" style="overflow-y: scroll; height: 50vh; max-height: 600px">
                                             <table id="chat" class="table table-sm text-white">
                                                 <tbody>
                                                 <tr v-for="message in messages">
@@ -964,7 +965,7 @@
         }
     })
 
-    async function exit_handler() {
+    function exit_handler() {
         exit = true;
         sock.send(JSON.stringify({"command": "exit_handler"}));
         sock.close();
@@ -1028,7 +1029,7 @@
     }
 
     function make_room_dropdown(dropdown, option) {
-        app["make_room"][dropdown] = option
+        app["make_room"][dropdown] = option;
     }
 
     function join_channel(form) {
@@ -1036,7 +1037,7 @@
             "command": "join",
             "channel": form.elements.join_form_channel.value,
         };
-        if (!(!payload["channel"].includes("mp_") && !confirm("Whilst joining public channels such as '" + payload["channel"] + "' is possible and supported, be aware that the sheer volume of players may cause this page to lag considerably.\n\nDo you still wish to join '" + payload["channel"] + "'?"))) {
+        if (payload["channel"] !== "" && !((!payload["channel"].includes("mp_") || !payload["channel"].includes("osu.ppy.sh")) && !confirm("Whilst joining public channels such as '" + payload["channel"] + "' is possible and supported, be aware that the sheer volume of players may cause this page to lag considerably.\n\nDo you still wish to join '" + payload["channel"] + "'?"))) {
             sock.send(JSON.stringify(payload));
         }
         form.reset();
@@ -1105,7 +1106,7 @@
         if (app.mod_select.includes(mod)) {
             for (i = 0; i < app.mod_select.length; i++) {
                 if (app.mod_select[i] === mod) {
-                    app.mod_select.splice(i, 1)
+                    app.mod_select.splice(i, 1);
                     break;
                 }
             }
@@ -1128,7 +1129,7 @@
         if (app.map_status_select.includes(status)) {
             for (i = 0; i < app.map_status_select.length; i++) {
                 if (app.map_status_select[i] === status) {
-                    app.map_status_select.splice(i, 1)
+                    app.map_status_select.splice(i, 1);
                     break;
                 }
             }
