@@ -197,7 +197,6 @@ class Bot:
         if channel[0] != "#":
             channel = "#" + channel
         if channel not in self.__channels:
-            self.part(channel)
             if "#mp_" == channel[:4]:
                 self.__channels[channel] = Game(self, channel, self.verbose)
                 self.__channels[channel].get_config_link()
@@ -213,8 +212,8 @@ class Bot:
             channel = "#" + channel
         if channel in self.__channels:
             del self.__channels[channel]
+            self.__sock.sendall(("PART " + channel + "\n").encode())
             self.log("-- Parted: " + channel + " --")
-        self.__sock.sendall(("PART " + channel + "\n").encode())
 
     # sends a personal message to a username
     def send_personal_message(self, username, message):
@@ -251,6 +250,7 @@ class Bot:
         self.send_personal_message("BanchoBot", "!mp make " + title)
         while not self.__new_tournament:
             if self.__room_limit_reached:
+                self.__make_room_lock.release()
                 return
         channel = self.__channels[self.__new_tournament]
         self.__new_tournament = ""
@@ -409,6 +409,15 @@ class Bot:
 
     def set_logging(self, status):
         self.logging = status
+        if not status:
+            self.__logger.close()
 
     def _get_controller(self):
         return self.__controller
+
+    def exit_handler(self):
+        self.log("-- Ran exit handler --")
+        for channel in self.__channels:
+            self.part(channel)
+        self.set_logging(False)
+        os.abort()

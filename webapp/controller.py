@@ -20,7 +20,9 @@ class Controller:
     def __on_message(self, conn, msg):
         print(msg)
         data = json.loads(msg)
-        if data["command"] == "update":
+        if data["command"] == "exit_handler":
+            self.bot.exit_handler()
+        elif data["command"] == "update":
             self.update()
         elif data["command"] == "start_match":
             channel = self.bot.get_channel(data["channel"])
@@ -69,8 +71,6 @@ class Controller:
             if data["message"]:
                 self.bot.send_personal_message(data["channel"], data["message"])
         elif data["command"] == "make_room":
-            if data["scoring_type"] == "catch":
-                data["scoring_type"] = "fruits"
             self.bot.make_room(title=data["title"], password=data["password"], game_mode=data["game_mode"], scoring_type=data["scoring_type"], team_type=data["team_type"])
         elif data["command"] == "join":
             self.bot.join(data["channel"])

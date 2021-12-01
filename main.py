@@ -5,6 +5,7 @@ from getpass import getpass
 from framework import Bot
 from config.startup import startup
 
+
 # initialisation + grab credentials
 os.system("title osu bot framework v3")
 f = open("config" + os.sep + "bot_config.conf", "r")

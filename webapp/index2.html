@@ -36,17 +36,19 @@
     <!--    sidebar-->
     <div class="row">
         <div class="col d-flex flex-column text-white bg-dark" style="height: 100vh;">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                <div class="row">
-                    <div class="col-3">
+            <div class="row">
+                <span class="col-9">
+                    <a href="" class="d-flex mb-3 text-white text-decoration-none">
                         <img src="https://media.discordapp.net/attachments/902919147929886830/909331674540691466/bitmap.png"
                              width="50" height="50">
-                    </div>
-                    <div class="col-9">
-                        <h3 class="text-center">OBF-3</h3>
-                    </div>
-                </div>
-            </a>
+                        <h3 class="text-center ms-2">OBF-3</h3>
+                    </a>
+                </span>
+                <span class="col-3">
+                    <button class="btn btn-sm float-end btn-danger rounded-pill" onclick="exit_handler()" title="Stop osu bot framework">🔌</button>
+                </span>
+
+            </div>
             <hr>
             <span class="fs-4 mb-2">Channels</span>
             <ul class="nav nav-pills flex-column mb-auto" id="channels">
@@ -955,6 +957,10 @@
             map_status_select: [],
         }
     })
+
+    function exit_handler() {
+         sock.send(JSON.stringify({"command": "exit_handler"}));
+    }
 
     function setChannel(data) {
         app.channel = data.getAttribute("name");
