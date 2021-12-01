@@ -980,8 +980,9 @@ class Game(Channel):
         self.__on_rule_violation_method = method
         
     def implement_logic_profile(self, profile):
-        self.abort_start_timer()
         profile = super().implement_logic_profile(profile)
+        if profile or profile == "":
+            self.abort_start_timer()
         if profile:
             if hasattr(profile, "on_match_start") and callable(getattr(profile, "on_match_start")):
                 self.on_match_start(profile.on_match_start)

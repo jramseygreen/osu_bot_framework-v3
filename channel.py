@@ -124,18 +124,19 @@ class Channel:
         self.__on_message_method = method
         
     def implement_logic_profile(self, profile):
-        self.clear_logic_profile()
-        self._logic_profile = profile
-        if profile:
-            profile = self._bot.get_logic_profile(profile)(self._bot, self)
-            if hasattr(profile, "on_personal_message") and callable(getattr(profile, "on_personal_message")):
-                self.on_personal_message(profile.on_personal_message)
-            if hasattr(profile, "on_join") and callable(getattr(profile, "on_join")):
-                self.on_join(profile.on_join)
-            if hasattr(profile, "on_part") and callable(getattr(profile, "on_part")):
-                self.on_part(profile.on_part)
-            if hasattr(profile, "on_message") and callable(getattr(profile, "on_message")):
-                self.on_message(profile.on_message)
+        if profile == "" or profile in self._bot.get_logic_profiles():
+            self.clear_logic_profile()
+            self._logic_profile = profile
+            if profile:
+                profile = self._bot.get_logic_profile(profile)(self._bot, self)
+                if hasattr(profile, "on_personal_message") and callable(getattr(profile, "on_personal_message")):
+                    self.on_personal_message(profile.on_personal_message)
+                if hasattr(profile, "on_join") and callable(getattr(profile, "on_join")):
+                    self.on_join(profile.on_join)
+                if hasattr(profile, "on_part") and callable(getattr(profile, "on_part")):
+                    self.on_part(profile.on_part)
+                if hasattr(profile, "on_message") and callable(getattr(profile, "on_message")):
+                    self.on_message(profile.on_message)
             return profile
 
     def get_logic_profile(self):
