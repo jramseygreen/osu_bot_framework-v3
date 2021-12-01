@@ -228,7 +228,7 @@ class Game(Channel):
                 elif command == "!mp size":
                     if args:
                         self.__size = int(args[0])
-                elif command == "!mp abort":
+                elif command == "!mp abort" and self.in_progress():
                     if self.__on_match_abort_method:
                         threading.Thread(target=self.__on_match_abort_method).start()
                         self._bot.log("-- on match abort method executed --")

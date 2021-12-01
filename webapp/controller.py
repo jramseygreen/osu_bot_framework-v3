@@ -61,7 +61,7 @@ class Controller:
                             elif command == "!mp size":
                                 if args:
                                     channel._size = int(args[0])
-                            elif command == "!abort":
+                            elif command == "!abort" and channel.in_progress():
                                 if channel.get_logic()["on_match_abort"]:
                                     threading.Thread(target=channel.get_logic()["on_match_abort"]).start()
                                     self.bot.log("-- on match abort method executed --")
