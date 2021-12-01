@@ -3,6 +3,7 @@ import inspect
 import json
 import os
 import threading
+import time
 from datetime import datetime
 
 from tools.broadcast_controller import BroadcastController
@@ -428,7 +429,7 @@ class Bot:
 
     def exit_handler(self):
         self.log("-- Ran exit handler --")
-        for channel in self.__channels:
+        for channel in self.__channels.copy():
             self.part(channel)
         self.set_logging(False)
         os.abort()
