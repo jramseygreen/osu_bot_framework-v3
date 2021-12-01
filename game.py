@@ -173,7 +173,10 @@ class Game(Channel):
                 if self.__maintain_password:
                     self.set_password(self._password)
                 if self.__maintain_title:
-                    self.set_title(self.__title)
+                    if self.__match_history["match"]["name"] == self.__title:
+                        self.set_title("")
+                    else:
+                        self.set_title(self.__title)
             elif "Aborted the match" == message["content"]:
                 self.__in_progress = False
             elif "Beatmap changed to" in message["content"] or "Changed beatmap to" in message["content"]:
