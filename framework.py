@@ -56,7 +56,10 @@ class Bot:
             while True:
                 # add to the buffer every loop
                 data = self.__sock.get_socket().recv(2048)
-                buffer += data.decode("utf-8").replace("\r", "")
+                try:
+                    buffer += data.decode("utf-8").replace("\r", "")
+                except UnicodeDecodeError:
+                    continue
                 # while there are messages
                 while "\n" in buffer:
                     line = buffer.split("\n", 1)[0]

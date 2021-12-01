@@ -703,7 +703,8 @@
                                 </h3>
                                 <hr>
 
-                                <div style="overflow-y: scroll; height: 59vh; max-height: 600px" onscroll="lazy_load(this)">
+                                <div id="players" style="overflow-y: scroll; height: 59vh; max-height: 600px"
+                                     onscroll="lazy_load(this)">
                                     <table class="table table-sm text-white">
                                         <thead>
                                         <tr>
@@ -974,6 +975,9 @@
 
     function setChannel(data) {
         if (app.channel !== data.getAttribute("name")) {
+            if (document.getElementById("players")) {
+                document.getElementById("players").scrollTo(0, 0);
+            }
             app.user_num = 20;
         }
         app.channel = data.getAttribute("name");
@@ -987,7 +991,7 @@
     }
 
     function lazy_load(obj) {
-        if(obj.scrollTop === (obj.scrollHeight - obj.offsetHeight)) {
+        if (obj.scrollTop === (obj.scrollHeight - obj.offsetHeight)) {
             if (app.user_num < app.users.length) {
                 app.user_num += 20;
             }
