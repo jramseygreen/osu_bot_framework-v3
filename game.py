@@ -217,6 +217,7 @@ class Game(Channel):
                                 self.del_referee(username)
                                 if username == self._bot.get_username():
                                     self._bot.part(self._channel)
+                    self.get_config_link()
                 if command == "!mp password":
                     self.__invite_link = self.__invite_link.replace(self._password, "")
                     if args:
