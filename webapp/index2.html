@@ -876,9 +876,9 @@
 
         sock.onclose = function () {
             if (exit) {
-                document.body.innerHTML = '<div class="bg-dark text-light text-center" style="height: 100vh; width: 100vw;"><span class="badge bg-success">Exited osu bot framework successfully!</span></div>';
+                document.body.innerHTML = '<div class="bg-dark text-light text-center" style="height: 100vh; width: 100vw;"><h5><span class="badge bg-success">Exited osu bot framework successfully!</span></h5><img src="https://media.discordapp.net/attachments/902919147929886830/909331674540691466/bitmap.png" width="600" height="600" class="mt-4"><p mt-4>See you next time...</p></div>';
             } else {
-                document.body.innerHTML = '<div class="bg-dark text-light text-center" style="height: 100vh; width: 100vw;"><span class="badge bg-danger text-light">The connection to the back end was lost! Please <a href="">refresh</a> the page!</span></div>';
+                document.body.innerHTML = '<div class="bg-dark text-light text-center" style="height: 100vh; width: 100vw;"><h5><span class="badge bg-danger text-light">The connection to the back end was lost! Please <a href="">refresh</a> the page!</span></h5><a href=""><img src="https://media.discordapp.net/attachments/902919147929886830/909331674540691466/bitmap.png" width="600" height="600" class="mt-4"></a></div>';
             }
         };
 
