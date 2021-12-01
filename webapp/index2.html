@@ -703,7 +703,7 @@
                                 </h3>
                                 <hr>
 
-                                <div style="overflow-y: scroll; height: 59vh; max-height: 600px">
+                                <div style="overflow-y: scroll; height: 59vh; max-height: 600px" onscroll="lazy_load(this)">
                                     <table class="table table-sm text-white">
                                         <thead>
                                         <tr>
@@ -714,7 +714,7 @@
                                         </thead>
                                         <tbody>
                                         <template>
-                                            <tr v-for="(slot, index) in slots">
+                                            <tr v-for="(slot, index) in slots" v-if="index < user_num">
                                                 <th scope="row">{{parseInt(index) + 1}}</th>
                                                 <td>{{slot.username}}</td>
                                                 <!--badges-->
@@ -939,6 +939,7 @@
             logic_profile: "",
             slots: {},
             users: [],
+            user_num: 20,
             referees: [],
             host: "",
             channels: [],
@@ -972,6 +973,9 @@
     }
 
     function setChannel(data) {
+        if (app.channel !== data.getAttribute("name")) {
+            app.user_num = 20;
+        }
         app.channel = data.getAttribute("name");
         var ul = document.getElementById("channels");
         var items = ul.getElementsByTagName("li");
@@ -980,6 +984,14 @@
         }
         document.getElementById(app.channel).classList.add("active");
         sock.send(JSON.stringify({"command": "update"}));
+    }
+
+    function lazy_load(obj) {
+        if(obj.scrollTop === (obj.scrollHeight - obj.offsetHeight)) {
+            if (app.user_num < app.users.length) {
+                app.user_num += 20;
+            }
+        }
     }
 
     function set_logic_profile(profile) {
