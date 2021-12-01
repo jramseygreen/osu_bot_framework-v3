@@ -45,7 +45,8 @@
                     </a>
                 </span>
                 <span class="col-3">
-                    <button class="btn btn-sm float-end btn-danger rounded-pill" onclick="exit_handler()" title="Stop osu bot framework">🔌</button>
+                    <button class="btn btn-sm float-end btn-danger rounded-pill" onclick="exit_handler()"
+                            title="Stop osu bot framework">🔌</button>
                 </span>
 
             </div>
@@ -343,7 +344,7 @@
                         </div>
                     </template>
                 </div>
-                <span class="badge bg-success">{{inProgress}}</span>
+                <span v-show="in_progress && channel.includes('#mp_')" class="badge bg-success">Match In Progress...</span>
                 <hr>
                 <!--                limits and ranges-->
                 <div v-show="channel.includes('#mp_')" class="container card-body text-center">
@@ -865,6 +866,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 <script>
     var sock = new WebSocket("ws://localhost:9876/");
+    var exit = false;
     var buffer;
     var app;
     window.onload = function () {
@@ -873,7 +875,11 @@
         };
 
         sock.onclose = function () {
-            document.body.innerHTML = '<span class="badge bg-danger text-light">The connection to the back end was lost! Please <a href="">refresh</a> the page!</span>'
+            if (exit) {
+                document.body.innerHTML = '<div class="bg-dark text-light text-center" style="height: 100vh; width: 100vw;"><span class="badge bg-success">Exited osu bot framework successfully!</span></div>';
+            } else {
+                document.body.innerHTML = '<div class="bg-dark text-light text-center" style="height: 100vh; width: 100vw;"><span class="badge bg-danger text-light">The connection to the back end was lost! Please <a href="">refresh</a> the page!</span></div>';
+            }
         };
 
         sock.onerror = function (error) {
@@ -899,7 +905,7 @@
                         app.config_link = buffer["channels"][app.channel]["config_link"];
                         app.host = buffer["channels"][app.channel]["host"];
                         app.referees = buffer["channels"][app.channel]["referees"];
-                        app.inProgress = (buffer["channels"][app.channel]["in_progress"] ? "In Progress..." : "");
+                        app.in_progress = buffer["channels"][app.channel]["in_progress"];
                         app.beatmap = buffer["channels"][app.channel]["beatmap"];
                         app.beatmapName = buffer["channels"][app.channel]["beatmap_name"];
                         app.beatmapImage = "https://assets.ppy.sh/beatmaps/" + buffer["channels"][app.channel]["beatmap"]["beatmapset_id"] + "/covers/cover.jpg";
@@ -935,7 +941,7 @@
             referees: [],
             host: "",
             channels: [],
-            inProgress: "",
+            in_progress: false,
             messages: [],
             beatmap: {},
             beatmapName: "",
@@ -958,8 +964,10 @@
         }
     })
 
-    function exit_handler() {
-         sock.send(JSON.stringify({"command": "exit_handler"}));
+    async function exit_handler() {
+        exit = true;
+        sock.send(JSON.stringify({"command": "exit_handler"}));
+        sock.close();
     }
 
     function setChannel(data) {
