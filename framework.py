@@ -197,6 +197,7 @@ class Bot:
         if channel[0] != "#":
             channel = "#" + channel
         if channel not in self.__channels:
+            self.part(channel)
             if "#mp_" == channel[:4]:
                 self.__channels[channel] = Game(self, channel, self.verbose)
                 self.__channels[channel].get_config_link()
@@ -212,8 +213,8 @@ class Bot:
             channel = "#" + channel
         if channel in self.__channels:
             del self.__channels[channel]
-            self.__sock.sendall(("PART " + channel + "\n").encode())
             self.log("-- Parted: " + channel + " --")
+        self.__sock.sendall(("PART " + channel + "\n").encode())
 
     # sends a personal message to a username
     def send_personal_message(self, username, message):
