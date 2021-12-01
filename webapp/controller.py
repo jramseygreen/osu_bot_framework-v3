@@ -130,12 +130,13 @@ class Controller:
                 conn, addr = self.__webapp_sock.accept()
                 conn.recv(1024)
                 # header
-                index = open("webapp/index2.html", "r", encoding="utf8")
                 text = 'HTTP/1.0 200 OK\n'
                 text += 'Content-Type: text/html\n'
                 text += 'Content-Type: text/html\n\n'
-                text += index.read()
-                index.close()
+                f = open("webapp/index2.html", "r", encoding="utf8")
+                text += f.read()
+                f.close()
+                text = text.replace("ws://localhost:9876/", "ws://" + self.__ws.get_host() + ":" + str(self.__ws.get_port()) + "/")
                 try:
                     conn.sendall(text.encode())
                 except ConnectionAbortedError:

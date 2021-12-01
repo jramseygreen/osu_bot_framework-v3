@@ -114,3 +114,9 @@ class ws_server:
 
     def set_port(self, port):
         self.__port = port
+
+    def get_port(self):
+        return self.__port
+
+    def get_host(self):
+        return self.__host
