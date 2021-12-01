@@ -818,10 +818,12 @@
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="logicProfiles">
                                         <li><a class="dropdown-item"
-                                                                                 href="javascript:void(0);"
-                                                                                 id=""
-                                                                                 onclick="set_logic_profile(this)">Clear Current Logic Profile</a></li>
-                                        <li><hr class="dropdown-divider"></li>
+                                               href="javascript:void(0);"
+                                               id=""
+                                               onclick="set_logic_profile(this)">Clear Current Logic Profile</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
                                         <li v-for="profile in logic_profiles"><a class="dropdown-item"
                                                                                  href="javascript:void(0);"
                                                                                  :id="profile"
@@ -990,13 +992,16 @@
             sock.send(JSON.stringify({"command": "set_user_num", "user_num": app.user_num}));
         }
         app.channel = data.getAttribute("name");
+        document.getElementById(app.channel).classList.add("active");
+        sock.send(JSON.stringify({"command": "update"}));
+    }
+
+    function remove_active_channels() {
         var ul = document.getElementById("channels");
         var items = ul.getElementsByTagName("li");
         for (var i = 0; i < items.length; ++i) {
             items[i].firstElementChild.classList.remove("active");
         }
-        document.getElementById(app.channel).classList.add("active");
-        sock.send(JSON.stringify({"command": "update"}));
     }
 
     function lazy_load(obj) {
@@ -1076,6 +1081,7 @@
         };
         sock.send(JSON.stringify(payload));
         sock.send(JSON.stringify({"command": "update"}));
+        remove_active_channels()
     }
 
     function send_message(inputObj, channel) {
