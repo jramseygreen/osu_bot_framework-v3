@@ -990,6 +990,7 @@
             }
             app.user_num = 20;
             sock.send(JSON.stringify({"command": "set_user_num", "user_num": app.user_num}));
+            remove_active_channels()
         }
         app.channel = data.getAttribute("name");
         document.getElementById(app.channel).classList.add("active");

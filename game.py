@@ -22,6 +22,7 @@ class Game(Channel):
         self.__beatmap_name = ""
         self.__match_history = self.fetch_match_history()
         self.__size = 16
+        self.__locked = False
         self._password = ""
         self.__title = ""
         self.__welcome_message = ""
@@ -35,6 +36,7 @@ class Game(Channel):
         self.__autostart_timer = -1
         self.__maintain_password = False
         self.__maintain_size = False
+        self.__maintain_title = False
         self.__player_blacklist = bot.get_player_blacklist()
         self.__auto_download = {"status": False, "path": "", "auto_open": False, "with_video": False}
         self._commands = {"!info": {"response": "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "Built with osu_bot_framework v3"}}
@@ -170,6 +172,8 @@ class Game(Channel):
                     self.set_size(self.__size)
                 if self.__maintain_password:
                     self.set_password(self._password)
+                if self.__maintain_title:
+                    self.set_title(self.__title)
             elif "Aborted the match" == message["content"]:
                 self.__in_progress = False
             elif "Beatmap changed to" in message["content"] or "Changed beatmap to" in message["content"]:
@@ -200,6 +204,16 @@ class Game(Channel):
                         threading.Thread(target=self.__on_clear_host_method).start()
                     self._bot.log("-- on clear host method executed --")
                 self.__host = ""
+            elif "Room name updated to " in message["content"]:
+                title = message["content"].replace("Room name updated to ", "").strip('"')
+                if not title:
+                    self.__title = self.__match_history["match"]["name"]
+                else:
+                    self.__title = title
+            elif "Locked the match" == message["content"]:
+                self.__locked = True
+            elif "Unlocked the match" == message["content"]:
+                self.__locked = False
 
         elif self.has_referee(message["username"]):
             message_arr = message["content"].lower().split(" ")
@@ -265,6 +279,8 @@ class Game(Channel):
                     self.set_size(self.__size)
                 if self.__maintain_password:
                     self.set_password(self._password)
+                if self.__maintain_title:
+                    self.set_title(self.__title)
 
     def add_user(self, username):
         super().add_user(username)
@@ -865,7 +881,7 @@ class Game(Channel):
         return self.__game_mode
 
     def set_title(self, title):
-        self.__title = title
+        self.send_message("!mp name " + title)
 
     def get_title(self):
         return self.__title
@@ -896,6 +912,7 @@ class Game(Channel):
         text += "\n     • Player blacklist: " + ", ".join(self.__player_blacklist)
         text += "\n     • Welcome message: " + self.__welcome_message
         text += "\n     • Beatmap checker: " + str(self.__beatmap_checker)
+        text += "\n     • Maintain title: " + str(self.__maintain_title)
         text += "\n     • Maintain password: " + str(self.__maintain_password)
         text += "\n     • Maintain size: " + str(self.__maintain_size)
         text += "\n     • Start on players ready: " + str(self.__start_on_players_ready)
@@ -1032,6 +1049,7 @@ class Game(Channel):
         data["artist_whitelist"] = self.__artist_whitelist
         data["artist_blacklist"] = self.__artist_blacklist
         data["autostart_timer"] = self.__autostart_timer
+        data["maintain_title"] = self.__maintain_title
         data["maintain_password"] = self.__maintain_password
         data["maintain_size"] = self.__maintain_size
         data["beatmap_checker"] = self.__beatmap_checker
@@ -1097,6 +1115,7 @@ class Game(Channel):
         self.set_password(data["password"])
         self.set_welcome_message(data["welcome_message"])
         self.__autostart_timer = data["autostart_timer"]
+        self.__maintain_title = data["maintain_title"]
         self.__maintain_password = data["maintain_password"]
         self.__maintain_size = data["maintain_size"]
         self.__beatmap_checker = data["beatmap_checker"]
@@ -1196,11 +1215,17 @@ class Game(Channel):
     def is_autostart_timer(self):
         return self.__autostart_timer > -1
 
+    def maintain_title(self, status):
+        self.__maintain_title = status
+
     def maintain_password(self, status):
         self.__maintain_password = status
 
     def maintain_size(self, status):
         self.__maintain_size = status
+
+    def is_maintain_title(self):
+        return self.__maintain_title
 
     def is_maintain_size(self):
         return self.__maintain_size
@@ -1254,3 +1279,14 @@ class Game(Channel):
 
     def close_room(self):
         self.send_message("!mp close")
+
+    def lock(self):
+        self.send_message("!mp lock")
+        self.__locked = True
+
+    def unlock(self):
+        self.send_message("!mp unlock")
+        self.__locked = False
+
+    def is_locked(self):
+        return self.__locked

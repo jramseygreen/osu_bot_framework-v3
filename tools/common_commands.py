@@ -477,6 +477,16 @@ class CommonCommands:
                 self.channel.del_player_blacklist(player)
                 self.channel.send_message("'" + player + "' removed from the blacklist")
 
+    def enable_maintain_title(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.maintain_title(True)
+            self.channel.send_message("Enabled maintaining title")
+
+    def disable_maintain_title(self, message):
+        if self.channel.has_referee(message["username"]):
+            self.channel.maintain_title(False)
+            self.channel.send_message("Disabled maintaining title")
+
     def enable_maintain_password(self, message):
         if self.channel.has_referee(message["username"]):
             self.channel.maintain_password(True)
