@@ -541,6 +541,15 @@ class Game(Channel):
 
     def abort_match(self):
         self.send_message("!mp abort")
+        if self.__maintain_size:
+            self.set_size(self.__size)
+        if self.__maintain_password:
+            self.set_password(self._password)
+        if self.__maintain_title:
+            if self.__match_history["match"]["name"] == self.__title:
+                self.set_title("")
+            else:
+                self.set_title(self.__title)
         if self.__on_match_abort_method:
             threading.Thread(target=self.__on_match_abort_method).start()
             self._bot.log("-- on match abort method executed --")
