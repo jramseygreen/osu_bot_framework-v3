@@ -403,7 +403,7 @@
                             Mods
                             <!-- mod select modal -->
                             <button type="button" class="btn btn-dark btn-sm rounded-pill" data-bs-toggle="modal"
-                                    data-bs-target="#modselect">Select
+                                    data-bs-target="#modselect" onclick="app.mod_select = [];">Select
                             </button>
                             <hr>
                             <span style="overflow-x: hidden; max-height: 5vh">
@@ -520,7 +520,9 @@
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                 Close
                                             </button>
-                                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal" onclick="set_mods()">Save changes</button>
+                                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal"
+                                                    onclick="set_mods()">Save changes
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -587,13 +589,38 @@
                         </div>
                         <div class="col-1 card bg-secondary">
                             Map Status
-                            <button class="btn btn-dark btn-sm rounded-pill">Select</button>
+                            <button type="button" class="btn btn-dark btn-sm rounded-pill" data-bs-toggle="modal"
+                                    data-bs-target="#statusSelect" onclick="app.map_status_select = [];">Select
+                            </button>
                             <hr>
                             <span style="overflow-x: hidden; max-height: 5vh">
-                                <span v-for="status in map_status" class="badge bg-dark badge-sm text-light" disabled>
+                                <span v-for="status in map_status" class="badge bg-dark badge-sm text-light">
                                     {{status}}
                                 </span>
                             </span>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="statusSelect" tabindex="-1" aria-labelledby="statusSelectLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content bg-secondary">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="statusSelectLabel">Map Status Select</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ...
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <button type="button" class="btn btn-dark">Save changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -861,6 +888,7 @@
             mods: [],
             mod_select: [],
             map_status: [],
+            map_status_select: [],
         }
     })
 
@@ -871,7 +899,6 @@
         for (var i = 0; i < items.length; ++i) {
             items[i].firstElementChild.classList.remove("active");
         }
-        app.mod_select = [];
         document.getElementById(app.channel).classList.add("active");
         sock.send(JSON.stringify({"command": "update"}));
     }
@@ -1000,7 +1027,7 @@
         if (app.mod_select.includes(mod)) {
             for (i = 0; i < app.mod_select.length; i++) {
                 if (app.mod_select[i] === mod) {
-                    delete app.mod_select[i];
+                    app.mod_select.splice(i, 1)
                     break;
                 }
             }
