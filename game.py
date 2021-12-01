@@ -731,6 +731,8 @@ class Game(Channel):
     # getters and setters for limits and ranges
     # sets the allowed map statuses
     def set_map_status(self, status):
+        if not status:
+            status = ["any"]
         if type(status) == list:
             self.__map_status = [x.lower() for x in status]
         else:
@@ -750,6 +752,8 @@ class Game(Channel):
 
     # sets the allowed mods
     def set_mods(self, mods):
+        if not mods:
+            mods = ["any"]
         if type(mods) == list:
             mods = [mod.upper() for mod in mods]
         else:

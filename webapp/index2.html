@@ -425,6 +425,16 @@
                                         <div class="modal-body text-dark">
                                             <!--row 1-->
                                             <div class="row pb-4">
+                                                <div class="col text-start ms-2">
+                                                    <button class="btn btn-light ms-4"
+                                                            onclick="mod_select_toggle('freemod')">FREEMOD
+                                                    </button>
+                                                    <span v-show="mod_select.includes('freemod')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                            </div>
+                                            <!--row 2-->
+                                            <div class="row pb-4">
                                                 <div class="col-2">
                                                     <button class="btn btn-success" onclick="mod_select_toggle('ez')">EZ
                                                     </button>
@@ -446,7 +456,7 @@
                                                           class="top-0 badge rounded-pill bg-danger">✓</span>
                                                 </div>
                                             </div>
-                                            <!--row 2-->
+                                            <!--row 3-->
                                             <div class="row pb-4">
                                                 <div class="col">
                                                     <button class="btn btn-danger"
@@ -491,7 +501,7 @@
                                                           class="top-0 badge rounded-pill bg-danger">✓</span>
                                                 </div>
                                             </div>
-                                            <!--row 3-->
+                                            <!--row 4-->
                                             <div class="row">
                                                 <div class="col-2">
                                                     <button class="btn btn-success"
@@ -602,7 +612,7 @@
                             <!-- Modal -->
                             <div class="modal fade" id="statusSelect" tabindex="-1" aria-labelledby="statusSelectLabel"
                                  aria-hidden="true">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content bg-secondary">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="statusSelectLabel">Map Status Select</h5>
@@ -610,13 +620,68 @@
                                                     aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            ...
+                                            <div class="row pb-4">
+                                                <div class="col-3">
+                                                    <button class="btn btn-primary"
+                                                            onclick="map_status_select_toggle('ranked')">Ranked
+                                                    </button>
+                                                    <span v-show="map_status_select.includes('ranked')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col-3">
+                                                    <button class="btn btn-primary"
+                                                            onclick="map_status_select_toggle('loved')">Loved
+                                                    </button>
+                                                    <span v-show="map_status_select.includes('loved')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+
+                                                <div class="col-3">
+                                                    <button class="btn btn-primary"
+                                                            onclick="map_status_select_toggle('qualified')">Qualified
+                                                    </button>
+                                                    <span v-show="map_status_select.includes('qualified')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col-3">
+                                                    <button class="btn btn-primary"
+                                                            onclick="map_status_select_toggle('approved')">Approved
+                                                    </button>
+                                                    <span v-show="map_status_select.includes('approved')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                            </div>
+                                            <div class="row pb-4">
+                                                <div class="col-3">
+                                                    <button class="btn btn-info"
+                                                            onclick="map_status_select_toggle('pending')">Pending
+                                                    </button>
+                                                    <span v-show="map_status_select.includes('pending')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col-3">
+                                                    <button class="btn btn-info"
+                                                            onclick="map_status_select_toggle('wip')">WIP
+                                                    </button>
+                                                    <span v-show="map_status_select.includes('wip')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                                <div class="col-3">
+                                                    <button class="btn btn-info"
+                                                            onclick="map_status_select_toggle('graveyard')">Graveyard
+                                                    </button>
+                                                    <span v-show="map_status_select.includes('graveyard')"
+                                                          class="top-0 badge rounded-pill bg-danger">✓</span>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                 Close
                                             </button>
-                                            <button type="button" class="btn btn-dark">Save changes</button>
+                                            <button type="button" class="btn btn-dark" onclick="set_map_status()"
+                                                    data-bs-dismiss="modal">Save changes
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1041,6 +1106,29 @@
             "command": "set_mods",
             "channel": app.channel,
             "mods": app.mod_select
+        };
+        app.mod_select = [];
+        sock.send(JSON.stringify(payload));
+    }
+
+    function map_status_select_toggle(status) {
+        if (app.map_status_select.includes(status)) {
+            for (i = 0; i < app.map_status_select.length; i++) {
+                if (app.map_status_select[i] === status) {
+                    app.map_status_select.splice(i, 1)
+                    break;
+                }
+            }
+        } else {
+            app.map_status_select.push(status);
+        }
+    }
+
+    function set_map_status() {
+        payload = {
+            "command": "set_map_status",
+            "channel": app.channel,
+            "map_status": app.map_status_select
         };
         app.mod_select = [];
         sock.send(JSON.stringify(payload));

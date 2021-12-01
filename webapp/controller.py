@@ -100,6 +100,10 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.set_mods(data["mods"])
+        elif data["command"] == "set_map_status":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.set_map_status(data["map_status"])
 
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
