@@ -82,7 +82,7 @@ class Bot:
                         channel = line[2].replace(":", "")
                         if command == "JOIN":
                             if username == self.__username and channel not in self.__channels and "#mp_" in channel:
-                                self.join(channel)
+                                self.__join_helper(channel)
                                 self.__new_tournament = channel
                             if channel in self.__channels and not self.__channels[channel].is_game():
                                 self.__channels[channel].add_user(username)
@@ -196,6 +196,10 @@ class Bot:
     def join(self, channel):
         if channel[0] != "#":
             channel = "#" + channel
+        self.__sock.sendall(("PART " + channel + "\n").encode())
+        return self.__join_helper(channel)
+
+    def __join_helper(self, channel):
         if channel not in self.__channels:
             if "#mp_" == channel[:4]:
                 self.__channels[channel] = Game(self, channel, self.verbose)
