@@ -165,18 +165,10 @@ class Game(Channel):
             elif "The match has finished!" == message["content"]:
                 self.__in_progress = False
                 self.__fetch_scores()
+                self.__maintain_attributes()
                 if self.__on_match_finish_method:
                     threading.Thread(target=self.__on_match_finish_method).start()
                     self._bot.log("-- on match finish method executed --")
-                if self.__maintain_size:
-                    self.set_size(self.__size)
-                if self.__maintain_password:
-                    self.set_password(self._password)
-                if self.__maintain_title:
-                    if self.__match_history["match"]["name"] == self.__title:
-                        self.set_title("")
-                    else:
-                        self.set_title(self.__title)
             elif "Aborted the match" == message["content"]:
                 self.__in_progress = False
             elif "Beatmap changed to" in message["content"] or "Changed beatmap to" in message["content"]:
@@ -278,12 +270,7 @@ class Game(Channel):
             super().del_user(username)
             if not self.has_users():
                 self.abort_start_timer()
-                if self.__maintain_size:
-                    self.set_size(self.__size)
-                if self.__maintain_password:
-                    self.set_password(self._password)
-                if self.__maintain_title:
-                    self.set_title(self.__title)
+                self.__maintain_attributes()
 
     def add_user(self, username):
         super().add_user(username)
@@ -541,6 +528,12 @@ class Game(Channel):
 
     def abort_match(self):
         self.send_message("!mp abort")
+        self.__maintain_attributes()
+        if self.__on_match_abort_method:
+            threading.Thread(target=self.__on_match_abort_method).start()
+            self._bot.log("-- on match abort method executed --")
+
+    def __maintain_attributes(self):
         if self.__maintain_size:
             self.set_size(self.__size)
         if self.__maintain_password:
@@ -550,9 +543,6 @@ class Game(Channel):
                 self.set_title("")
             else:
                 self.set_title(self.__title)
-        if self.__on_match_abort_method:
-            threading.Thread(target=self.__on_match_abort_method).start()
-            self._bot.log("-- on match abort method executed --")
 
     def start_match(self, secs=0, running=False):
         if not running:
