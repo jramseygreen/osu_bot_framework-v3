@@ -699,7 +699,7 @@
                         <div class="col-3">
                             <div class="card text-white bg-secondary">
                                 <h3 class="text-center mt-2">Players<span
-                                        class="card-header badge ms-4 bg-light text-dark">{{users.length}}</span>
+                                        class="card-header badge ms-4 bg-light text-dark">{{total_users}}</span>
                                 </h3>
                                 <hr>
 
@@ -902,6 +902,7 @@
                     app.slots = buffer["channels"][app.channel]["slots"];
                     app.messages = buffer["channels"][app.channel]["messages"];
                     app.users = buffer["channels"][app.channel]["users"];
+                    app.total_users = buffer["channels"][app.channel]["total_users"];
                     if (app.channel.includes("#mp_")) {
                         app.title += " - " + buffer["channels"][app.channel]["title"];
                         app.config_link = buffer["channels"][app.channel]["config_link"];
@@ -940,6 +941,7 @@
             logic_profile: "",
             slots: {},
             users: [],
+            total_users: 0,
             user_num: 20,
             referees: [],
             host: "",
@@ -979,6 +981,7 @@
                 document.getElementById("players").scrollTo(0, 0);
             }
             app.user_num = 20;
+            sock.send(JSON.stringify({"command": "set_user_num", "user_num": app.user_num}));
         }
         app.channel = data.getAttribute("name");
         var ul = document.getElementById("channels");
@@ -992,8 +995,9 @@
 
     function lazy_load(obj) {
         if (obj.scrollTop === (obj.scrollHeight - obj.offsetHeight)) {
-            if (app.user_num < app.users.length) {
+            if (app.user_num < app.total_users) {
                 app.user_num += 20;
+                sock.send(JSON.stringify({"command": "set_user_num", "user_num": app.user_num}));
             }
         }
     }

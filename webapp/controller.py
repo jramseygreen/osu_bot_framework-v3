@@ -16,6 +16,7 @@ class Controller:
         self.__ws = ws_server(host=host, port=ws_port, on_message_function=on_message_function)
         self.__webapp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__webapp_port = webapp_port
+        self.__user_num = 20
 
     def __on_message(self, conn, msg):
         print(msg)
@@ -24,6 +25,8 @@ class Controller:
             self.bot.exit_handler()
         elif data["command"] == "update":
             self.update()
+        elif data["command"] == "set_user_num":
+            self.__user_num = data["user_num"]
         elif data["command"] == "start_match":
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
@@ -149,6 +152,8 @@ class Controller:
             channels = self.bot.get_channels().copy()
             for channel in channels:
                 data["channels"][channel] = channels[channel].get_attributes()
+                data["channels"][channel]["total_users"] = len(data["channels"][channel]["users"])
+                data["channels"][channel]["users"] = data["channels"][channel]["users"][:self.__user_num]
                 if "mp_" in channel:
                     data["channels"][channel]["host"] = channels[channel].get_host()
                 else:
