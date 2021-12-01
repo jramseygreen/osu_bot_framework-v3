@@ -156,7 +156,12 @@ class Channel:
         self.clear_commands()
 
     def clear_commands(self):
-        self._commands = {}
+        if self.is_game():
+            self._commands = {"!info": {
+                "response": "built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]",
+                "description": "built with osu_bot_framework v3"}}
+        else:
+            self._commands = {}
 
     # clear all on_event_methods
     def clear_logic(self):

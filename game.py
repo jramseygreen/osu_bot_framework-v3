@@ -983,7 +983,6 @@ class Game(Channel):
         self.abort_start_timer()
         profile = super().implement_logic_profile(profile)
         if profile:
-            self.clear_commands()
             if hasattr(profile, "on_match_start") and callable(getattr(profile, "on_match_start")):
                 self.on_match_start(profile.on_match_start)
             if hasattr(profile, "on_match_finish") and callable(getattr(profile, "on_match_finish")):
@@ -1089,9 +1088,6 @@ class Game(Channel):
         logic["on_clear_host"] = self.__on_clear_host_method
         logic["on_rule_violation"] = self.__on_rule_violation_method
         return logic
-
-    def clear_commands(self):
-        self._commands = {"!info": {"response": "built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "built with osu_bot_framework v3"}}
 
     # overwrites certain room attributes
     def import_attributes(self, data):
