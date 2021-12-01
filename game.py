@@ -438,7 +438,10 @@ class Game(Channel):
             abort = False
             error = ""
 
-            if self.__scoring_type.lower() != "any" and match["scoring_type"] != self.__scoring_type.lower():
+            if not match:
+                abort = True
+                error = {"type": "match_history", "message": "The match history cannot be read! Check that the match history is public."}
+            elif self.__scoring_type.lower() != "any" and match["scoring_type"] != self.__scoring_type.lower():
                 error = {"type": "scoring", "message": "The allowed scoring type is: " + self.__scoring_type}
                 abort = True
             elif self.__mods != ["ANY"]:
