@@ -981,9 +981,9 @@ class Game(Channel):
         
     def implement_logic_profile(self, profile):
         self.abort_start_timer()
-        self.clear_commands()
+        profile = super().implement_logic_profile(profile)
         if profile:
-            profile = super().implement_logic_profile(profile)
+            self.clear_commands()
             if hasattr(profile, "on_match_start") and callable(getattr(profile, "on_match_start")):
                 self.on_match_start(profile.on_match_start)
             if hasattr(profile, "on_match_finish") and callable(getattr(profile, "on_match_finish")):

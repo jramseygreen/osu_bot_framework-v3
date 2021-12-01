@@ -13,6 +13,7 @@
         /* width */
         ::-webkit-scrollbar {
             width: 3px;
+            height: 6px;
         }
 
         /* Track */
@@ -813,9 +814,14 @@
                                     <button class="btn btn-secondary dropdown-toggle" type="button"
                                             id="dropdownMenuButton1" data-bs-toggle="dropdown"
                                             aria-expanded="false">
-                                        <span class="badge bg-secondary">{{logic_profile}}</span>
+                                        <span class="text-light">{{logic_profile}}</span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="logicProfiles">
+                                        <li><a class="dropdown-item"
+                                                                                 href="javascript:void(0);"
+                                                                                 id=""
+                                                                                 onclick="set_logic_profile(this)">Clear Current Logic Profile</a></li>
+                                        <li><hr class="dropdown-divider"></li>
                                         <li v-for="profile in logic_profiles"><a class="dropdown-item"
                                                                                  href="javascript:void(0);"
                                                                                  :id="profile"
