@@ -977,8 +977,10 @@ class Game(Channel):
 
         text += "\n\n 𝚃̲𝚑̲𝚎̲ ̲𝚏̲𝚘̲𝚕̲𝚕̲𝚘̲𝚠̲𝚒̲𝚗̲𝚐̲ ̲𝚖̲𝚎̲𝚜̲𝚜̲𝚊̲𝚐̲𝚎̲𝚜̲ ̲𝚊̲𝚛̲𝚎̲ ̲𝚋̲𝚎̲𝚒̲𝚗̲𝚐̲ ̲𝚋̲𝚛̲𝚘̲𝚊̲𝚍̲𝚌̲𝚊̲𝚜̲𝚝̲ ̲𝚘̲𝚗̲ ̲𝚊̲ ̲𝚝̲𝚒̲𝚖̲𝚎̲𝚛̲:"
         text += "\n\n     𝙸̲𝙳̲   𝙼̲𝚎̲𝚜̲𝚜̲𝚊̲𝚐̲𝚎̲"
-        for broadcast in self._bot.get_broadcast_controller().get_broadcasts(self._channel):
-            text += "\n     " + str(broadcast["id"]) + "    '" + broadcast["message"] + "'"
+        broadcasts = self._bot.get_broadcast_controller().get_broadcasts(self._channel)
+        for broadcast in broadcasts:
+            if type(broadcasts) == list:
+                text += "\n     " + str(broadcast["id"]) + "    '" + broadcast["message"] + "'"
         if text != self.__config_text:
             self.__config_text = text
             self.__config_link = self._bot.paste2_upload("Room configuration for " + self._channel, text)
