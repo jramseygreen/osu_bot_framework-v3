@@ -754,16 +754,22 @@ class Game(Channel):
 
     def set_beatmap(self, beatmap):
         self.__beatmap = beatmap
+        game_mode = ""
+        if self.__game_mode != "any":
+            game_mode = GAME_ATTR[self.__game_mode]
         if beatmap:
-            self.send_message("!mp map " + str(beatmap["id"]))
+            self.send_message("!mp map " + str(beatmap["id"]) + " " + game_mode)
         else:
-            self.send_message("!mp map 22538")
+            self.send_message("!mp map 22538" + " " + game_mode)
 
     def get_beatmap(self):
         return self.__beatmap
 
     def change_beatmap(self, beatmapID):
-        self.send_message("!mp map " + str(beatmapID))
+        game_mode = ""
+        if self.__game_mode != "any":
+            game_mode = GAME_ATTR[self.__game_mode]
+        self.send_message("!mp map " + str(beatmapID) + " " + game_mode)
 
     # getters and setters for limits and ranges
     # sets the allowed map statuses
