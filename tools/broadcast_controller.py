@@ -12,9 +12,11 @@ class BroadcastController:
 
     # returns the broadcasts associated with a channel or all channels with broadcasts if left blank
     def get_broadcasts(self, channel=""):
-        if channel and channel in self.__channels:
+        if channel in self.__channels:
             return self.__channels[channel]
-        return self.__channels
+        elif not channel:
+            return self.__channels
+        return []
 
     # adds a new active broadcast and returns its id
     def add_broadcast(self, channel, message, secs):
