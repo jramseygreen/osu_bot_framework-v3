@@ -375,7 +375,7 @@
                       <div class="modal-dialog modal-xl">
                         <div class="modal-content text-dark">
                           <div class="modal-header">
-                            <h5 class="modal-title" id="broadcastsLabel">Broadcasts</h5>
+                            <h5 class="modal-title" id="broadcastsLabel">Message broadcasts</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body">
@@ -386,7 +386,7 @@
                                           ID
                                       </th>
                                       <th class="col-1">
-                                          Period
+                                          Period(secs)
                                       </th>
                                       <th class="col-9">
                                           Message
@@ -406,7 +406,7 @@
                                   </tbody>
                               </table>
                               <hr>
-                              <h5 class="float-start">New broadcast</h5>
+                              <h5 class="float-start">New message broadcast</h5>
                               <form onsubmit="return false">
                                   <div class="input-group mb-4">
                                       <span class="input-group-text">Period</span>
@@ -621,7 +621,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <div class="col-1 card bg-secondary">
                             Scoring Type
@@ -778,11 +777,53 @@
                         <!--                    players-->
                         <div class="col-3">
                             <div class="card text-white bg-secondary">
-                                <h3 class="text-center mt-2">Players<span
-                                        class="card-header badge ms-4 bg-light text-dark">{{total_users}}</span>
+                                <h3 class="text-center mt-2">
+                                    <span class="card-header badge bg-light text-dark">{{total_users}}</span>
+                                    Players
+                                    <button class="btn btn-sm btn-dark rounded-pill ms-4" data-bs-toggle="modal" data-bs-target="#playerBlacklistModal">blacklist</button>
                                 </h3>
-                                <hr>
 
+                                <!--player blacklist modal-->
+                                <div class="modal fade" id="playerBlacklistModal" tabindex="-1" aria-labelledby="playerBlacklistLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content bg-secondary">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="playerBlacklistLabel">Player blacklist</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <table class="table table-secondary table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th class="col-11">Username</th>
+                                                <th class="text-danger col-1">🗑️</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="username in player_blacklist">
+                                                <td>{{username}}</td>
+                                                <td><button class="badge bg-danger badge-sm" @click="del_player_blacklist(username)">X</button></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <hr>
+                                          <h5 class="float-start">Add to blacklist</h5>
+                                          <form onsubmit="return false">
+                                              <div class="input-group mb-4">
+                                                  <input id="blacklist_username" type="text" class="form-control" placeholder="Add a player to the blacklist...">
+                                                  <button class="btn btn-primary" onclick="add_player_blacklist(this.form);">Add</button>
+                                              </div>
+                                          </form>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <hr>
                                 <div id="players" style="overflow-y: scroll; overflow-x: hidden; height: 59vh; max-height: 600px"
                                      onscroll="lazy_load(this)">
                                     <table class="table table-sm text-white">
@@ -1090,7 +1131,7 @@
                         app.scoring_type = buffer["channels"][app.channel]["scoring_type"];
                         app.mods = buffer["channels"][app.channel]["mods"];
                         app.map_status = buffer["channels"][app.channel]["map_status"];
-
+                        app.player_blacklist = buffer["channels"][app.channel]["player_blacklist"];
                     }
                 } else {
                     if (app.channel !== "" && !app.channels.includes(app.channel)) {
@@ -1139,6 +1180,7 @@
             map_status_select: [],
             current_username: "",
             broadcasts: [],
+            player_blacklist: [],
 
         },
         methods: {
@@ -1150,6 +1192,14 @@
                     "command": "del_broadcast",
                     "channel": app.channel,
                     "broadcast_id": broadcast_id
+                };
+                sock.send(JSON.stringify(payload));
+            },
+            del_player_blacklist: function (username) {
+                payload = {
+                    "command": "del_player_blacklist",
+                    "channel": app.channel,
+                    "username": username
                 };
                 sock.send(JSON.stringify(payload));
             },
@@ -1401,6 +1451,18 @@
             sock.send(JSON.stringify(payload));
         }
         form.elements.broadcast_message.value = "";
+    }
+
+    function add_player_blacklist(form) {
+        payload = {
+            "command": "add_player_blacklist",
+            "channel": app.channel,
+            "username": form.elements.blacklist_username.value
+        };
+        if (payload["username"].trim() !== "") {
+            sock.send(JSON.stringify(payload));
+        }
+        form.elements.blacklist_username.value = "";
     }
 </script>
 

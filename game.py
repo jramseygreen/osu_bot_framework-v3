@@ -1080,6 +1080,7 @@ class Game(Channel):
         data["creator_blacklist"] = self.__beatmap_creator_blacklist
         data["artist_whitelist"] = self.__artist_whitelist
         data["artist_blacklist"] = self.__artist_blacklist
+        data["player_blacklist"] = self.__player_blacklist
         data["autostart_timer"] = self.__autostart_timer
         data["maintain_title"] = self.__maintain_title
         data["maintain_password"] = self.__maintain_password
@@ -1152,6 +1153,7 @@ class Game(Channel):
         self.__maintain_size = data["maintain_size"]
         self.__beatmap_checker = data["beatmap_checker"]
         self.__start_on_players_ready = data["start_on_players_ready"]
+        self.__player_blacklist = data["player_blacklist"]
 
         # limits and ranges (done)
         self.set_ar_range(data["ar_range"])

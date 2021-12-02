@@ -128,6 +128,14 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel:
                 channel.del_broadcast(data["broadcast_id"])
+        elif data["command"] == "add_player_blacklist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.add_player_blacklist(data["username"])
+        elif data["command"] == "del_player_blacklist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.del_player_blacklist(data["username"])
 
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
