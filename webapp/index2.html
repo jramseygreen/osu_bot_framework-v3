@@ -52,22 +52,24 @@
             </div>
             <hr>
             <span class="fs-4 mb-2">Channels</span>
-            <ul class="nav nav-pills flex-column mb-auto" id="channels">
-                <li v-for="channel in channels" class="nav-item">
-                    <span :id="channel" class="nav-link">
-                        <a :name="channel" href="javascript:void(0);" aria-current="page" onclick="setChannel(this)"
-                           style="text-decoration: none;">
-                            <svg class="bi me-2" width="16" height="16"></svg>
-                            <span class="text-light">{{channel}}
+            <div style="overflow-y: scroll; max-height: 70vh; height: 70vh;">
+                <ul class="nav nav-pills flex-column mb-auto" id="channels">
+                    <li v-for="channel in channels" class="nav-item">
+                        <span :id="channel" class="nav-link">
+                            <a :name="channel" href="javascript:void(0);" aria-current="page" onclick="setChannel(this)"
+                               style="text-decoration: none;">
+                                <svg class="bi me-2" width="16" height="16"></svg>
+                                <span class="text-light">{{channel}}
+                            </span>
+                            </a>
+                            <button :name="channel" type="button" title="Leave Channel"
+                                    class="badge badge-sm bg-danger float-end"
+                                    onclick="part_channel(this)">X
+                            </button>
                         </span>
-                        </a>
-                        <button :name="channel" type="button" title="Leave Channel"
-                                class="badge badge-sm bg-danger float-end"
-                                onclick="part_channel(this)">X
-                        </button>
-                    </span>
-                </li>
-            </ul>
+                    </li>
+                </ul>
+            </div>
             <hr>
             <!-- Button trigger modal -->
             <button class="nav-link text-white text-center rounded-pill bg-secondary" data-bs-toggle="modal"
