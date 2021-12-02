@@ -557,10 +557,7 @@ class Game(Channel):
         if self.__maintain_password:
             self.set_password(self._password)
         if self.__maintain_title:
-            if self.__match_history["match"]["name"] == self.__title:
-                self.set_title("")
-            else:
-                self.set_title(self.__title)
+            self.set_title(self.__title)
 
     def start_match(self, secs=0, running=False):
         if not running:
