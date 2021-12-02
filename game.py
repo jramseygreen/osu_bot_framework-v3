@@ -707,6 +707,7 @@ class Game(Channel):
         self.send_message("!mp host " + username.replace(" ", "_"))
 
     def set_password(self, password):
+        password = password.strip()
         self.__invite_link = self.__invite_link.replace(self._password, "")
         self._password = password
         self.__invite_link = self.__invite_link + password
@@ -714,6 +715,9 @@ class Game(Channel):
 
     def get_password(self):
         return self._password
+
+    def has_password(self):
+        return self._password != ""
 
     def add_referee(self, username):
         if username not in self.__referees:
@@ -1019,10 +1023,12 @@ class Game(Channel):
     def on_rule_violation(self, method):
         self.__on_rule_violation_method = method
         
-    def implement_logic_profile(self, profile):
-        profile = super().implement_logic_profile(profile)
-        if profile or profile == "":
+    def implement_logic_profile(self, prof):
+        profile = super().implement_logic_profile(prof)
+        if profile or prof == "":
             self.abort_start_timer()
+        if prof == "":
+            self.send_message("Cleared current logic profile")
         if profile:
             if hasattr(profile, "on_match_start") and callable(getattr(profile, "on_match_start")):
                 self.on_match_start(profile.on_match_start)
@@ -1050,6 +1056,7 @@ class Game(Channel):
                 self.on_clear_host(profile.on_clear_host)
             if hasattr(profile, "on_rule_violation") and callable(getattr(profile, "on_rule_violation")):
                 self.on_rule_violation(profile.on_rule_violation)
+            self.send_message("Implemented logic profile: " + prof)
 
     def get_attributes(self):
         data = super().get_attributes()

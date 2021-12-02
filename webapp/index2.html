@@ -718,7 +718,11 @@
                                         <template>
                                             <tr v-for="(slot, index) in slots" v-if="index < user_num">
                                                 <th scope="row">{{parseInt(index) + 1}}</th>
-                                                <td>{{slot.username.replace(/ /g, "&nbsp;")}}</td>
+                                                <td><a class="text-light" href="javascript:void(0)"
+                                                       style="text-decoration: none;" data-bs-toggle="modal"
+                                                       data-bs-target="#playerModal"
+                                                       @click="set_current_username(slot.username);">{{slot.username.replace(/ /g, "&nbsp;")}}</a>
+                                                </td>
                                                 <!--badges-->
                                                 <td>
                                                     <span v-show="slot.username === host && host !== '' && channel.includes('mp_')"
@@ -733,9 +737,49 @@
                                                     <span v-show="referees.includes(slot.username.replace(' ', '_')) && channel.includes('mp_')"
                                                           :slot="slot" title="Referee"
                                                           class="badge bg-dark text-success">🛡️</span>
-
                                                 </td>
                                             </tr>
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="playerModal" tabindex="-1"
+                                                 aria-labelledby="playerModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content bg-secondary">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="playerModalLabel">
+                                                                <a class="text-light" :href="'https://osu.ppy.sh/u/' + current_username" style="text-decoration: none;" target="_blank">
+                                                                    {{current_username.replace(/ /g, "&nbsp;")}}
+                                                                </a>
+                                                            </h5>
+                                                            <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close" onclick="app.current_username = ''"></button>
+                                                        </div>
+                                                        <div class="modal-body text-center">
+                                                            <div class="card border-0 bg-secondary">
+                                                                <button class="btn btn-warning mb-4" onclick="window.open('https://osu.ppy.sh/u/' + app.current_username, '_blank');">
+                                                                    View Profile
+                                                                </button>
+                                                            </div>
+                                                            <div class="card border-0 bg-secondary">
+                                                                <button class="btn btn-danger mb-4"
+                                                                        data-bs-dismiss="modal" onclick="kick_user();">
+                                                                    Kick
+                                                                </button>
+                                                            </div>
+                                                            <div class="card border-0 bg-secondary">
+                                                                <button class="btn btn-success mb-4"
+                                                                        data-bs-dismiss="modal" onclick="set_host();">
+                                                                    Transfer Host
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger"
+                                                                    data-bs-dismiss="modal" onclick="app.current_username = ''">Close
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </template>
                                         </tbody>
                                     </table>
@@ -932,10 +976,12 @@
                         app.map_status = buffer["channels"][app.channel]["map_status"];
                     }
                 } else {
+                    if (app.channel !== "" && !app.channels.includes(app.channel)) {
+                        location.reload();
+                    }
                     app.channel = "";
                 }
             }
-
         };
     };
 
@@ -974,6 +1020,12 @@
             mod_select: [],
             map_status: [],
             map_status_select: [],
+            current_username: "",
+        },
+        methods: {
+            set_current_username: function (username) {
+                this.current_username = username;
+            }
         }
     })
 
@@ -1180,6 +1232,26 @@
             "map_status": app.map_status_select
         };
         app.mod_select = [];
+        sock.send(JSON.stringify(payload));
+    }
+
+    function set_host() {
+        payload = {
+            "command": "set_host",
+            "channel": app.channel,
+            "username": app.current_username
+        };
+        app.current_username = "";
+        sock.send(JSON.stringify(payload));
+    }
+
+    function kick_user() {
+        payload = {
+            "command": "kick_user",
+            "channel": app.channel,
+            "username": app.current_username
+        };
+        app.current_username = "";
         sock.send(JSON.stringify(payload));
     }
 </script>

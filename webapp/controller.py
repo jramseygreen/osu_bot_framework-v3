@@ -107,6 +107,14 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.set_map_status(data["map_status"])
+        elif data["command"] == "set_host":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.set_host(data["username"])
+        elif data["command"] == "kick_user":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.kick_user(data["username"])
 
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
