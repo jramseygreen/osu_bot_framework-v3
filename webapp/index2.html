@@ -734,12 +734,12 @@
                                                     <span v-show="slot.team === 'blue' && channel.includes('mp_')"
                                                           :slot="slot" title="Blue Team"
                                                           class="badge bg-primary text-light">Blue</span>
-                                                    <span v-show="referees.includes(slot.username.replace(' ', '_')) && channel.includes('mp_')"
+                                                    <span v-show="referees.includes(slot.username.replace(/ /g, '_')) && channel.includes('mp_')"
                                                           :slot="slot" title="Referee"
                                                           class="badge bg-dark text-success">🛡️</span>
                                                 </td>
                                             </tr>
-                                            <!-- Modal -->
+                                            <!-- user card Modal -->
                                             <div class="modal fade" id="playerModal" tabindex="-1"
                                                  aria-labelledby="playerModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
@@ -901,9 +901,27 @@
                                         </tbody>
                                     </table>
                                     <button type="button"
-                                            class="btn rounded-pill btn-warning text-secondary col-11 ms-2 mb-3">
+                                            class="btn rounded-pill btn-warning text-secondary col-11 ms-2 mb-3" data-bs-toggle="modal" data-bs-target="#AdvancedOptionsModal">
                                         Advanced Options
                                     </button>
+                                    <!-- advanced options Modal -->
+                                    <div class="modal fade" id="AdvancedOptionsModal" tabindex="-1" aria-labelledby="AdvancedOptionsLabel" aria-hidden="true">
+                                      <div class="modal-dialog">
+                                        <div class="modal-content bg-secondary">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="AdvancedOptionsLabel">Advanced Options</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                            ...
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1025,7 +1043,7 @@
         methods: {
             set_current_username: function (username) {
                 this.current_username = username;
-            }
+            },
         }
     })
 
