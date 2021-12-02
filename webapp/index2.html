@@ -1448,10 +1448,10 @@
         payload = {
             "command": "add_broadcast",
             "channel": app.channel,
-            "secs": form.elements.broadcast_secs.value,
-            "message": form.elements.broadcast_message.value
+            "secs": form.elements.broadcast_secs.value.trim(),
+            "message": form.elements.broadcast_message.value.trim()
         };
-        if (payload["message"].trim() !== "") {
+        if (payload["message"] !== "" && payload["secs"] !== "") {
             sock.send(JSON.stringify(payload));
         }
         form.elements.broadcast_message.value = "";
@@ -1461,14 +1461,13 @@
         payload = {
             "command": "add_player_blacklist",
             "channel": app.channel,
-            "username": form.elements.blacklist_username.value,
+            "username": form.elements.blacklist_username.value.trim(),
             "global": form.elements.global_blacklist.checked
         };
-        if (payload["username"].trim() !== "") {
+        if (payload["username"] !== "") {
             sock.send(JSON.stringify(payload));
         }
         form.elements.blacklist_username.value = "";
-        form.elements.global_blacklist.checked = false;
     }
 </script>
 
