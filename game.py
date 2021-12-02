@@ -209,6 +209,23 @@ class Game(Channel):
                 self.__locked = True
             elif "Unlocked the match" == message["content"]:
                 self.__locked = False
+            elif "Room name:" in message["content"]:
+                self.__title = message["content"].replace("Room name: ", "").split(",", 1)[0]
+            elif "osu.ppy.sh/u/" in message["content"]:
+                attr = message["content"].split("           ", 1)
+                host = False
+                team = ""
+                username = attr[0].split("osu.ppy.sh/u/", 1)[1].split(" ", 1)[1]
+                if "[Host" in attr[1]:
+                    host = True
+                if "Team Blue" in attr[1]:
+                    team = "blue"
+                elif "Team Red" in attr[1]:
+                    team = "red"
+
+                self.set_slot(int(message["content"].split(" ", 2)[1]) - 1, {"username": username, "team": team, "score": {}})
+                if host:
+                    self.__host = username
 
         elif self.has_referee(message["username"]):
             message_arr = message["content"].lower().split(" ")
@@ -728,7 +745,6 @@ class Game(Channel):
 
     # grabs existing users, the room creator, and adds creator to referee list
     def get_existing_attributes(self):
-        self.__title = self.__match_history["match"]["name"]
         for user in self.__match_history["users"]:
             if self.has_user(user["username"].replace(" ", "_")):
                 self._users.remove(user["username"].replace(" ", "_"))
@@ -736,6 +752,7 @@ class Game(Channel):
 
         self.__creator = self._bot.fetch_user_profile(self.__match_history["events"][0]["user_id"])["username"]
         self.add_referee(self.__creator)
+        self.send_message("!mp settings")
 
     def set_beatmap(self, beatmap):
         self.__beatmap = beatmap

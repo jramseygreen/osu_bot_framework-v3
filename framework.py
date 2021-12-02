@@ -63,23 +63,23 @@ class Bot:
                     continue
                 # while there are messages
                 while "\n" in buffer:
-                    line = buffer.split("\n", 1)[0]
-                    buffer = buffer.replace(line + "\n", "", 1)
+                    msg = buffer.split("\n", 1)[0]
+                    buffer = buffer.replace(msg + "\n", "", 1)
 
                     # ping pong
-                    if line[:4] == "PING":
-                        self.__sock.sendall((line.replace("PING", "PONG") + "\n").encode())
+                    if msg[:4] == "PING":
+                        self.__sock.sendall((msg.replace("PING", "PONG") + "\n").encode())
                         self.log("-- RECEIVED PING --")
                         self.log("-- SENT PONG --")
                         continue
 
                     # parse line
-                    line = line.split(" ")
+                    line = msg.split(" ")
                     username = line[0].replace("!cho@ppy.sh", "")[1:]
                     command = line[1]
 
                     if command == "PRIVMSG":
-                        self.log("--- Received: " + " ".join(line))
+                        self.log("--- Received: " + msg)
 
                     # JOIN, PART, PRIVMSG
                     if command.isalpha():
@@ -103,7 +103,7 @@ class Bot:
                             for channel in channels:
                                 channels[channel].del_user(username)
                         elif command == "PRIVMSG":
-                            content = " ".join(line[3:]).replace(":", "", 1)
+                            content = msg.split(channel + " :", 1)[1]
                             message = {"username": username, "channel": channel, "content": content}
                             # channel messages
                             if channel in self.__channels:
@@ -198,6 +198,7 @@ class Bot:
 
     # joins a channel and also returns a channel or game object
     def join(self, channel):
+        channel = channel.strip()
         if "osu.ppy.sh" in channel:
             channel = "#mp_" + channel.split("/")[-1]
         if channel[0] != "#":

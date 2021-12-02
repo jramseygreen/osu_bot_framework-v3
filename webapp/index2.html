@@ -754,7 +754,7 @@
                                                 <tbody>
                                                 <tr v-for="message in messages">
                                                     <td class="col-12"><span class="badge bg-secondary">{{message.username}}</span>
-                                                        <p class="ms-1">{{message.content}}</p>
+                                                        <p class="ms-1">{{message.content.replace(/ /g, "&nbsp;")}}</p>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -1069,7 +1069,9 @@
             "command": "join",
             "channel": form.elements.join_form_channel.value,
         };
-        if (payload["channel"] !== "" && !((!payload["channel"].includes("mp_") || !payload["channel"].includes("osu.ppy.sh")) && !confirm("Whilst joining public channels such as '" + payload["channel"] + "' is possible and supported, be aware that the sheer volume of players may cause this page to lag considerably.\n\nDo you still wish to join '" + payload["channel"] + "'?"))) {
+        if (payload["channel"] !== "" && !payload["channel"].includes("mp_") && !payload["channel"].includes("osu.ppy.sh") && !confirm("Whilst joining public channels such as '" + payload["channel"] + "' is possible and supported, be aware that the sheer volume of players may cause this page to lag considerably.\n\nDo you still wish to join '" + payload["channel"] + "'?")) {
+            sock.send(JSON.stringify(payload));
+        } else {
             sock.send(JSON.stringify(payload));
         }
         form.reset();
