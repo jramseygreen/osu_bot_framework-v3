@@ -108,6 +108,9 @@ class Channel:
     def add_broadcast(self, message, secs):
         return self._bot.get_broadcast_controller().add_broadcast(self._channel, message, secs)
 
+    def del_broadcast(self, id):
+        self._bot.del_broadcast(id)
+
     def get_on_personal_message_method(self):
         return self.__on_personal_message_method
 

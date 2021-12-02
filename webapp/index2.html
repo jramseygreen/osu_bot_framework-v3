@@ -49,7 +49,6 @@
                     <button class="btn btn-sm float-end btn-danger rounded-pill" onclick="exit_handler()"
                             title="Stop osu bot framework">🔌</button>
                 </span>
-
             </div>
             <hr>
             <span class="fs-4 mb-2">Channels</span>
@@ -370,20 +369,56 @@
                         </div>
                     </template>
                     <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#broadcastsModal">Broadcasts</button>
-                    <!-- Modal -->
+
+                    <!-- broadcasts Modal -->
                     <div class="modal fade" id="broadcastsModal" tabindex="-1" aria-labelledby="broadcastsLabel" aria-hidden="true">
-                      <div class="modal-dialog">
+                      <div class="modal-dialog modal-xl">
                         <div class="modal-content text-dark">
                           <div class="modal-header">
                             <h5 class="modal-title" id="broadcastsLabel">Broadcasts</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body">
-                            ...
+                              <table class="table table-secondary table-striped">
+                                  <thead>
+                                  <tr>
+                                      <th class="col-1">
+                                          ID
+                                      </th>
+                                      <th class="col-1">
+                                          Period
+                                      </th>
+                                      <th class="col-9">
+                                          Message
+                                      </th>
+                                      <th class="text-danger col-1">
+                                          🗑️
+                                      </th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  <tr v-for="broadcast in broadcasts">
+                                      <td>{{broadcast.id}}</td>
+                                      <td>{{broadcast.secs}}sec</td>
+                                      <td>{{broadcast.message}}</td>
+                                      <td><button class="badge bg-danger badge-sm" @click="del_broadcast(broadcast.id);">X</button></td>
+                                  </tr>
+                                  </tbody>
+                              </table>
+                              <hr>
+                              <h5 class="float-start">New broadcast</h5>
+                              <form onsubmit="return false">
+                                  <div class="input-group mb-4">
+                                      <span class="input-group-text">Period</span>
+                                      <input id="broadcast_secs" type="text" class="form-control text-center" style="max-width: 6%;" value="900">
+                                      <span class="input-group-text">Message</span>
+                                      <input id="broadcast_message" type="text" class="form-control" placeholder="Write your broadcast message here...">
+                                      <button class="btn btn-primary" onclick="add_broadcast(this.form);">Add</button>
+                                  </div>
+                              </form>
                           </div>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                           </div>
                         </div>
                       </div>
@@ -1051,6 +1086,7 @@
                         app.scoring_type = buffer["channels"][app.channel]["scoring_type"];
                         app.mods = buffer["channels"][app.channel]["mods"];
                         app.map_status = buffer["channels"][app.channel]["map_status"];
+                        app.broadcasts = buffer["channels"][app.channel]["broadcasts"];
                     }
                 } else {
                     if (app.channel !== "" && !app.channels.includes(app.channel)) {
@@ -1098,11 +1134,20 @@
             map_status: [],
             map_status_select: [],
             current_username: "",
+            broadcasts: [],
 
         },
         methods: {
             set_current_username: function (username) {
                 this.current_username = username;
+            },
+            del_broadcast: function (broadcast_id) {
+                payload = {
+                    "command": "del_broadcast",
+                    "channel": app.channel,
+                    "broadcast_id": broadcast_id
+                };
+                sock.send(JSON.stringify(payload));
             },
         }
     })
@@ -1339,6 +1384,19 @@
         };
         app.current_username = "";
         sock.send(JSON.stringify(payload));
+    }
+
+    function add_broadcast(form) {
+        payload = {
+            "command": "add_broadcast",
+            "channel": app.channel,
+            "secs": form.elements.broadcast_secs.value,
+            "message": form.elements.broadcast_message.value
+        };
+        if (payload["message"].trim() !== "") {
+            sock.send(JSON.stringify(payload));
+        }
+        form.elements.broadcast_message.value = "";
     }
 </script>
 

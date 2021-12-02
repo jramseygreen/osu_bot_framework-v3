@@ -120,6 +120,14 @@ class Controller:
                 channel = self.bot.get_channel(data["channel"])
                 if channel and channel.is_game():
                     channel.set_title(data["title"])
+        elif data["command"] == "add_broadcast":
+            channel = self.bot.get_channel(data["channel"])
+            if channel:
+                channel.add_broadcast(data["message"], data["secs"])
+        elif data["command"] == "del_broadcast":
+            channel = self.bot.get_channel(data["channel"])
+            if channel:
+                channel.del_broadcast(data["broadcast_id"])
 
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
