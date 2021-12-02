@@ -37,7 +37,7 @@ class Game(Channel):
         self.__maintain_password = False
         self.__maintain_size = False
         self.__maintain_title = False
-        self.__player_blacklist = bot.get_player_blacklist()
+        self.__player_blacklist = bot.get_player_blacklist().copy()
         self.__auto_download = {"status": False, "path": "", "auto_open": False, "with_video": False}
         self._commands = {"!info": {"response": "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]", "description": "Built with osu_bot_framework v3"}}
 

@@ -780,7 +780,7 @@
                                 <h3 class="text-center mt-2">
                                     <span class="card-header badge bg-light text-dark">{{total_users}}</span>
                                     Players
-                                    <button class="btn btn-sm btn-dark rounded-pill ms-4" data-bs-toggle="modal" data-bs-target="#playerBlacklistModal">blacklist</button>
+                                    <button v-show="channel.includes('mp_')" class="btn btn-sm btn-dark rounded-pill ms-4" data-bs-toggle="modal" data-bs-target="#playerBlacklistModal">blacklist</button>
                                 </h3>
 
                                 <!--player blacklist modal-->
@@ -813,6 +813,8 @@
                                                   <input id="blacklist_username" type="text" class="form-control" placeholder="Add a player to the blacklist...">
                                                   <button class="btn btn-primary" onclick="add_player_blacklist(this.form);">Add</button>
                                               </div>
+                                              <input class="form-check-input" type="checkbox" value="" id="global_blacklist">
+                                              Add to global blacklist
                                           </form>
                                       </div>
                                       <div class="modal-footer">
@@ -1222,6 +1224,7 @@
         }
         app.channel = data.getAttribute("name");
         document.getElementById(app.channel).classList.add("active");
+        document.getElementById("global_blacklist").checked = false;
         sock.send(JSON.stringify({"command": "update"}));
     }
 
@@ -1456,12 +1459,14 @@
         payload = {
             "command": "add_player_blacklist",
             "channel": app.channel,
-            "username": form.elements.blacklist_username.value
+            "username": form.elements.blacklist_username.value,
+            "global": form.elements.global_blacklist.checked
         };
         if (payload["username"].trim() !== "") {
             sock.send(JSON.stringify(payload));
         }
         form.elements.blacklist_username.value = "";
+        form.elements.global_blacklist.checked = false;
     }
 </script>
 

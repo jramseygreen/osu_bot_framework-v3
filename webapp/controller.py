@@ -131,7 +131,10 @@ class Controller:
         elif data["command"] == "add_player_blacklist":
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
-                channel.add_player_blacklist(data["username"])
+                if data["global"]:
+                    self.bot.add_player_blacklist(data["username"])
+                else:
+                    channel.add_player_blacklist(data["username"])
         elif data["command"] == "del_player_blacklist":
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
