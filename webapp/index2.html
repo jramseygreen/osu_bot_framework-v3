@@ -1228,7 +1228,9 @@
         }
         app.channel = data.getAttribute("name");
         document.getElementById(app.channel).classList.add("active");
-        document.getElementById("global_blacklist").checked = false;
+        if (data.getAttribute("name").includes("mp_")) {
+            document.getElementById("global_blacklist").checked = false;
+        }
         sock.send(JSON.stringify({"command": "update"}));
     }
 
