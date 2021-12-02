@@ -797,10 +797,13 @@
                                         <template>
                                             <tr v-for="(slot, index) in slots" v-if="index < user_num">
                                                 <th scope="row">{{parseInt(index) + 1}}</th>
-                                                <td><a class="text-light" href="javascript:void(0)"
+                                                <td v-if="channel.includes('#mp')"><a class="text-light" href="javascript:void(0)"
                                                        style="text-decoration: none;" data-bs-toggle="modal"
                                                        data-bs-target="#playerModal"
                                                        @click="set_current_username(slot.username);">{{slot.username.replace(/ /g, "&nbsp;")}}</a>
+                                                </td>
+                                                <td v-else>
+                                                    {{slot.username}}
                                                 </td>
                                                 <!--badges-->
                                                 <td>
@@ -838,13 +841,13 @@
                                                                     View Profile
                                                                 </button>
                                                             </div>
-                                                            <div v-show="channel.includes('mp_')" class="card border-0 bg-secondary">
+                                                            <div class="card border-0 bg-secondary">
                                                                 <button class="btn btn-danger mb-4"
                                                                         data-bs-dismiss="modal" onclick="kick_user();">
                                                                     Kick
                                                                 </button>
                                                             </div>
-                                                            <div v-show="channel.includes('#mp_')" class="card border-0 bg-secondary">
+                                                            <div class="card border-0 bg-secondary">
                                                                 <button class="btn btn-success mb-4"
                                                                         data-bs-dismiss="modal" onclick="set_host();">
                                                                     Transfer Host
