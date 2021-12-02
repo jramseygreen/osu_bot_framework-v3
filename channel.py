@@ -146,7 +146,14 @@ class Channel:
         return self._logic_profile
 
     def get_attributes(self):
-        return {"users": self._users, "messages": self._message_log, "logic_profile": self._logic_profile, "commands": self._commands, "command_descriptions": {command: self._commands[command]["description"] for command in self._commands}}
+        return {
+            "users": self._users,
+            "messages": self._message_log,
+            "logic_profile": self._logic_profile,
+            "commands": self._commands,
+            "command_descriptions": {command: self._commands[command]["description"] for command in self._commands},
+            "broadcasts": self._bot.get_broadcast_controller().get_broadcasts(self._channel)
+        }
 
     def import_attributes(self, data):
         pass

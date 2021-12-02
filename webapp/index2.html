@@ -1067,6 +1067,7 @@
                     app.messages = buffer["channels"][app.channel]["messages"];
                     app.users = buffer["channels"][app.channel]["users"];
                     app.total_users = buffer["channels"][app.channel]["total_users"];
+                    app.broadcasts = buffer["channels"][app.channel]["broadcasts"];
                     if (app.channel.includes("#mp_")) {
                         app.title += " - " + buffer["channels"][app.channel]["title"];
                         app.config_link = buffer["channels"][app.channel]["config_link"];
@@ -1086,7 +1087,7 @@
                         app.scoring_type = buffer["channels"][app.channel]["scoring_type"];
                         app.mods = buffer["channels"][app.channel]["mods"];
                         app.map_status = buffer["channels"][app.channel]["map_status"];
-                        app.broadcasts = buffer["channels"][app.channel]["broadcasts"];
+
                     }
                 } else {
                     if (app.channel !== "" && !app.channels.includes(app.channel)) {

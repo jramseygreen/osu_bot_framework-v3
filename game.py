@@ -1069,7 +1069,6 @@ class Game(Channel):
         data["in_progress"] = self.__in_progress
         data["beatmap"] = self.__beatmap
         data["beatmap_name"] = self.__beatmap_name
-        data["broadcasts"] = self._bot.get_broadcast_controller().get_broadcasts(self._channel)
         data["size"] = self.__size
         data["password"] = self._password
         data["title"] = self.__title
