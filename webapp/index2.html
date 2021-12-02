@@ -718,7 +718,7 @@
                                         <template>
                                             <tr v-for="(slot, index) in slots" v-if="index < user_num">
                                                 <th scope="row">{{parseInt(index) + 1}}</th>
-                                                <td>{{slot.username}}</td>
+                                                <td>{{slot.username.replace(/ /g, "&nbsp;")}}</td>
                                                 <!--badges-->
                                                 <td>
                                                     <span v-show="slot.username === host && host !== '' && channel.includes('mp_')"
