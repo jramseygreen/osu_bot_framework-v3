@@ -792,20 +792,22 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                       </div>
                                       <div class="modal-body">
-                                        <table class="table table-secondary table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th class="col-11">Username</th>
-                                                <th class="text-danger col-1">🗑️</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="username in player_blacklist">
-                                                <td>{{username}}</td>
-                                                <td><button class="badge bg-danger badge-sm" @click="del_player_blacklist(username)">X</button></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                          <div style="overflow-y: scroll; max-height: 40vh;">
+                                            <table class="table table-secondary table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th class="col-11">Username</th>
+                                                    <th class="text-danger col-1">🗑️</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="username in player_blacklist">
+                                                    <td>{{username}}</td>
+                                                    <td><button class="badge bg-danger badge-sm" @click="del_player_blacklist(username)">X</button></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                          </div>
                                         <hr>
                                           <h5 class="float-start">Add to blacklist</h5>
                                           <form onsubmit="return false">
