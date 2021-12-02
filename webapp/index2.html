@@ -259,7 +259,7 @@
                                 </div>
 
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close
                                     </button>
                                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
                                             onclick="make_room(this.form)">Create
@@ -298,7 +298,7 @@
                                 </div>
 
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close
                                     </button>
                                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
                                             onclick="join_channel(this.form)">
@@ -332,13 +332,39 @@
                 <div class="card-header text-center">
                     <template>
                         <div v-if="title.includes('mp_')">
-                            <a :href="'https://osu.ppy.sh/mp/' + channel.replace('#mp_', '')" target="_blank"
-                               class="text-light" style="text-decoration: none;">
-                                <h2>{{title}}</h2>
-                            </a>
+                            <h2>
+                                <a :href="'https://osu.ppy.sh/mp/' + channel.replace('#mp_', '')" target="_blank"
+                                   class="text-light" style="text-decoration: none;">
+                                    {{title}}
+                                </a>
+                                <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#editTitleModal">Edit</button>
+                            </h2>
                             <a :href="config_link" target="_blank" class="text-light">
                                 <small>View configuration page</small>
                             </a>
+                            <!-- Modal -->
+                            <div class="modal fade" id="editTitleModal" tabindex="-1" aria-labelledby="editTitleLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content text-dark">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="editTitleLabel">Edit title</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <form onsubmit="return false">
+                                        <div class="mb-3">
+                                            <h5 class="text-start">New title</h5>
+                                            <input id="title_input" type="text" class="form-control" placeholder="An interesting title...">
+                                        </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="set_title(this.form)">Update title</button>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                         </div>
                         <div v-else>
                             <h2>{{title}}</h2>
@@ -759,13 +785,13 @@
                                                                     View Profile
                                                                 </button>
                                                             </div>
-                                                            <div class="card border-0 bg-secondary">
+                                                            <div v-show="channel.includes('mp_')" class="card border-0 bg-secondary">
                                                                 <button class="btn btn-danger mb-4"
                                                                         data-bs-dismiss="modal" onclick="kick_user();">
                                                                     Kick
                                                                 </button>
                                                             </div>
-                                                            <div class="card border-0 bg-secondary">
+                                                            <div v-show="channel.includes('#mp_')" class="card border-0 bg-secondary">
                                                                 <button class="btn btn-success mb-4"
                                                                         data-bs-dismiss="modal" onclick="set_host();">
                                                                     Transfer Host
@@ -1139,9 +1165,7 @@
             "command": "join",
             "channel": form.elements.join_form_channel.value,
         };
-        if (payload["channel"] !== "" && !payload["channel"].includes("mp_") && !payload["channel"].includes("osu.ppy.sh") && !confirm("Whilst joining public channels such as '" + payload["channel"] + "' is possible and supported, be aware that the sheer volume of players may cause this page to lag considerably.\n\nDo you still wish to join '" + payload["channel"] + "'?")) {
-            sock.send(JSON.stringify(payload));
-        } else {
+        if (payload["channel"] !== "" ) {
             sock.send(JSON.stringify(payload));
         }
         form.reset();
@@ -1178,6 +1202,16 @@
             "channel": app.channel
         };
         sock.send(JSON.stringify(payload));
+    }
+
+    function set_title(form) {
+        payload = {
+            "command": "set_title",
+            "channel": app.channel,
+            "title": form.elements.title_input.value
+        };
+        sock.send(JSON.stringify(payload));
+        form.reset();
     }
 
     function set_game_mode(mode) {

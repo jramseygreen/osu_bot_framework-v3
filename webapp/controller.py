@@ -115,6 +115,10 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.kick_user(data["username"])
+        elif data["command"] == "set_title":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.set_title(data["title"])
 
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
