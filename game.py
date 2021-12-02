@@ -222,10 +222,11 @@ class Game(Channel):
                     team = "blue"
                 elif "Team Red" in attr[1]:
                     team = "red"
-
                 self.set_slot(int(message["content"].split(" ", 2)[1]) - 1, {"username": username, "team": team, "score": {}})
                 if host:
                     self.__host = username
+            elif "Beatmap:" in message["content"] and self.__beatmap == TUTORIAL:
+                self.change_beatmap(message["content"].replace("Beatmap: ", "").split(" ", 1)[0].replace("https://osu.ppy.sh/b/", "", 1))
 
         elif self.has_referee(message["username"]):
             message_arr = message["content"].lower().split(" ")
