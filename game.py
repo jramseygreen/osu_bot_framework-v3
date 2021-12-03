@@ -707,7 +707,7 @@ class Game(Channel):
         self.send_message("!mp host " + username.replace(" ", "_"))
 
     def set_password(self, password):
-        password = password.strip()
+        password = password.strip().replace(" ", "_")
         self.__invite_link = self.__invite_link.replace(self._password, "")
         self._password = password
         self.__invite_link = self.__invite_link + password
