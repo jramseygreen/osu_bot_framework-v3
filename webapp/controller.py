@@ -168,8 +168,7 @@ class Controller:
                 f = open("webapp/index2.html", "r", encoding="utf8")
                 text += f.read()
                 f.close()
-                if "ws://localhost:9876" not in text:
-                    text = text.replace("ws://localhost:9876", "ws://" + self.__ws.get_host() + ":" + str(self.__ws.get_port()))
+                text = text.replace("ws://localhost:9876", "ws://" + self.__host + ":" + str(self.__ws.get_port()))
                 try:
                     conn.sendall(text.encode())
                 except ConnectionAbortedError:
