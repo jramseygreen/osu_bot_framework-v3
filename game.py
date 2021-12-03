@@ -1192,7 +1192,7 @@ class Game(Channel):
         return self.__beatmap_creator_whitelist
 
     def add_beatmap_creator_whitelist(self, creator):
-        if creator.lower() not in self.__beatmap_creator_whitelist:
+        if creator and creator.lower() not in self.__beatmap_creator_whitelist:
             self.__beatmap_creator_whitelist.append(creator.lower())
 
     def del_beatmap_creator_whitelist(self, creator):
@@ -1203,7 +1203,7 @@ class Game(Channel):
         return self.__beatmap_creator_blacklist
 
     def add_beatmap_creator_blacklist(self, creator):
-        if creator.lower() not in self.__beatmap_creator_blacklist:
+        if creator and creator.lower() not in self.__beatmap_creator_blacklist:
             self.__beatmap_creator_blacklist.append(creator.lower())
 
     def del_beatmap_creator_blacklist(self, creator):
@@ -1214,7 +1214,7 @@ class Game(Channel):
         return self.__artist_whitelist
 
     def add_artist_whitelist(self, artist):
-        if artist.lower() not in self.__artist_whitelist:
+        if artist and artist.lower() not in self.__artist_whitelist:
             self.__artist_whitelist.append(artist.lower())
 
     def del_artist_whitelist(self, artist):
@@ -1225,7 +1225,7 @@ class Game(Channel):
         return self.__artist_blacklist
 
     def add_artist_blacklist(self, artist):
-        if artist.lower() not in self.__artist_blacklist:
+        if artist and artist.lower() not in self.__artist_blacklist:
             self.__artist_blacklist.append(artist.lower())
 
     def del_artist_blacklist(self, artist):

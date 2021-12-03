@@ -141,6 +141,38 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.del_player_blacklist(data["username"])
+        elif data["command"] == "del_artist_whitelist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.del_artist_whitelist(data["artist"])
+        elif data["command"] == "del_artist_blacklist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.del_artist_blacklist(data["artist"])
+        elif data["command"] == "del_creator_whitelist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.del_beatmap_creator_whitelist(data["creator"])
+        elif data["command"] == "del_creator_blacklist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.del_beatmap_creator_blacklist(data["creator"])
+        elif data["command"] == "add_artist_whitelist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.add_artist_whitelist(data["artist"])
+        elif data["command"] == "add_artist_blacklist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.add_artist_blacklist(data["artist"])
+        elif data["command"] == "add_creator_whitelist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.add_beatmap_creator_whitelist(data["creator"])
+        elif data["command"] == "add_creator_blacklist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.add_beatmap_creator_blacklist(data["creator"])
 
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])

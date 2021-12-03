@@ -1047,7 +1047,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                           </div>
                                           <div class="modal-body">
-                                              <form id="advanced_options_form">
+                                              <form id="advanced_options_form" onsubmit="return false">
                                                   <div class="form-check form-switch" checked>
                                                       <input class="form-check-input" type="checkbox" id="beatmap_checker" :checked="beatmap_checker">
                                                       Beatmap checker
@@ -1088,27 +1088,114 @@
                                                   <hr>
                                                   <div class="row text-center">
                                                       <div class="col-6">
-                                                          <div class="card border-0 bg-secondary">
-                                                              whitelists
-                                                              <table class="table table-secondary table-striped">
-                                                                  <thead>
-                                                                  <tr>
-                                                                      <th class="col-11">Artist</th>
-                                                                      <th class="text-danger col-1">🗑️</th>
-                                                                  </tr>
-                                                                  </thead>
-                                                                  <tbody>
-                                                                  <tr v-for="artist in artist_whitelist">
-                                                                      <td>{{artist}}</td>
-                                                                      <td><button class="badge badge-sm bg-danger">X</button></td>
-                                                                  </tr>
-                                                                  </tbody>
-                                                              </table>
+                                                          <div class="card bg-secondary">
+                                                              <h6>Artist Whitelist</h6>
+                                                              <div style="overflow-y: scroll; max-height: 15vh">
+                                                                  <table class="table table-sm table-secondary table-striped">
+                                                                      <thead>
+                                                                      <tr>
+                                                                          <th class="col-11">Artist</th>
+                                                                          <th class="text-danger col-1">🗑️</th>
+                                                                      </tr>
+                                                                      </thead>
+                                                                      <tbody>
+                                                                      <tr v-for="artist in artist_whitelist">
+                                                                          <td>{{artist}}</td>
+                                                                          <td><button class="badge badge-sm bg-danger" @click="del_artist_whitelist(artist)">X</button></td>
+                                                                      </tr>
+                                                                      </tbody>
+                                                                  </table>
+                                                              </div>
+                                                              <form onsubmit="return false">
+                                                                  <div class="input-group">
+                                                                      <input id="artist_whitelist_input" type="text" class="form-control" placeholder="Artist to whitelist">
+                                                                      <button class="btn btn-primary" onclick="add_artist_whitelist(this.form)">+</button>
+                                                                  </div>
+                                                              </form>
                                                           </div>
                                                       </div>
                                                       <div class="col-6">
-                                                          <div class="card border-0 bg-secondary">
-                                                            blacklists
+                                                          <div class="card bg-secondary">
+                                                              <h6>Artist Blacklist</h6>
+                                                              <div style="overflow-y: scroll; max-height: 15vh">
+                                                                  <table class="table table-sm table-secondary table-striped">
+                                                                      <thead>
+                                                                      <tr>
+                                                                          <th class="col-11">Artist</th>
+                                                                          <th class="text-danger col-1">🗑️</th>
+                                                                      </tr>
+                                                                      </thead>
+                                                                      <tbody>
+                                                                      <tr v-for="artist in artist_blacklist">
+                                                                          <td>{{artist}}</td>
+                                                                          <td><button class="badge badge-sm bg-danger" @click="del_artist_blacklist(artist)">X</button></td>
+                                                                      </tr>
+                                                                      </tbody>
+                                                                  </table>
+                                                              </div>
+                                                              <form onsubmit="return false">
+                                                                  <div class="input-group">
+                                                                      <input id="artist_blacklist_input" type="text" class="form-control" placeholder="Artist to blacklist">
+                                                                      <button class="btn btn-primary" onclick="add_artist_blacklist(this.form)">+</button>
+                                                                  </div>
+                                                              </form>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                                  <hr>
+                                                  <div class="row text-center">
+                                                      <div class="col-6">
+                                                          <div class="card bg-secondary">
+                                                              <h6>Beatmap Creator Whitelist</h6>
+                                                              <div style="overflow-y: scroll; max-height: 15vh">
+                                                                  <table class="table table-sm table-secondary table-striped">
+                                                                      <thead>
+                                                                      <tr>
+                                                                          <th class="col-11">Beatmap Creator</th>
+                                                                          <th class="text-danger col-1">🗑️</th>
+                                                                      </tr>
+                                                                      </thead>
+                                                                      <tbody>
+                                                                      <tr v-for="creator in creator_whitelist">
+                                                                          <td>{{creator}}</td>
+                                                                          <td><button class="badge badge-sm bg-danger" @click="del_creator_whitelist(creator)">X</button></td>
+                                                                      </tr>
+                                                                      </tbody>
+                                                                  </table>
+                                                              </div>
+                                                              <form onsubmit="return false">
+                                                                  <div class="input-group">
+                                                                      <input id="creator_whitelist_input" type="text" class="form-control" placeholder="Beatmap creator to whitelist">
+                                                                      <button class="btn btn-primary" onclick="add_creator_whitelist(this.form)">+</button>
+                                                                  </div>
+                                                              </form>
+                                                          </div>
+                                                      </div>
+                                                      <div class="col-6">
+                                                          <div class="card bg-secondary">
+                                                              <h6>Beatmap Creator Blacklist</h6>
+                                                              <div style="overflow-y: scroll; max-height: 15vh">
+                                                                  <table class="table table-sm table-secondary table-striped">
+                                                                      <thead>
+                                                                      <tr>
+                                                                          <th class="col-11">Beatmap Creator</th>
+                                                                          <th class="text-danger col-1">🗑️</th>
+                                                                      </tr>
+                                                                      </thead>
+                                                                      <tbody>
+                                                                      <tr v-for="creator in creator_blacklist">
+                                                                          <td>{{creator}}</td>
+                                                                          <td><button class="badge badge-sm bg-danger" @click="del_creator_blacklist(creator)">X</button></td>
+                                                                      </tr>
+                                                                      </tbody>
+                                                                  </table>
+                                                              </div>
+                                                              <form onsubmit="return false">
+                                                                  <div class="input-group">
+                                                                      <input id="creator_blacklist_input" type="text" class="form-control" placeholder="Beatmap creator to blacklist">
+                                                                      <button class="btn btn-primary" onclick="add_creator_blacklist(this.form)">+</button>
+                                                                  </div>
+                                                              </form>
                                                           </div>
                                                       </div>
                                                   </div>
@@ -1287,6 +1374,38 @@
                     "command": "del_player_blacklist",
                     "channel": app.channel,
                     "username": username
+                };
+                sock.send(JSON.stringify(payload));
+            },
+            del_artist_whitelist: function (artist) {
+                payload = {
+                    "command": "del_artist_whitelist",
+                    "channel": app.channel,
+                    "artist": artist
+                };
+                sock.send(JSON.stringify(payload));
+            },
+            del_artist_blacklist: function (artist) {
+                payload = {
+                    "command": "del_artist_blacklist",
+                    "channel": app.channel,
+                    "artist": artist
+                };
+                sock.send(JSON.stringify(payload));
+            },
+            del_creator_whitelist: function (creator) {
+                payload = {
+                    "command": "del_creator_whitelist",
+                    "channel": app.channel,
+                    "creator": creator
+                };
+                sock.send(JSON.stringify(payload));
+            },
+            del_creator_blacklist: function (creator) {
+                payload = {
+                    "command": "del_creator_blacklist",
+                    "channel": app.channel,
+                    "creator": creator
                 };
                 sock.send(JSON.stringify(payload));
             },
@@ -1564,6 +1683,46 @@
             sock.send(JSON.stringify(payload));
         }
         form.elements.blacklist_username.value = "";
+    }
+
+    function add_artist_whitelist(form) {
+        payload = {
+            "command": "add_artist_whitelist",
+            "channel": app.channel,
+            "artist": form.elements.artist_whitelist_input.value.trim()
+        };
+        sock.send(JSON.stringify(payload));
+        form.elements.artist_whitelist_input.value = "";
+    }
+
+    function add_artist_blacklist(form) {
+        payload = {
+            "command": "add_artist_blacklist",
+            "channel": app.channel,
+            "artist": form.elements.artist_blacklist_input.value.trim()
+        };
+        sock.send(JSON.stringify(payload));
+        form.elements.artist_blacklist_input.value = "";
+    }
+
+    function add_creator_whitelist(form) {
+        payload = {
+            "command": "add_creator_whitelist",
+            "channel": app.channel,
+            "creator": form.elements.creator_whitelist_input.value.trim()
+        };
+        sock.send(JSON.stringify(payload));
+        form.elements.creator_whitelist_input.value = "";
+    }
+
+    function add_creator_blacklist(form) {
+        payload = {
+            "command": "add_creator_blacklist",
+            "channel": app.channel,
+            "creator": form.elements.creator_blacklist_input.value.trim()
+        };
+        sock.send(JSON.stringify(payload));
+        form.elements.creator_blacklist_input.value = "";
     }
 </script>
 
