@@ -94,17 +94,17 @@
                                 <div class="container">
                                     <div class="card text-white bg-dark">
                                         <div style="overflow-y: scroll; height: 50vh;">
-                                            <table class="table text-white">
+                                            <table class="table text-white" style="table-layout: fixed;">
                                                 <thead>
                                                 <tr>
-                                                    <th>From</th>
-                                                    <th>To</th>
-                                                    <th>Message</th>
+                                                    <th class="col-2">From</th>
+                                                    <th class="col-2">To</th>
+                                                    <th class="col-8">Message</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                 <tr v-for="message in personal_messages">
-                                                    <th scope="row">{{message.username}}</th>
+                                                    <th>{{message.username}}</th>
                                                     <th>{{message.channel}}</th>
                                                     <td>{{message.content}}</td>
                                                 </tr>
