@@ -830,7 +830,7 @@
 
                                 <hr>
                                 <div id="players" style="overflow-y: scroll; overflow-x: hidden; height: 59vh; max-height: 600px"
-                                     onscroll="lazy_load(this)">
+                                     onscroll="lazy_load(this);">
                                     <table class="table table-sm text-white">
                                         <thead>
                                         <tr>
@@ -1139,7 +1139,7 @@
 <script>
     var host = "ws://localhost:9876/";
     if (!window.location.href.includes(host.split(":")[1])) {
-        host = "ws://" + window.location.href.slice(0, -1).replace("http://", "") + ":" + host.split(":")[2];
+        host = "ws://" + window.location.href.slice(0, -1).replace("http://", "").split(":")[0] + ":" + host.split(":")[2];
     }
     var sock = new WebSocket(host);
     var exit = false;
