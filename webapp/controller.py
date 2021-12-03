@@ -156,8 +156,7 @@ class Controller:
             self.__webapp_sock.bind((self.__host, self.__webapp_port))
             self.__webapp_sock.listen()
             self.__update_loop()
-            if self.bot.verbose:
-                print("-- Webapp server started --")
+            self.bot.log("-- Webapp server started at http://" + self.__host + ":" + str(self.__webapp_port) + "/ --")
             while True:
                 conn, addr = self.__webapp_sock.accept()
                 conn.recv(1024)
@@ -168,7 +167,7 @@ class Controller:
                 f = open("webapp/index2.html", "r", encoding="utf8")
                 text += f.read()
                 f.close()
-                text = text.replace("ws://localhost:9876", "ws://" + self.__host + ":" + str(self.__ws.get_port()))
+                text = text.replace("ws://localhost:9876", "ws://" + self.__ws.get_host() + ":" + str(self.__ws.get_port()))
                 try:
                     conn.sendall(text.encode())
                 except ConnectionAbortedError:
