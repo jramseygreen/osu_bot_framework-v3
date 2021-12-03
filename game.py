@@ -295,10 +295,13 @@ class Game(Channel):
         # welcome message implementation
         if self.__welcome_message:
             self._bot.send_personal_message(username.replace(" ", "_"), self.__welcome_message)
+        self.__kick_users()
 
-        if username in self.get_formatted_player_blacklist():
-            self.kick_user(username)
-            self._bot.send_personal_message(username, "Sorry, you have been blacklisted from [https://osu.ppy.sh/mp/" + self._channel[4:] + " " + self.__title + "]")
+    def __kick_users(self):
+        for username in self.get_formatted_player_blacklist():
+            if username in self._users:
+                self.kick_user(username)
+                self._bot.send_personal_message(username, "Sorry, you have been blacklisted from [https://osu.ppy.sh/mp/" + self._channel[4:] + " " + self.__title + "]")
 
     def kick_user(self, username):
         if username.replace(" ", "_") in self.get_formatted_users():
@@ -1275,10 +1278,12 @@ class Game(Channel):
 
     def set_player_blacklist(self, blacklist):
         self.__player_blacklist = blacklist
+        self.__kick_users()
 
     def add_player_blacklist(self, username):
         if username.replace(" ", "_") not in self.get_formatted_player_blacklist():
             self.__player_blacklist.append(username)
+        self.__kick_users()
 
     def del_player_blacklist(self, username):
         if username.replace(" ", "_") in self.get_formatted_player_blacklist():

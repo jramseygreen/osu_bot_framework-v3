@@ -883,20 +883,26 @@
                                                         </div>
                                                         <div class="modal-body text-center">
                                                             <div class="card border-0 bg-secondary">
-                                                                <button class="btn btn-warning mb-4" onclick="window.open('https://osu.ppy.sh/u/' + app.current_username, '_blank');">
+                                                                <button class="btn btn-primary mb-4" onclick="window.open('https://osu.ppy.sh/u/' + app.current_username, '_blank');">
                                                                     View Profile
-                                                                </button>
-                                                            </div>
-                                                            <div class="card border-0 bg-secondary">
-                                                                <button class="btn btn-danger mb-4"
-                                                                        data-bs-dismiss="modal" onclick="kick_user();">
-                                                                    Kick
                                                                 </button>
                                                             </div>
                                                             <div class="card border-0 bg-secondary">
                                                                 <button class="btn btn-success mb-4"
                                                                         data-bs-dismiss="modal" onclick="set_host();">
                                                                     Transfer Host
+                                                                </button>
+                                                            </div>
+                                                            <div class="card border-0 bg-secondary">
+                                                                <button class="btn btn-warning mb-4"
+                                                                        data-bs-dismiss="modal" onclick="kick_user();">
+                                                                    Kick
+                                                                </button>
+                                                            </div>
+                                                            <div class="card border-0 bg-secondary">
+                                                                <button class="btn btn-danger mb-4"
+                                                                        data-bs-dismiss="modal" onclick="add_player_blacklist(null);">
+                                                                    Blacklist Player
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -1462,12 +1468,22 @@
     }
 
     function add_player_blacklist(form) {
-        payload = {
-            "command": "add_player_blacklist",
-            "channel": app.channel,
-            "username": form.elements.blacklist_username.value.trim(),
-            "global": form.elements.global_blacklist.checked
-        };
+        payload = {};
+        if (form === null) {
+            payload = {
+                "command": "add_player_blacklist",
+                "channel": app.channel,
+                "username": app.current_username,
+                "global": false
+            };
+        } else {
+            payload = {
+                "command": "add_player_blacklist",
+                "channel": app.channel,
+                "username": form.elements.blacklist_username.value.trim(),
+                "global": form.elements.global_blacklist.checked
+            };
+        }
         if (payload["username"] !== "") {
             sock.send(JSON.stringify(payload));
         }
