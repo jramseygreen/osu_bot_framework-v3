@@ -1037,36 +1037,87 @@
                                             class="btn rounded-pill btn-warning text-secondary col-11 ms-2 mb-3" data-bs-toggle="modal" data-bs-target="#AdvancedOptionsModal">
                                         Advanced Options
                                     </button>
+
                                     <!-- advanced options Modal -->
                                     <div class="modal fade" id="AdvancedOptionsModal" tabindex="-1" aria-labelledby="AdvancedOptionsLabel" aria-hidden="true">
-                                      <div class="modal-dialog">
+                                      <div class="modal-dialog modal-lg">
                                         <div class="modal-content bg-secondary">
                                           <div class="modal-header">
                                             <h5 class="modal-title" id="AdvancedOptionsLabel">Advanced Options</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                           </div>
                                           <div class="modal-body">
-                                              <div v-show="" class="form-check form-switch">
-                                                  <input class="form-check-input" type="checkbox" id="beatmap_checker">
-                                                  Beatmap checker
-                                              </div>
-                                              <div class="form-check form-switch">
-                                                  <input class="form-check-input" type="checkbox" id="beatmap_conversion">
-                                                  Allow beatmap conversion
-                                              </div>
-                                              <div class="form-check form-switch">
-                                                  <input class="form-check-input" type="checkbox" id="unsubmitted beatmaps">
-                                                  Allow unsubmitted beatmaps
-                                              </div>
-                                              <hr>
-                                              <div class="form-check form-switch">
-                                                  <input class="form-check-input" type="checkbox">
-                                                  more options
-                                              </div>
+                                              <form id="advanced_options_form">
+                                                  <div class="form-check form-switch" checked>
+                                                      <input class="form-check-input" type="checkbox" id="beatmap_checker" :checked="beatmap_checker">
+                                                      Beatmap checker
+                                                  </div>
+                                                  <div class="form-check form-switch">
+                                                      <input class="form-check-input" type="checkbox" id="beatmap_conversion" :checked="allow_convert">
+                                                      Allow beatmap conversion
+                                                  </div>
+                                                  <div class="form-check form-switch">
+                                                      <input class="form-check-input" type="checkbox" id="unsubmitted beatmaps" :checked="allow_unsubmitted">
+                                                      Allow unsubmitted beatmaps
+                                                  </div>
+                                                  <div class="form-check form-switch">
+                                                      <input class="form-check-input" type="checkbox" :checked="maintain_title">
+                                                      Maintain room title
+                                                  </div>
+                                                  <div class="form-check form-switch">
+                                                      <input class="form-check-input" type="checkbox" :checked="maintain_password">
+                                                      Maintain room password
+                                                  </div>
+                                                  <div class="form-check form-switch">
+                                                      <input class="form-check-input" type="checkbox" :checked="maintain_size">
+                                                      Maintain room size
+                                                  </div>
+                                                  <div class="form-check form-switch">
+                                                      <input class="form-check-input" type="checkbox" :checked="start_on_players_ready">
+                                                      Start match automatically when all players are ready
+                                                  </div>
+                                                  <hr>
+                                                  <div class="form-check form-switch">
+                                                      <input class="form-check-input" type="checkbox">
+                                                      Countdown to start when beatmap is selected
+                                                  </div>
+                                                  <div class="form-check form-switch">
+                                                      <input class="form-check-input" type="checkbox">
+                                                      Welcome message
+                                                  </div>
+                                                  <hr>
+                                                  <div class="row text-center">
+                                                      <div class="col-6">
+                                                          <div class="card border-0 bg-secondary">
+                                                              whitelists
+                                                              <table class="table table-secondary table-striped">
+                                                                  <thead>
+                                                                  <tr>
+                                                                      <th class="col-11">Artist</th>
+                                                                      <th class="text-danger col-1">🗑️</th>
+                                                                  </tr>
+                                                                  </thead>
+                                                                  <tbody>
+                                                                  <tr v-for="artist in artist_whitelist">
+                                                                      <td>{{artist}}</td>
+                                                                      <td><button class="badge badge-sm bg-danger">X</button></td>
+                                                                  </tr>
+                                                                  </tbody>
+                                                              </table>
+                                                          </div>
+                                                      </div>
+                                                      <div class="col-6">
+                                                          <div class="card border-0 bg-secondary">
+                                                            blacklists
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </form>
                                           </div>
+
                                           <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
                                           </div>
                                         </div>
                                       </div>
@@ -1086,7 +1137,11 @@
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 <script>
-    var sock = new WebSocket("ws://localhost:9876/");
+    var host = "ws://localhost:9876/";
+    if (!window.location.href.includes(host.split(":")[1])) {
+        host = "ws://" + window.location.href.slice(0, -1).replace("http://", "") + ":" + host.split(":")[2];
+    }
+    var sock = new WebSocket(host);
     var exit = false;
     var buffer;
     var app;
@@ -1143,6 +1198,17 @@
                         app.mods = buffer["channels"][app.channel]["mods"];
                         app.map_status = buffer["channels"][app.channel]["map_status"];
                         app.player_blacklist = buffer["channels"][app.channel]["player_blacklist"];
+                        app.beatmap_checker = buffer["channels"][app.channel]["beatmap_checker"];
+                        app.allow_unsubmitted = buffer["channels"][app.channel]["allow_unsubmitted"];
+                        app.allow_convert = buffer["channels"][app.channel]["allow_convert"];
+                        app.maintain_title = buffer["channels"][app.channel]["maintain_title"];
+                        app.maintain_password = buffer["channels"][app.channel]["maintain_password"];
+                        app.maintain_size = buffer["channels"][app.channel]["maintain_size"];
+                        app.start_on_players_ready = buffer["channels"][app.channel]["start_on_players_ready"];
+                        app.artist_whitelist = buffer["channels"][app.channel]["artist_whitelist"];
+                        app.artist_blacklist = buffer["channels"][app.channel]["artist_blacklist"];
+                        app.creator_whitelist = buffer["channels"][app.channel]["creator_whitelist"];
+                        app.creator_blacklist = buffer["channels"][app.channel]["creator_blacklist"];
                     }
                 } else {
                     if (app.channel !== "" && !app.channels.includes(app.channel)) {
@@ -1191,8 +1257,18 @@
             map_status_select: [],
             current_username: "",
             broadcasts: [],
+            artist_whitelist: [],
+            artist_blacklist: [],
+            creator_whitelist: [],
+            creator_blacklist: [],
             player_blacklist: [],
-
+            beatmap_checker: false,
+            allow_unsubmitted: true,
+            allow_convert: true,
+            maintain_title: false,
+            maintain_password: false,
+            maintain_size: false,
+            start_on_players_ready: false,
         },
         methods: {
             set_current_username: function (username) {

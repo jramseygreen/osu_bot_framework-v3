@@ -209,6 +209,7 @@ class Bot:
 
     # splitting join operation fixes rejoining game channels when program is killed
     def __join_helper(self, channel):
+        channel = channel.lower()
         if channel not in self.__channels:
             if "#mp_" == channel[:4]:
                 self.__channels[channel] = Game(self, channel, self.verbose)

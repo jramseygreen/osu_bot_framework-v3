@@ -4,6 +4,8 @@ import socket
 import threading
 import time
 
+import requests
+
 from webapp.ws_server import ws_server
 
 
@@ -157,6 +159,12 @@ class Controller:
             self.__webapp_sock.listen()
             self.__update_loop()
             self.bot.log("-- Webapp server started at http://" + self.__host + ":" + str(self.__webapp_port) + "/ --")
+            ws_host = self.__ws.get_host()
+            if ws_host == "0.0.0.0":
+                try:
+                    ws_host = requests.get('https://checkip.amazonaws.com').text.strip()
+                except:
+                    pass
             while True:
                 conn, addr = self.__webapp_sock.accept()
                 conn.recv(1024)
@@ -167,7 +175,7 @@ class Controller:
                 f = open("webapp/index2.html", "r", encoding="utf8")
                 text += f.read()
                 f.close()
-                text = text.replace("ws://localhost:9876", "ws://" + self.__ws.get_host() + ":" + str(self.__ws.get_port()))
+                text = text.replace("ws://localhost:9876", "ws://" + ws_host + ":" + str(self.__ws.get_port()), 1)
                 try:
                     conn.sendall(text.encode())
                 except ConnectionAbortedError:
