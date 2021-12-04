@@ -337,12 +337,16 @@
                                    class="text-light" style="text-decoration: none;">
                                     {{title}}
                                 </a>
-                                <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#editTitleModal">Edit</button>
+                                <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#editTitleModal">Edit Title</button>
                             </h2>
-                            <a :href="config_link" target="_blank" class="text-light">
-                                <small>View configuration page</small>
-                            </a>
-                            <!-- Modal -->
+                            <span>
+                                <a :href="config_link" target="_blank" class="text-light">
+                                    <small>View configuration page</small>
+                                </a>
+                                <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#broadcastsModal">Broadcasts</button>
+                            </span>
+
+                                <!-- Modal -->
                             <div class="modal fade" id="editTitleModal" tabindex="-1" aria-labelledby="editTitleLabel" aria-hidden="true">
                               <div class="modal-dialog">
                                 <div class="modal-content text-dark">
@@ -370,7 +374,6 @@
                             <h2>{{title}}</h2>
                         </div>
                     </template>
-                    <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#broadcastsModal">Broadcasts</button>
 
                     <!-- broadcasts Modal -->
                     <div class="modal fade" id="broadcastsModal" tabindex="-1" aria-labelledby="broadcastsLabel" aria-hidden="true">
@@ -428,7 +431,7 @@
                 </div>
                 <span v-show="in_progress && channel.includes('#mp_')"
                       class="badge bg-success">Match In Progress...</span>
-                <hr>
+
                 <!--                limits and ranges-->
                 <div v-show="channel.includes('#mp_')" class="container card-body text-center">
                     <div class="row">
@@ -829,7 +832,7 @@
                                 </div>
 
                                 <hr>
-                                <div id="players" style="overflow-y: scroll; overflow-x: hidden; height: 59vh; max-height: 600px"
+                                <div id="players" style="overflow-y: scroll; overflow-x: hidden; height: 57vh; max-height: 600px"
                                      onscroll="lazy_load(this);">
                                     <table class="table table-sm text-white">
                                         <thead>
@@ -956,7 +959,7 @@
                         </div>
                         <div class="col-2">
                             <!--                        beatmap-->
-                            <div v-show="channel.includes('#mp_')" class="card bg-secondary mb-4">
+                            <div v-show="channel.includes('#mp_')" class="card bg-secondary mb-2">
                                 <h3 class="card-header text-center">Beatmap</h3>
                                 <a :href="beatmap.url" target="_blank" style="text-decoration: none;">
                                     <h5 class="text-center text-light mt-2">{{beatmapName}}</h5>
@@ -1232,12 +1235,11 @@
                                                           </div>
                                                       </div>
                                                   </div>
+                                                  <div class="modal-footer">
+                                                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="set_advanced_options(this.form);">Save changes</button>
+                                                  </div>
                                               </form>
-                                          </div>
-
-                                          <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
                                           </div>
                                         </div>
                                       </div>
@@ -1760,6 +1762,10 @@
         };
         sock.send(JSON.stringify(payload));
         form.elements.creator_blacklist_input.value = "";
+    }
+
+    function set_advanced_options(form) {
+
     }
 </script>
 

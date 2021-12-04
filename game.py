@@ -19,7 +19,7 @@ class Game(Channel):
         self.__in_progress = False
         # osu tutorial as default 22538
         self.__beatmap = TUTORIAL
-        self.__beatmap_name = ""
+        self.__beatmap_name = "osu! Tutorial"
         self.__match_history = self.fetch_match_history()
         self.__size = 16
         self.__locked = False
