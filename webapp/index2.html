@@ -817,7 +817,7 @@
                                                   <input id="blacklist_username" type="text" class="form-control" placeholder="Add a player to the blacklist...">
                                                   <button class="btn btn-primary" onclick="add_player_blacklist(this.form);">Add</button>
                                               </div>
-                                              <input class="form-check-input" type="checkbox" value="" id="global_blacklist">
+                                              <input class="form-check-input" type="checkbox" id="global_blacklist">
                                               Add to global blacklist
                                           </form>
                                       </div>
@@ -1077,14 +1077,22 @@
                                                       Start match automatically when all players are ready
                                                   </div>
                                                   <hr>
-                                                  <div class="form-check form-switch">
-                                                      <input class="form-check-input" type="checkbox">
+                                                  <div class="form-check form-switch mb-4">
+                                                      <input class="form-check-input" type="checkbox" :checked="autostart_timer > 0">
                                                       Countdown to start when beatmap is selected
+                                                      <div class="col-1 float-end input-group-sm">
+                                                          <input type="text" class="form-control text-center" :value="autostart_timer">
+                                                      </div>
                                                   </div>
+                                                  <hr>
                                                   <div class="form-check form-switch">
-                                                      <input class="form-check-input" type="checkbox">
+                                                      <input class="form-check-input" type="checkbox" :checked="welcome_message !== ''">
                                                       Welcome message
+                                                      <div class="col-9 float-end input-group-sm">
+                                                          <input type="text" class="form-control" placeholder="Write something..." :value="welcome_message">
+                                                      </div>
                                                   </div>
+
                                                   <hr>
                                                   <div class="row text-center">
                                                       <div class="col-6">
@@ -1296,6 +1304,8 @@
                         app.artist_blacklist = buffer["channels"][app.channel]["artist_blacklist"];
                         app.creator_whitelist = buffer["channels"][app.channel]["creator_whitelist"];
                         app.creator_blacklist = buffer["channels"][app.channel]["creator_blacklist"];
+                        app.autostart_timer = buffer["channels"][app.channel]["autostart_timer"];
+                        app.welcome_message = buffer["channels"][app.channel]["welcome_message"];
                     }
                 } else {
                     if (app.channel !== "" && !app.channels.includes(app.channel)) {
@@ -1356,6 +1366,8 @@
             maintain_password: false,
             maintain_size: false,
             start_on_players_ready: false,
+            welcome_message: "",
+            autostart_timer: -1,
         },
         methods: {
             set_current_username: function (username) {
