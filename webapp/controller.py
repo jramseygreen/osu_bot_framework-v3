@@ -19,6 +19,7 @@ class Controller:
         self.__webapp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__webapp_port = webapp_port
         self.__user_num = 20
+        self.__current_user_profile = {}
 
     def __on_message(self, conn, msg):
         print(msg)
@@ -189,6 +190,11 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.set_password(data["password"])
+        elif data["command"] == "fetch_user_profile":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                if not self.__current_user_profile or self.__current_user_profile["username"] != data["username"]:
+                    self.__current_user_profile = self.bot.fetch_user_profile(data["username"])
 
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
@@ -252,6 +258,7 @@ class Controller:
                     del data["channels"][channel]["commands"]
             data["pm"] = self.bot.get_personal_message_log()
             data["logic_profiles"] = list(self.bot.get_logic_profiles().keys())
+            data["current_user_profile"] = self.__current_user_profile
             self.send_message(json.dumps(data))
         except:
             pass

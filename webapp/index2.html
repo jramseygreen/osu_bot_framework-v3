@@ -880,9 +880,24 @@
                                                     <div class="modal-content bg-secondary">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="playerModalLabel">
-                                                                <a class="text-light" :href="'https://osu.ppy.sh/u/' + current_username" style="text-decoration: none;" target="_blank">
-                                                                    {{current_username.replace(/ /g, "&nbsp;")}}
-                                                                </a>
+                                                                <div class="row">
+                                                                    <div class="col-4">
+                                                                        <a :href="'https://osu.ppy.sh/u/' + current_username" style="text-decoration: none;" target="_blank">
+                                                                        <img :src="current_user_profile.avatar_url" class="img-thumbnail" width="100" height="100">
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="col-8">
+                                                                        <a class="text-light" :href="'https://osu.ppy.sh/u/' + current_username" style="text-decoration: none;" target="_blank">
+                                                                            {{current_username.replace(/ /g, "&nbsp;")}}
+                                                                            #{{current_user_profile.statistics.global_rank}}
+                                                                            (lvl {{current_user_profile.statistics.level.current}})
+                                                                        </a>
+                                                                        <hr>
+                                                                        <h6>Performance: {{current_user_profile.statistics.pp}}pp</h6>
+                                                                        <h6>Accuracy: {{current_user_profile.statistics.hit_accuracy}}%</h6>
+                                                                    </div>
+                                                                </div>
+
                                                             </h5>
                                                             <button type="button" class="btn-close"
                                                                     data-bs-dismiss="modal" aria-label="Close" onclick="app.current_username = ''"></button>
@@ -1062,7 +1077,7 @@
                                           <div class="modal-body">
                                               <h5>New Password</h5>
                                               <form onsubmit="return false">
-                                                  <input id="password_input" type="text" class="form-control">
+                                                  <input id="password_input" type="text" class="form-control mb-4">
                                                   <div class="modal-footer">
                                                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                                                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="set_password(this.form);">Save changes</button>
@@ -1346,6 +1361,7 @@
                         app.creator_blacklist = buffer["channels"][app.channel]["creator_blacklist"];
                         app.autostart_timer = buffer["channels"][app.channel]["autostart_timer"];
                         app.welcome_message = buffer["channels"][app.channel]["welcome_message"];
+                        app.current_user_profile = buffer["current_user_profile"];
                     }
                 } else {
                     if (app.channel !== "" && !app.channels.includes(app.channel)) {
@@ -1394,6 +1410,7 @@
             map_status: [],
             map_status_select: [],
             current_username: "",
+            current_user_profile: {},
             broadcasts: [],
             artist_whitelist: [],
             artist_blacklist: [],
@@ -1413,6 +1430,12 @@
         methods: {
             set_current_username: function (username) {
                 this.current_username = username;
+                payload = {
+                    "command": "fetch_user_profile",
+                    "channel": app.channel,
+                    "username": username
+                };
+                sock.send(JSON.stringify(payload));
             },
             del_broadcast: function (broadcast_id) {
                 payload = {
