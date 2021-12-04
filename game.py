@@ -1091,6 +1091,7 @@ class Game(Channel):
         data["maintain_size"] = self.__maintain_size
         data["beatmap_checker"] = self.__beatmap_checker
         data["start_on_players_ready"] = self.__start_on_players_ready
+        data["auto_download"] = self.__auto_download
 
         # limits and ranges (done)
         data["ar_range"] = self.__ar_range
@@ -1158,6 +1159,7 @@ class Game(Channel):
         self.__beatmap_checker = data["beatmap_checker"]
         self.__start_on_players_ready = data["start_on_players_ready"]
         self.__player_blacklist = data["player_blacklist"]
+        self.auto_download(data["auto_download"]["status"], data["auto_download"]["path"], data["auto_download"]["auto_open"], data["auto_download"]["with_video"])
 
         # limits and ranges (done)
         self.set_ar_range(data["ar_range"])

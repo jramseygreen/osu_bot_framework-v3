@@ -186,6 +186,7 @@ class Controller:
                 channel.start_on_players_ready(data["autostart"])
                 channel.set_autostart_timer(True, data["autostart_timer"])
                 channel.set_welcome_message(data["welcome_message"])
+                channel.auto_download(data["auto_download"], data["auto_download_path"], data["auto_open"], data["download_video"])
         elif data["command"] == "set_password":
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():

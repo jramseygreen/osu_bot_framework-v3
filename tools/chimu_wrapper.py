@@ -86,6 +86,7 @@ class Chimu:
             x.setDaemon(True)
             x.start()
         else:
+            path = path.replace("/", os.sep).replace("\\", os.sep)
             if path != "" and path[-1] != os.sep and path[-1] != "/":
                 path = path + os.sep
             url = self.fetch_set_download_link(beatmapsetID, with_video=with_video)
@@ -95,11 +96,13 @@ class Chimu:
                 f = open(path + str(beatmapsetID) + ".osz", "wb")
                 f.write(file.content)
                 f.close()
+                self.bot.log("-- Downloaded beatmapset " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " --")
                 if auto_open:
                     # osu will delete the file when it's opened!
                     self.bot.log("-- Opened " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " --")
                     os.system(path + str(beatmapsetID) + ".osz")
-
+            else:
+                self.bot.log("-- Failed to download beatmapset " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " --")
     # takes beatmap id instead of beatmap set id
     def download_beatmap(self, beatmapID, path="", with_video=False, auto_open=False, blocking=False):
         beatmap = self.fetch_beatmap(beatmapID)

@@ -1042,18 +1042,10 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <button type="button" class="btn btn-success"
-                                                        onclick="start_match()">
-                                                    Start
-                                                    Match
-                                                </button>
+                                                <button type="button" class="btn btn-success" onclick="start_match()">Start Match</button>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-danger"
-                                                        onclick="abort_match()">
-                                                    Abort
-                                                    Match
-                                                </button>
+                                                <button type="button" class="btn btn-danger" onclick="abort_match()">Abort Match</button>
                                             </td>
                                         </tr>
                                         <tr>
@@ -1061,7 +1053,7 @@
                                                 <button type="button" class="btn btn-dark" onclick="close_room()">Close Room</button>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPasswordModal">Edit Pass.</button>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPasswordModal">Edit Pass</button>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -1151,6 +1143,23 @@
                                                           <input id="welcome_message_input" type="text" class="form-control" placeholder="Write something...">
                                                       </div>
                                                   </div>
+                                                  <hr>
+                                                  <div class="form-check form-switch">
+                                                      <input id="auto_download_switch" class="form-check-input" type="checkbox">
+                                                      Download beatmaps automatically from Chimu.moe
+                                                      <div class="col-4 float-end input-group-sm">
+                                                          <input id="auto_download_path" type="text" class="form-control" placeholder="Path to save to... (default ./)">
+                                                      </div>
+                                                  </div>
+                                                  <div class="form-check form-switch">
+                                                      <input id="download_video_switch" class="form-check-input" type="checkbox">
+                                                      Download with video (if available)
+                                                  </div>
+                                                  <div class="form-check form-switch">
+                                                      <input id="auto_open_switch" class="form-check-input" type="checkbox">
+                                                      Open beatmaps automatically
+                                                  </div>
+
 <!--                                                  whitelists / blacklists-->
                                                   <hr>
                                                   <div class="row text-center">
@@ -1366,6 +1375,7 @@
                         app.autostart_timer = buffer["channels"][app.channel]["autostart_timer"];
                         app.welcome_message = buffer["channels"][app.channel]["welcome_message"];
                         app.current_user_profile = buffer["current_user_profile"];
+                        app.auto_download = buffer["channels"][app.channel]["auto_download"];
                     }
                 } else {
                     if (app.channel !== "" && !app.channels.includes(app.channel)) {
@@ -1442,6 +1452,7 @@
             start_on_players_ready: false,
             welcome_message: "",
             autostart_timer: -1,
+            auto_download: {},
         },
         methods: {
             set_current_username: function (username) {
@@ -1827,7 +1838,11 @@
             "maintain_size": form.elements.maintain_size_switch.checked,
             "autostart": form.elements.autostart_switch.checked,
             "autostart_timer": form.elements.autostart_timer_input.value.trim(),
-            "welcome_message": form.elements.welcome_message_input.value.trim()
+            "welcome_message": form.elements.welcome_message_input.value.trim(),
+            "auto_download": form.elements.auto_download_switch.checked,
+            "auto_download_path": form.elements.auto_download_path.value.trim(),
+            "download_video": form.elements.download_video_switch.checked,
+            "auto_open": form.elements.auto_open_switch.checked
         };
         if (!form.elements.autostart_timer_switch.checked) {
             payload["autostart_timer"] = -1;
@@ -1851,6 +1866,10 @@
         form.elements.autostart_timer_input.value = app.autostart_timer;
         form.elements.welcome_message_switch.checked = app.welcome_message !== "";
         form.elements.welcome_message_input.value = app.welcome_message;
+        form.elements.auto_download_switch.checked = app.auto_download.status;
+        form.elements.auto_download_path.value = app.auto_download.path;
+        form.elements.download_video_switch.checked = app.auto_download.with_video;
+        form.elements.auto_open_switch.checked = app.auto_download.auto_open;
     }
 
     function set_password(form) {
