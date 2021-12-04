@@ -64,7 +64,7 @@ class AutoSong:
             if beatmap in self.played:
                 beatmap = self.bot.chimu.fetch_random_beatmap(self.channel)
             self.played.append(beatmap)
-            self.channel.send_message("!mp map " + str(beatmap["BeatmapId"]) + " | The next beatmap is [https://osu.ppy.sh" + beatmap["DownloadPath"] + " " + beatmap["OsuFile"][:-4] + "] | Type '!skip' to vote to skip this beatmap.")
+            self.channel.send_message("!mp map " + str(beatmap["BeatmapId"]) + " | The next beatmap is [https://osu.ppy.sh/b/" + str(beatmap["BeatmapId"]) + " " + beatmap["OsuFile"][:-4] + "] | Type '!skip' to vote to skip this beatmap.")
         else:
             self.channel.send_message("Could not find any beatmaps matching your criteria!")
 
