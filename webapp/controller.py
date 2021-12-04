@@ -19,7 +19,7 @@ class Controller:
         self.__webapp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__webapp_port = webapp_port
         self.__user_num = 20
-        self.__current_user_profile = {}
+        self.__current_user_profile = {"username": "", "avatar_url": "", "country_code": "", "statistics": {"level": {"current": 0}, "global_rank": 0, "pp": 0, "hit_accuracy": 0}}
 
     def __on_message(self, conn, msg):
         print(msg)
@@ -193,8 +193,9 @@ class Controller:
         elif data["command"] == "fetch_user_profile":
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
-                if not self.__current_user_profile or self.__current_user_profile["username"] != data["username"]:
+                if self.__current_user_profile["username"] != data["username"]:
                     self.__current_user_profile = self.bot.fetch_user_profile(data["username"])
+                    self.__current_user_profile["country_code"] = self.__current_user_profile["country_code"].lower()
 
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
