@@ -67,14 +67,14 @@ class Chimu:
     # beatmapset download link
     def fetch_set_download_link(self, beatmapsetID, with_video=False):
         if self.fetch_beatmapset(beatmapsetID):
-            return self.url + "download/" + str(beatmapsetID) + "?n=" + str(int(with_video))
+            return "https://beatconnect.io/b/" + str(beatmapsetID) + "?novideo=" + str(int(not with_video))
 
     # beatmap download link
     def fetch_download_link(self, beatmapID, with_video=False):
         beatmap = self.fetch_beatmap(beatmapID)
         if beatmap:
             beatmapsetID = beatmap["ParentSetId"]
-            return self.url + "download/" + str(beatmapsetID) + "?n=" + str(int(with_video))
+            return "https://beatconnect.io/b/" + str(beatmapsetID) + "?novideo=" + str(int(not with_video))
 
     # can only download with chimu
     # downloads a beatmapset to the path given, or in the framework directory
@@ -103,6 +103,7 @@ class Chimu:
                     os.system(path + str(beatmapsetID) + ".osz")
             else:
                 self.bot.log("-- Failed to download beatmapset " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " --")
+
     # takes beatmap id instead of beatmap set id
     def download_beatmap(self, beatmapID, path="", with_video=False, auto_open=False, blocking=False):
         beatmap = self.fetch_beatmap(beatmapID)

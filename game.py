@@ -1248,6 +1248,8 @@ class Game(Channel):
         if not status:
             secs = -1
         self.__autostart_timer = int(secs)
+        if secs == -1:
+            self.abort_start_timer()
 
     def get_autostart_timer(self):
         return self.__autostart_timer

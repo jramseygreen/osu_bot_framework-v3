@@ -39,6 +39,7 @@ class AutoSong:
         channel.start_on_players_ready(True)
         channel.clear_host()
         channel.set_allow_unsubmitted(False)
+        channel.set_allow_convert(False)
         channel.set_autostart_timer(True, 120)
         self.next_round()
 
