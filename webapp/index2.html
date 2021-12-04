@@ -899,8 +899,7 @@
                                                                 </div>
 
                                                             </h5>
-                                                            <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close" onclick="app.current_username = ''"></button>
+
                                                         </div>
                                                         <div class="modal-body text-center">
                                                             <div class="card border-0 bg-secondary">
@@ -1410,7 +1409,17 @@
             map_status: [],
             map_status_select: [],
             current_username: "",
-            current_user_profile: {},
+            current_user_profile: {
+                "avatar_url": "",
+                "statistics": {
+                    "level": {
+                        "current": 0
+                    },
+                    "global_rank": 0,
+                    "pp": 0,
+                    "hit_accuracy": 0
+                }
+            },
             broadcasts: [],
             artist_whitelist: [],
             artist_blacklist: [],
