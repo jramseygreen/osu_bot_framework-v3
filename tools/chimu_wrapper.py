@@ -1,4 +1,5 @@
 import os
+import socket
 import threading
 import random
 import json
@@ -13,6 +14,7 @@ class Chimu:
     def __init__(self, bot):
         self.bot = bot
         self.url = "https://api.chimu.moe/v1/"
+        self.session = requests.Session()
         try:
             f = open("config" + os.sep + "unsubmitted.obf", "r")
             self.unsubmitted = f.readlines()
@@ -24,7 +26,7 @@ class Chimu:
     def fetch_beatmapset(self, beatmapsetID):
         if beatmapsetID:
             url = self.url + "set/" + str(beatmapsetID)
-            r = requests.get(url)
+            r = self.session.get(url)
             data = json.loads(r.text)
             if data["data"]:
                 return data["data"]
@@ -34,7 +36,7 @@ class Chimu:
     def fetch_beatmap(self, beatmapID):
         if beatmapID:
             url = self.url + "map/" + str(beatmapID)
-            r = requests.get(url)
+            r = self.session.get(url)
             data = json.loads(r.text)
             if data["data"]:
                 return data["data"]
@@ -56,7 +58,7 @@ class Chimu:
             urls.append(url)
         data = []
         for url in urls:
-            r = requests.get(url)
+            r = self.session.get(url)
             result = json.loads(r.text)
             if result["code"] == 0:
                 data += result["data"]
@@ -92,7 +94,7 @@ class Chimu:
             url = self.fetch_set_download_link(beatmapsetID, with_video=with_video)
             self.bot.log("-- Downloading beatmapset " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " to /" + path + " --")
             file = requests.get(url)
-            if "Error" not in file.text:
+            if file.status_code != 404:
                 f = open(path + str(beatmapsetID) + ".osz", "wb")
                 f.write(file.content)
                 f.close()
