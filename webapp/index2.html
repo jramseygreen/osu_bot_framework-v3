@@ -1010,9 +1010,6 @@
                                 </div>
                                 <div v-show="channel.includes('#mp_')">
                                     <hr>
-                                    <button type="button" class="btn btn-dark col-11 ms-2"
-                                            onclick="close_room()">Close Room
-                                    </button>
                                     <table class="table">
                                         <tbody>
                                         <tr>
@@ -1031,8 +1028,36 @@
                                                 </button>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td>
+                                                <button type="button" class="btn btn-dark" onclick="close_room()">Close Room</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPasswordModal">Edit Pass.</button>
+                                            </td>
+                                        </tr>
                                         </tbody>
                                     </table>
+
+                                    <!--edit password Modal -->
+                                    <div class="modal fade" id="editPasswordModal" tabindex="-1" aria-labelledby="editPasswordLabel" aria-hidden="true">
+                                      <div class="modal-dialog">
+                                        <div class="modal-content bg-secondary">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="editPasswordLabel">Edit password</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                            ...
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
                                     <button type="button"
                                             class="btn rounded-pill btn-warning text-secondary col-11 ms-2 mb-3" data-bs-toggle="modal" data-bs-target="#AdvancedOptionsModal">
                                         Advanced Options
