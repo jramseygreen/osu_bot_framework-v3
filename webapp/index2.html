@@ -371,7 +371,10 @@
                             </div>
                         </div>
                         <div v-else>
-                            <h2>{{title}}</h2>
+                            <span>
+                                <h2>{{title}}</h2>
+                                <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#broadcastsModal">Broadcasts</button>
+                            </span>
                         </div>
                     </template>
 
@@ -1012,9 +1015,12 @@
                                     </ul>
                                 </div>
                                 <div v-show="channel.includes('#mp_')">
-                                    <hr>
                                     <table class="table">
                                         <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
                                         <tr>
                                             <td>
                                                 <button type="button" class="btn btn-success"
