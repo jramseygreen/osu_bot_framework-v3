@@ -885,8 +885,10 @@
                                                                         <a :href="'https://osu.ppy.sh/u/' + current_username" style="text-decoration: none;" target="_blank">
                                                                             <img :src="current_user_profile.avatar_url" class="img-thumbnail" width="100" height="100">
                                                                         </a>
-                                                                        <img :src="'https://www.geonames.org/flags/x/' + current_user_profile.country_code + '.gif'" width="40" height="20">
-                                                                        <span class="text-uppercase">{{current_user_profile.country_code}}</span>
+                                                                        <div class="text-center mt-3">
+                                                                            <img :src="'https://www.geonames.org/flags/x/' + current_user_profile.country_code + '.gif'" width="40" height="20">
+                                                                            <span class="text-uppercase">{{current_user_profile.country_code}}</span>
+                                                                        </div>
                                                                     </div>
                                                                     <div class="col-8">
                                                                         <a class="text-light" :href="'https://osu.ppy.sh/u/' + current_username" style="text-decoration: none;" target="_blank">
@@ -897,6 +899,7 @@
                                                                         <hr>
                                                                         <h6>Performance: {{current_user_profile.statistics.pp}}pp</h6>
                                                                         <h6>Accuracy: {{current_user_profile.statistics.hit_accuracy}}%</h6>
+                                                                        <h6>Play Count: {{current_user_profile.statistics.play_count}}</h6>
                                                                     </div>
                                                                 </div>
 
@@ -1420,7 +1423,8 @@
                     },
                     "global_rank": 0,
                     "pp": 0,
-                    "hit_accuracy": 0
+                    "hit_accuracy": 0,
+                    "play_count": 0
                 }
             },
             broadcasts: [],

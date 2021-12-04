@@ -19,7 +19,7 @@ class Controller:
         self.__webapp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__webapp_port = webapp_port
         self.__user_num = 20
-        self.__current_user_profile = {"username": "", "avatar_url": "", "country_code": "", "statistics": {"level": {"current": 0}, "global_rank": 0, "pp": 0, "hit_accuracy": 0}}
+        self.__current_user_profile = {"username": "", "avatar_url": "", "country_code": "", "statistics": {"level": {"current": 0}, "global_rank": 0, "pp": 0, "hit_accuracy": 0, "play_count": 0}}
 
     def __on_message(self, conn, msg):
         print(msg)
