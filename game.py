@@ -524,7 +524,7 @@ class Game(Channel):
             error = {"type": "cs", "message": "The selected beatmap is outside the circle size range: " + str(self.__cs_range)}
         elif self.__hp_range[0] > beatmap["drain"] or beatmap["drain"] > self.__hp_range[1]:
             error = {"type": "hp", "message": "The selected beatmap is outside the HP range: " + str(self.__hp_range)}
-        elif self.__length_range[0] > beatmap["hit_length"] or (self.__length_range[1] != -1 and self.__length_range[1] < beatmap["hit_length"]):
+        elif self.__length_range[0] > beatmap["total_length"] or (self.__length_range[1] != -1 and self.__length_range[1] < beatmap["hit_length"]):
             if self.__length_range[1] == -1:
                 error = {"type": "length", "message": "The selected beatmap is outside the length range: " + str([str(x // 60) + "min, " + str(x % 60) + "sec" for x in [self.__length_range[0]]] + ["unlimited"])}
             else:

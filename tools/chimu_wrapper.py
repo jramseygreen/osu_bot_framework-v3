@@ -201,9 +201,9 @@ class Chimu:
                     continue
                 elif "max_bpm" in attributes and beatmap["BPM"] > attributes["max_bpm"]:
                     continue
-                elif "min_length" in attributes and attributes["min_length"] > beatmap["HitLength"]:
+                elif "min_length" in attributes and attributes["min_length"] > beatmap["TotalLength"]:
                     continue
-                elif "max_length" in attributes and beatmap["HitLength"] > attributes["max_length"]:
+                elif "max_length" in attributes and beatmap["TotalLength"] > attributes["max_length"]:
                     continue
                 elif query and query.lower() not in str(beatmap).lower():
                     continue
