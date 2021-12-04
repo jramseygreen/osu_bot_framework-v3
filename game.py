@@ -711,10 +711,11 @@ class Game(Channel):
 
     def set_password(self, password):
         password = password.strip()
-        self.__invite_link = self.__invite_link.replace(self._password.replace(" ", "_"), "")
-        self._password = password
-        self.__invite_link = self.__invite_link + password.replace(" ", "_")
-        self.send_message("!mp password " + self._password)
+        if password != self._password:
+            self.__invite_link = self.__invite_link.replace(self._password.replace(" ", "_"), "")
+            self._password = password
+            self.__invite_link = self.__invite_link + password.replace(" ", "_")
+            self.send_message("!mp password " + self._password)
 
     def get_password(self):
         return self._password

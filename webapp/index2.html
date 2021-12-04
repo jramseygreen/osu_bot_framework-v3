@@ -1053,15 +1053,21 @@
                                       <div class="modal-dialog">
                                         <div class="modal-content bg-secondary">
                                           <div class="modal-header">
-                                            <h5 class="modal-title" id="editPasswordLabel">Edit password</h5>
+                                              <span>
+                                                <h5 class="modal-title" id="editPasswordLabel">Edit password</h5>
+                                                <small class="fst-italic">(current password: {{password}})</small>
+                                              </span>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                           </div>
                                           <div class="modal-body">
-                                            ...
-                                          </div>
-                                          <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                              <h5>New Password</h5>
+                                              <form onsubmit="return false">
+                                                  <input id="password_input" type="text" class="form-control">
+                                                  <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="set_password(this.form);">Save changes</button>
+                                                  </div>
+                                              </form>
                                           </div>
                                         </div>
                                       </div>
@@ -1320,6 +1326,7 @@
                         } else {
                             app.beatmapLength = app.beatmap["hit_length"] + "sec";
                         }
+                        app.password = buffer["channels"][app.channel]["password"];
                         app.game_mode = buffer["channels"][app.channel]["game_mode"];
                         app.team_type = buffer["channels"][app.channel]["team_type"];
                         app.scoring_type = buffer["channels"][app.channel]["scoring_type"];
@@ -1373,6 +1380,7 @@
             beatmapLength: "",
             personal_messages: [],
             title: "",
+            password: "",
             make_room: {
                 "game_mode": "any",
                 "scoring_type": "any",
@@ -1804,6 +1812,15 @@
         form.elements.autostart_timer_input.value = app.autostart_timer;
         form.elements.welcome_message_switch.checked = app.welcome_message !== "";
         form.elements.welcome_message_input.value = app.welcome_message;
+    }
+
+    function set_password(form) {
+        payload = {
+            "command": "set_password",
+            "channel": app.channel,
+            "password": form.elements.password_input.value
+        };
+        sock.send(JSON.stringify(payload));
     }
 </script>
 
