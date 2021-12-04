@@ -788,7 +788,7 @@
                                 <h3 class="text-center mt-2">
                                     <span class="card-header badge bg-light text-dark">{{total_users}}</span>
                                     Players
-                                    <button v-show="channel.includes('mp_')" class="btn btn-sm btn-dark rounded-pill ms-4" data-bs-toggle="modal" data-bs-target="#playerBlacklistModal">blacklist</button>
+                                    <button v-show="channel.includes('mp_')" class="btn btn-sm btn-dark rounded-pill ms-4" onclick="document.getElementById('global_blacklist').checked = false;" data-bs-toggle="modal" data-bs-target="#playerBlacklistModal">blacklist</button>
                                 </h3>
 
                                 <!--player blacklist modal-->
@@ -1068,7 +1068,7 @@
                                     </div>
 
                                     <button type="button"
-                                            class="btn rounded-pill btn-warning text-secondary col-11 ms-2 mb-3" data-bs-toggle="modal" data-bs-target="#AdvancedOptionsModal">
+                                            class="btn rounded-pill btn-warning text-secondary col-11 ms-2 mb-3" onclick="reset_advanced_options();" data-bs-toggle="modal" data-bs-target="#AdvancedOptionsModal">
                                         Advanced Options
                                     </button>
 
@@ -1082,51 +1082,51 @@
                                           </div>
                                           <div class="modal-body">
                                               <form id="advanced_options_form" onsubmit="return false">
-                                                  <div class="form-check form-switch" checked>
-                                                      <input class="form-check-input" type="checkbox" id="beatmap_checker" :checked="beatmap_checker">
+                                                  <div class="form-check form-switch">
+                                                      <input id="beatmap_checker_switch" class="form-check-input" type="checkbox">
                                                       Beatmap checker
                                                   </div>
                                                   <div class="form-check form-switch">
-                                                      <input class="form-check-input" type="checkbox" id="beatmap_conversion" :checked="allow_convert">
+                                                      <input id="allow_conversion_switch" class="form-check-input" type="checkbox">
                                                       Allow beatmap conversion
                                                   </div>
                                                   <div class="form-check form-switch">
-                                                      <input class="form-check-input" type="checkbox" id="unsubmitted beatmaps" :checked="allow_unsubmitted">
+                                                      <input id="allow_unsubmitted_switch" class="form-check-input" type="checkbox">
                                                       Allow unsubmitted beatmaps
                                                   </div>
                                                   <div class="form-check form-switch">
-                                                      <input class="form-check-input" type="checkbox" :checked="maintain_title">
+                                                      <input id="maintain_title_switch" class="form-check-input" type="checkbox">
                                                       Maintain room title
                                                   </div>
                                                   <div class="form-check form-switch">
-                                                      <input class="form-check-input" type="checkbox" :checked="maintain_password">
+                                                      <input id="maintain_password_switch" class="form-check-input" type="checkbox">
                                                       Maintain room password
                                                   </div>
                                                   <div class="form-check form-switch">
-                                                      <input class="form-check-input" type="checkbox" :checked="maintain_size">
+                                                      <input id="maintain_size_switch" class="form-check-input" type="checkbox">
                                                       Maintain room size
                                                   </div>
                                                   <div class="form-check form-switch">
-                                                      <input class="form-check-input" type="checkbox" :checked="start_on_players_ready">
+                                                      <input id="autostart_switch" class="form-check-input" type="checkbox">
                                                       Start match automatically when all players are ready
                                                   </div>
                                                   <hr>
                                                   <div class="form-check form-switch mb-4">
-                                                      <input class="form-check-input" type="checkbox" :checked="autostart_timer > 0">
-                                                      Countdown to start when beatmap is selected
+                                                      <input id="autostart_timer_switch" class="form-check-input" type="checkbox">
+                                                      Countdown to start when beatmap is selected (in seconds)
                                                       <div class="col-1 float-end input-group-sm">
-                                                          <input type="text" class="form-control text-center" :value="autostart_timer">
+                                                          <input id="autostart_timer_input" type="text" class="form-control text-center">
                                                       </div>
                                                   </div>
                                                   <hr>
                                                   <div class="form-check form-switch">
-                                                      <input class="form-check-input" type="checkbox" :checked="welcome_message !== ''">
+                                                      <input id="welcome_message_switch" class="form-check-input" type="checkbox">
                                                       Welcome message
                                                       <div class="col-9 float-end input-group-sm">
-                                                          <input type="text" class="form-control" placeholder="Write something..." :value="welcome_message">
+                                                          <input id="welcome_message_input" type="text" class="form-control" placeholder="Write something...">
                                                       </div>
                                                   </div>
-
+<!--                                                  whitelists / blacklists-->
                                                   <hr>
                                                   <div class="row text-center">
                                                       <div class="col-6">
@@ -1243,7 +1243,7 @@
                                                   </div>
                                                   <div class="modal-footer">
                                                       <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                                                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="set_advanced_options(this.form);">Save changes</button>
+                                                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="set_advanced_options();">Save changes</button>
                                                   </div>
                                               </form>
                                           </div>
@@ -1474,9 +1474,6 @@
         }
         app.channel = data.getAttribute("name");
         document.getElementById(app.channel).classList.add("active");
-        if (data.getAttribute("name").includes("mp_")) {
-            document.getElementById("global_blacklist").checked = false;
-        }
         sock.send(JSON.stringify({"command": "update"}));
     }
 
@@ -1770,8 +1767,43 @@
         form.elements.creator_blacklist_input.value = "";
     }
 
-    function set_advanced_options(form) {
+    function set_advanced_options() {
+        form = document.getElementById("advanced_options_form");
+        payload = {
+            "command": "set_advanced_options",
+            "channel": app.channel,
+            "beatmap_checker": form.elements.beatmap_checker_switch.checked,
+            "allow_convert": form.elements.allow_conversion_switch.checked,
+            "allow_unsubmitted": form.elements.allow_unsubmitted_switch.checked,
+            "maintain_title": form.elements.maintain_title_switch.checked,
+            "maintain_password": form.elements.maintain_password_switch.checked,
+            "maintain_size": form.elements.maintain_size_switch.checked,
+            "autostart": form.elements.autostart_switch.checked,
+            "autostart_timer": form.elements.autostart_timer_input.value.trim(),
+            "welcome_message": form.elements.welcome_message_input.value.trim()
+        };
+        if (!form.elements.autostart_timer_switch.checked) {
+            payload["autostart_timer"] = -1;
+        }
+        if (!form.elements.welcome_message_switch.checked) {
+            payload["welcome_message"] = "";
+        }
+        sock.send(JSON.stringify(payload));
+    }
 
+    function reset_advanced_options() {
+        form = document.getElementById("advanced_options_form");
+        form.elements.beatmap_checker_switch.checked = app.beatmap_checker;
+        form.elements.allow_conversion_switch.checked = app.allow_convert;
+        form.elements.allow_unsubmitted_switch.checked = app.allow_unsubmitted;
+        form.elements.maintain_title_switch.checked = app.maintain_title;
+        form.elements.maintain_password_switch.checked = app.maintain_password;
+        form.elements.maintain_size_switch.checked = app.maintain_size;
+        form.elements.autostart_switch.checked = app.start_on_players_ready;
+        form.elements.autostart_timer_switch.checked = app.autostart_timer > 0;
+        form.elements.autostart_timer_input.value = app.autostart_timer;
+        form.elements.welcome_message_switch.checked = app.welcome_message !== "";
+        form.elements.welcome_message_input.value = app.welcome_message;
     }
 </script>
 

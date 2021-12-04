@@ -173,6 +173,18 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.add_beatmap_creator_blacklist(data["creator"])
+        elif data["command"] == "set_advanced_options":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.set_beatmap_checker(data["beatmap_checker"])
+                channel.set_allow_convert(data["allow_convert"])
+                channel.set_allow_unsubmitted(data["allow_unsubmitted"])
+                channel.maintain_title(data["maintain_title"])
+                channel.maintain_password(data["maintain_password"])
+                channel.maintain_size(data["maintain_size"])
+                channel.start_on_players_ready(data["autostart"])
+                channel.set_autostart_timer(True, data["autostart_timer"])
+                channel.set_welcome_message(data["welcome_message"])
 
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
