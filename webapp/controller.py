@@ -269,7 +269,7 @@ class Controller:
             threading.Thread(target=self.__update_loop, args=(True,)).start()
         else:
             while True:
-                time.sleep(2)
+                time.sleep(1)
                 self.update()
 
     def set_ws_port(self, port):
