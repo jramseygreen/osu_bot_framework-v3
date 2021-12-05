@@ -486,6 +486,8 @@ class Game(Channel):
             elif self.__beatmap_checker and self.__game_mode.lower() != "any" and match["mode"] != self.__game_mode.lower():
                 error = {"type": "mode", "message": "The selected beatmap's mode must be: " + self.__game_mode}
                 abort = True
+            elif self.__beatmap["id"] != match["beatmap"]["id"]:
+                abort = True
 
             if abort:
                 # execute on_rule_break
