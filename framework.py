@@ -190,6 +190,8 @@ class Bot:
             self.__sock.sendall(("USER " + self.__username + "\n").encode())
             self.__sock.sendall(("NICK " + self.__username + "\n").encode())
             self.log("-- connected to " + self.__host + ":" + str(self.__port) + " successfully --")
+            if not self.verbose:
+                print("-- connected to " + self.__host + ":" + str(self.__port) + " successfully --")
             self.__listen()
             self.__controller.start()
 

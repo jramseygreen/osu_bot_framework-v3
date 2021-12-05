@@ -22,7 +22,7 @@ class Controller:
         self.__current_user_profile = {"username": "", "avatar_url": "", "country_code": "gb", "statistics": {"level": {"current": 0}, "global_rank": 0, "pp": 0, "hit_accuracy": 0, "play_count": 0}}
 
     def __on_message(self, conn, msg):
-        print(msg)
+        self.bot.log("-- webapp sent: " + msg + " --")
         try:
             data = json.loads(msg)
             if data["command"] == "exit_handler":
@@ -250,6 +250,8 @@ class Controller:
             self.__webapp_sock.listen()
             self.__update_loop()
             self.bot.log("-- Webapp server started at http://" + self.__host + ":" + str(self.__webapp_port) + "/ --")
+            if not self.bot.verbose:
+                print("-- Webapp server started at http://" + self.__host + ":" + str(self.__webapp_port) + "/ --")
             ws_host = self.__ws.get_host()
             if ws_host == "0.0.0.0":
                 try:
