@@ -70,7 +70,6 @@ class Chimu:
     def fetch_set_download_link(self, beatmapsetID, with_video=False):
         if self.fetch_beatmapset(beatmapsetID):
             return "https://beatconnect.io/b/" + str(beatmapsetID) + "?novideo=" + str(int(not with_video))
-        return "."
 
     # beatmap download link
     def fetch_download_link(self, beatmapID, with_video=False):
@@ -78,7 +77,6 @@ class Chimu:
         if beatmap:
             beatmapsetID = beatmap["ParentSetId"]
             return "https://beatconnect.io/b/" + str(beatmapsetID) + "?novideo=" + str(int(not with_video))
-        return "."
 
     # can only download with chimu
     # downloads a beatmapset to the path given, or in the framework directory
