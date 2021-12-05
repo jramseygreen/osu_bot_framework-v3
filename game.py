@@ -497,7 +497,10 @@ class Game(Channel):
                 abort = True
             elif self.__beatmap_checker:
                 error = self.check_beatmap(self.__beatmap)
-                if error:
+                if error["type"] == "unsubmitted":
+                    if not self.__allow_unsubmitted:
+                        abort = True
+                else:
                     abort = True
 
             if abort:

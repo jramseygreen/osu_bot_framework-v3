@@ -226,6 +226,10 @@ class Controller:
                 channel = self.bot.get_channel(data["channel"])
                 if channel and channel.is_game():
                     channel.set_diff_range(data["range"])
+            elif data["command"] == "set_size":
+                channel = self.bot.get_channel(data["channel"])
+                if channel and channel.is_game():
+                    channel.set_size(data["size"])
 
             if "channel" in data:
                 channel = self.bot.get_channel(data["channel"])

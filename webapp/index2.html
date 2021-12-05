@@ -866,10 +866,47 @@
                         <div class="col-3">
                             <div class="card text-white bg-secondary">
                                 <h3 class="text-center mt-2">
-                                    <span class="card-header badge bg-light text-dark">{{total_users}}</span>
+                                    <div v-if="channel.includes('mp_')">
+                                        <button class="card-header badge bg-light text-dark" data-bs-toggle="modal" data-bs-target="#sizeModal">{{total_users}}</button>
+                                    </div>
+                                    <div v-else>
+                                        <span class="card-header badge bg-light text-dark">{{total_users}}</span>
+                                    </div>
                                     Players
                                     <button v-show="channel.includes('mp_')" class="btn btn-sm btn-dark rounded-pill ms-4" onclick="document.getElementById('global_blacklist').checked = false;" data-bs-toggle="modal" data-bs-target="#playerBlacklistModal">blacklist</button>
                                 </h3>
+
+<!--                                size modal-->
+                                <div class="modal fade" id="sizeModal" tabindex="-1" aria-labelledby="sizeModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content bg-secondary">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="sizeModalLabel">Set room size</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5>Select Size:</h5>
+                                            </div>
+                                            <div class="col">
+                                                <div class="dropdown">
+                                                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                          {{size}}
+                                                      </button>
+                                                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                                            <li v-for="(slot, index) in slots"><a class="dropdown-item" href="javascript:void(0);" @click="set_size(index + 1)">{{index + 1}}</a></li>
+                                                      </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
 
                                 <!--player blacklist modal-->
                                 <div class="modal fade" id="playerBlacklistModal" tabindex="-1" aria-labelledby="playerBlacklistLabel" aria-hidden="true">
@@ -1455,6 +1492,7 @@
                         app.welcome_message = buffer["channels"][app.channel]["welcome_message"];
                         app.current_user_profile = buffer["current_user_profile"];
                         app.auto_download = buffer["channels"][app.channel]["auto_download"];
+                        app.size = buffer["channels"][app.channel]["size"];
 
                         if (JSON.stringify(buffer["channels"][app.channel]["ar_range"]) !== JSON.stringify(app.ar_range)) {
                             app.ar_range = buffer["channels"][app.channel]["ar_range"]
@@ -1520,6 +1558,7 @@
             users: [],
             total_users: 0,
             user_num: 20,
+            size: 0,
             referees: [],
             host: "",
             channels: [],
@@ -1640,6 +1679,14 @@
                 };
                 sock.send(JSON.stringify(payload));
             },
+            set_size: function (size) {
+                payload = {
+                    "command": "set_size",
+                    "channel": app.channel,
+                    "size": size
+                };
+                sock.send(JSON.stringify(payload));
+            },
         }
     })
 
@@ -1737,7 +1784,11 @@
             "channel": form.elements.join_form_channel.value,
         };
         if (payload["channel"] !== "" ) {
-            sock.send(JSON.stringify(payload));
+            if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
+                sock.send(JSON.stringify(payload));
+            } else {
+                alert("Sorry, special characters are not currently supported!");
+            }
         }
         form.reset();
     }
@@ -1747,8 +1798,11 @@
             "command": "part",
             "channel": data.getAttribute("name"),
         };
-        sock.send(JSON.stringify(payload));
-        sock.send(JSON.stringify({"command": "update"}));
+        if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
+            sock.send(JSON.stringify(payload));
+        } else {
+            alert("Sorry, special characters are not currently supported!");
+        }
         remove_active_channels()
     }
 
@@ -1781,7 +1835,11 @@
             "channel": app.channel,
             "title": form.elements.title_input.value
         };
-        sock.send(JSON.stringify(payload));
+        if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
+            sock.send(JSON.stringify(payload));
+        } else {
+            alert("Sorry, special characters are not currently supported!");
+        }
         form.reset();
     }
 
@@ -1886,7 +1944,11 @@
             "message": form.elements.broadcast_message.value.trim()
         };
         if (payload["message"] !== "" && payload["secs"] !== "") {
+            if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
             sock.send(JSON.stringify(payload));
+        } else {
+            alert("Sorry, special characters are not currently supported!");
+        }
         }
         form.elements.broadcast_message.value = "";
     }
@@ -1920,7 +1982,11 @@
             "channel": app.channel,
             "artist": form.elements.artist_whitelist_input.value.trim()
         };
-        sock.send(JSON.stringify(payload));
+        if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
+            sock.send(JSON.stringify(payload));
+        } else {
+            alert("Sorry, special characters are not currently supported!");
+        }
         form.elements.artist_whitelist_input.value = "";
     }
 
@@ -1930,7 +1996,11 @@
             "channel": app.channel,
             "artist": form.elements.artist_blacklist_input.value.trim()
         };
-        sock.send(JSON.stringify(payload));
+        if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
+            sock.send(JSON.stringify(payload));
+        } else {
+            alert("Sorry, special characters are not currently supported!");
+        }
         form.elements.artist_blacklist_input.value = "";
     }
 
@@ -1940,7 +2010,11 @@
             "channel": app.channel,
             "creator": form.elements.creator_whitelist_input.value.trim()
         };
-        sock.send(JSON.stringify(payload));
+        if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
+            sock.send(JSON.stringify(payload));
+        } else {
+            alert("Sorry, special characters are not currently supported!");
+        }
         form.elements.creator_whitelist_input.value = "";
     }
 
@@ -1950,7 +2024,11 @@
             "channel": app.channel,
             "creator": form.elements.creator_blacklist_input.value.trim()
         };
-        sock.send(JSON.stringify(payload));
+        if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
+            sock.send(JSON.stringify(payload));
+        } else {
+            alert("Sorry, special characters are not currently supported!");
+        }
         form.elements.creator_blacklist_input.value = "";
     }
 
@@ -2007,7 +2085,11 @@
             "channel": app.channel,
             "password": form.elements.password_input.value
         };
-        sock.send(JSON.stringify(payload));
+        if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
+            sock.send(JSON.stringify(payload));
+        } else {
+            alert("Sorry, special characters are not currently supported!");
+        }
         form.elements.password_input.value = "";
     }
 
