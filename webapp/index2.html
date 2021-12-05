@@ -260,23 +260,25 @@
                                                 </ul>
                                             </div>
                                         </div>
-                                        <div class="col">
-                                            <h5>LP</h5>
-                                            <div class="dropdown">
-                                              <button class="btn btn-secondary dropdown-toggle" type="button" id="logicProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                                  {{make_room.logic_profile}}
-                                              </button>
-                                              <ul class="dropdown-menu" aria-labelledby="logicProfileDropdown">
-                                                  <li>
-                                                      <a class="dropdown-item" href="javascript:void(0);" @click="make_room_dropdown('logic_profile', '')">Clear Current Logic Profile</a>
-                                                  </li>
-                                                  <li>
-                                                      <hr class="dropdown-divider">
-                                                  </li>
-                                                  <li v-for="profile in logic_profiles">
-                                                      <a class="dropdown-item" href="javascript:void(0);" @click="make_room_dropdown('logic_profile', profile)">{{profile}}</a>
-                                                  </li>
-                                              </ul>
+                                        <div class="col ms-2">
+                                            <div class="card mt-2">
+                                                <h5>LP</h5>
+                                                <div class="dropdown">
+                                                  <button class="btn btn-secondary dropdown-toggle" type="button" id="logicProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                      {{make_room.logic_profile}}
+                                                  </button>
+                                                  <ul class="dropdown-menu" aria-labelledby="logicProfileDropdown">
+                                                      <li>
+                                                          <a class="dropdown-item" href="javascript:void(0);" @click="make_room_dropdown('logic_profile', '')">Clear Current Logic Profile</a>
+                                                      </li>
+                                                      <li>
+                                                          <hr class="dropdown-divider">
+                                                      </li>
+                                                      <li v-for="profile in logic_profiles">
+                                                          <a class="dropdown-item" href="javascript:void(0);" @click="make_room_dropdown('logic_profile', profile)">{{profile}}</a>
+                                                      </li>
+                                                  </ul>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
