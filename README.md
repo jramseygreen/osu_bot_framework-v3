@@ -1,6 +1,8 @@
 # osu_bot_framework-v3
 A powerful framework to create and manage bots for osu
 
+![alt text](webapp/assets/images/logo_blue.png)
+
 ## This is a work in progress!
 #### Windows
 - Simply download the source code and execute launch.exe. Easy as cake!
