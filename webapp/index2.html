@@ -30,6 +30,10 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        input[type=number]::-webkit-inner-spin-button {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -440,31 +444,104 @@
                     <div class="row">
                         <div class="col-1 card bg-secondary">
                             AR range
-                            min
-                            <input type="range" class="form-range" min="0" max="10" step="1" id="arRangeMin">
-                            max
-                            <input type="range" class="form-range" min="0" max="10" step="1" id="arRangeMax">
+                            <hr>
+                            <form onsubmit="return false">
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>min</small></span>
+                                    <input id="min_ar" type="number" class="form-control" onchange="set_ar_range(this.form);" min="0" max="10" step="0.1" style="font-size:10px;">
+                                </div>
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>max</small></span>
+                                    <input id="max_ar" type="number" class="form-control" onchange="set_ar_range(this.form);" min="0" max="10" step="0.1" style="font-size:10px;">
+                                </div>
+                            </form>
                         </div>
                         <div class="col-1 card bg-secondary">
                             OD range
+                            <hr>
+                            <form onsubmit="return false">
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>min</small></span>
+                                    <input id="min_od" type="number" class="form-control" onchange="set_od_range(this.form);" min="0" max="10" step="0.1" style="font-size:10px;">
+                                </div>
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>max</small></span>
+                                    <input id="max_od" type="number" class="form-control" onchange="set_od_range(this.form);" min="0" max="10" step="0.1" style="font-size:10px;">
+                                </div>
+                            </form>
                         </div>
                         <div class="col-1 card bg-secondary">
                             CS range
+                            <hr>
+                            <form onsubmit="return false">
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>min</small></span>
+                                    <input id="min_cs" type="number" class="form-control" onchange="set_cs_range(this.form);" min="0" max="10" step="0.1" style="font-size:10px;">
+                                </div>
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>max</small></span>
+                                    <input id="max_cs" type="number" class="form-control" onchange="set_cs_range(this.form);" min="0" max="10" step="0.1" style="font-size:10px;">
+                                </div>
+                            </form>
                         </div>
                         <div class="col-1 card bg-secondary">
                             HP range
+                            <hr>
+                            <form onsubmit="return false">
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>min</small></span>
+                                    <input id="min_hp" type="number" class="form-control" onchange="set_hp_range(this.form);" min="0" max="10" step="0.1" style="font-size:10px;">
+                                </div>
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>max</small></span>
+                                    <input id="max_hp" type="number" class="form-control" onchange="set_hp_range(this.form);" min="0" max="10" step="0.1" style="font-size:10px;">
+                                </div>
+                            </form>
                         </div>
                         <div class="col-1 card bg-secondary">
                             BPM range
+                            <hr>
+                            <form onsubmit="return false">
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>min</small></span>
+                                    <input id="min_bpm" type="number" class="form-control" onchange="set_bpm_range(this.form);" min="0" step="0.1" style="font-size:10px;">
+                                </div>
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>max</small></span>
+                                    <input id="max_bpm" type="number" class="form-control" onchange="set_bpm_range(this.form);" min="-1" step="0.1" style="font-size:10px;">
+                                </div>
+                            </form>
                         </div>
                         <div class="col-1 card bg-secondary">
-                            Length range
+                            Time range
+                            <hr>
+                            <form onsubmit="return false">
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>min</small></span>
+                                    <input id="min_length" type="number" class="form-control" onchange="set_length_range(this.form);" min="0" step="0.1" style="font-size:10px;">
+                                </div>
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>max</small></span>
+                                    <input id="max_length" type="number" class="form-control" onchange="set_length_range(this.form);" min="-1" step="0.1" style="font-size:10px;">
+                                </div>
+                            </form>
                         </div>
                         <div class="col-1 card bg-secondary">
-                            Difficulty range
+                            Diff range
+                            <hr>
+                            <form onsubmit="return false">
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>min</small></span>
+                                    <input id="min_diff" type="number" class="form-control" onchange="set_diff_range(this.form);" min="0" step="0.1" style="font-size:10px;">
+                                </div>
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text" style="width: 40%"><small>max</small></span>
+                                    <input id="max_diff" type="number" class="form-control" onchange="set_diff_range(this.form);" min="-1" step="0.1" style="font-size:10px;">
+                                </div>
+                            </form>
                         </div>
                         <div class="col-1 card bg-secondary">
-                            Game Mode
+                            Mode
                             <hr>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-dark" disabled>
@@ -632,7 +709,7 @@
                             </div>
                         </div>
                         <div class="col-1 card bg-secondary">
-                            Scoring Type
+                            Score Type
                             <hr>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-dark" disabled>
@@ -1159,7 +1236,7 @@
                                                   </div>
                                                   <div class="form-check form-switch">
                                                       <input id="auto_open_switch" class="form-check-input" type="checkbox">
-                                                      Open beatmaps automatically
+                                                      Open beatmaps automatically after downloading
                                                   </div>
 
 <!--                                                  whitelists / blacklists-->
@@ -1221,7 +1298,7 @@
                                                       </div>
                                                   </div>
                                                   <hr>
-                                                  <div class="row text-center">
+                                                  <div class="row text-center mb-2">
                                                       <div class="col-6">
                                                           <div class="card bg-secondary">
                                                               <h6>Beatmap Creator Whitelist</h6>
@@ -1378,6 +1455,48 @@
                         app.welcome_message = buffer["channels"][app.channel]["welcome_message"];
                         app.current_user_profile = buffer["current_user_profile"];
                         app.auto_download = buffer["channels"][app.channel]["auto_download"];
+
+                        if (JSON.stringify(buffer["channels"][app.channel]["ar_range"]) !== JSON.stringify(app.ar_range)) {
+                            app.ar_range = buffer["channels"][app.channel]["ar_range"]
+                            document.getElementById("min_ar").value = app.ar_range[0];
+                            document.getElementById("max_ar").value = app.ar_range[1];
+                        }
+
+                        if (JSON.stringify(buffer["channels"][app.channel]["od_range"]) !== JSON.stringify(app.od_range)) {
+                            app.od_range = buffer["channels"][app.channel]["od_range"]
+                            document.getElementById("min_od").value = app.od_range[0];
+                            document.getElementById("max_od").value = app.od_range[1];
+                        }
+
+                        if (JSON.stringify(buffer["channels"][app.channel]["cs_range"]) !== JSON.stringify(app.cs_range)) {
+                            app.cs_range = buffer["channels"][app.channel]["cs_range"]
+                            document.getElementById("min_cs").value = app.cs_range[0];
+                            document.getElementById("max_cs").value = app.cs_range[1];
+                        }
+
+                        if (JSON.stringify(buffer["channels"][app.channel]["hp_range"]) !== JSON.stringify(app.hp_range)) {
+                            app.hp_range = buffer["channels"][app.channel]["hp_range"]
+                            document.getElementById("min_hp").value = app.hp_range[0];
+                            document.getElementById("max_hp").value = app.hp_range[1];
+                        }
+
+                        if (JSON.stringify(buffer["channels"][app.channel]["bpm_range"]) !== JSON.stringify(app.bpm_range)) {
+                            app.bpm_range = buffer["channels"][app.channel]["bpm_range"]
+                            document.getElementById("min_bpm").value = app.bpm_range[0];
+                            document.getElementById("max_bpm").value = app.bpm_range[1];
+                        }
+
+                        if (JSON.stringify(buffer["channels"][app.channel]["length_range"]) !== JSON.stringify(app.length_range)) {
+                            app.length_range = buffer["channels"][app.channel]["length_range"]
+                            document.getElementById("min_length").value = app.length_range[0];
+                            document.getElementById("max_length").value = app.length_range[1];
+                        }
+
+                        if (JSON.stringify(buffer["channels"][app.channel]["diff_range"]) !== JSON.stringify(app.diff_range)) {
+                            app.diff_range = buffer["channels"][app.channel]["diff_range"]
+                            document.getElementById("min_diff").value = app.diff_range[0];
+                            document.getElementById("max_diff").value = app.diff_range[1];
+                        }
                     }
                 } else {
                     if (app.channel !== "" && !app.channels.includes(app.channel)) {
@@ -1425,10 +1544,17 @@
             mod_select: [],
             map_status: [],
             map_status_select: [],
+            ar_range: [],
+            od_range: [],
+            cs_range: [],
+            hp_range: [],
+            bpm_range: [],
+            length_range: [],
+            diff_range: [],
             current_username: "",
             current_user_profile: {
                 "avatar_url": "",
-                "country_code": "",
+                "country_code": "gb",
                 "statistics": {
                     "level": {
                         "current": 0
@@ -1531,10 +1657,11 @@
             app.user_num = 20;
             sock.send(JSON.stringify({"command": "set_user_num", "user_num": app.user_num}));
             remove_active_channels()
-        }
-        app.channel = data.getAttribute("name");
-        document.getElementById(app.channel).classList.add("active");
-        sock.send(JSON.stringify({"command": "update"}));
+
+            app.channel = data.getAttribute("name");
+            document.getElementById(app.channel).classList.add("active");
+            sock.send(JSON.stringify({"command": "update"}));
+       }
     }
 
     function remove_active_channels() {
@@ -1882,6 +2009,69 @@
         };
         sock.send(JSON.stringify(payload));
         form.elements.password_input.value = "";
+    }
+
+    function set_ar_range(form) {
+        payload = {
+            "command": "set_ar_range",
+            "channel": app.channel,
+            "range": [form.elements.min_ar.value.trim(), form.elements.max_ar.value.trim()]
+        };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function set_od_range(form) {
+        payload = {
+            "command": "set_od_range",
+            "channel": app.channel,
+            "range": [form.elements.min_od.value.trim(), form.elements.max_od.value.trim()]
+        };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function set_cs_range(form) {
+        payload = {
+            "command": "set_cs_range",
+            "channel": app.channel,
+            "range": [form.elements.min_cs.value.trim(), form.elements.max_cs.value.trim()]
+        };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function set_hp_range(form) {
+        payload = {
+            "command": "set_hp_range",
+            "channel": app.channel,
+            "range": [form.elements.min_hp.value.trim(), form.elements.max_hp.value.trim()]
+        };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function set_bpm_range(form) {
+        payload = {
+            "command": "set_bpm_range",
+            "channel": app.channel,
+            "range": [form.elements.min_bpm.value.trim(), form.elements.max_bpm.value.trim()]
+        };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function set_length_range(form) {
+        payload = {
+            "command": "set_length_range",
+            "channel": app.channel,
+            "range": [form.elements.min_length.value.trim(), form.elements.max_length.value.trim()]
+        };
+        sock.send(JSON.stringify(payload));
+    }
+
+    function set_diff_range(form) {
+        payload = {
+            "command": "set_diff_range",
+            "channel": app.channel,
+            "range": [form.elements.min_diff.value.trim(), form.elements.max_diff.value.trim()]
+        };
+        sock.send(JSON.stringify(payload));
     }
 </script>
 

@@ -94,7 +94,7 @@ class Chimu:
             url = self.fetch_set_download_link(beatmapsetID, with_video=with_video)
             self.bot.log("-- Downloading beatmapset " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " to /" + path + " --")
             file = requests.get(url)
-            if file.status_code != 404:
+            if file.status_code < 400:
                 f = open(path + str(beatmapsetID) + ".osz", "wb")
                 f.write(file.content)
                 f.close()
@@ -104,7 +104,7 @@ class Chimu:
                     self.bot.log("-- Opened " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " --")
                     os.system(path + str(beatmapsetID) + ".osz")
             else:
-                self.bot.log("-- Failed to download beatmapset " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " --")
+                self.bot.log("-- Failed to download beatmapset " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " / request status code:" + str(file.status_code) + " --")
 
     # takes beatmap id instead of beatmap set id
     def download_beatmap(self, beatmapID, path="", with_video=False, auto_open=False, blocking=False):

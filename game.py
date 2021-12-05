@@ -418,6 +418,7 @@ class Game(Channel):
                     if self.__allow_unsubmitted and not beatmap:
                         beatmap = {"id": beatmapID, "url": "https://osu.ppy.sh/b/" + str(beatmapID)}
                         accept_beatmap = True
+                        self.send_message("Can't check attributes, the selected beatmap is unsubmitted! " + "[" + self._bot.chimu.fetch_download_link(beatmapID, False) + " BeatConnect.io download]")
                     else:
                         error = self.check_beatmap(beatmap)
                         if error:
@@ -434,6 +435,7 @@ class Game(Channel):
                 else:
                     if not beatmap:
                         beatmap = {"id": beatmapID, "url": "https://osu.ppy.sh/b/" + str(beatmapID)}
+                        self.send_message("The selected beatmap is unsubmitted! " + "[" + self._bot.chimu.fetch_download_link(beatmapID, False) + " BeatConnect.io download]")
                     accept_beatmap = True
 
             if accept_beatmap:
@@ -795,6 +797,10 @@ class Game(Channel):
 
     # sets the allowed difficulty range
     def set_diff_range(self, range):
+        if range[0] == "":
+            range[0] = self.__diff_range[0]
+        if range[1] == "":
+            range[1] = self.__diff_range[1]
         self.__diff_range = (float(range[0]), float(range[1]))
 
     # returns the allowed difficulty range
@@ -823,6 +829,10 @@ class Game(Channel):
 
     # sets the allowed approach rate range
     def set_ar_range(self, range):
+        if range[0] == "":
+            range[0] = self.__ar_range[0]
+        if range[1] == "":
+            range[1] = self.__ar_range[1]
         self.__ar_range = (float(range[0]), float(range[1]))
 
     # returns the allowed approach rate range
@@ -831,6 +841,10 @@ class Game(Channel):
 
     # sets the allowed overall difficulty range
     def set_od_range(self, range):
+        if range[0] == "":
+            range[0] = self.__od_range[0]
+        if range[1] == "":
+            range[1] = self.__od_range[1]
         self.__od_range = (float(range[0]), float(range[1]))
 
     # gets the allowed overall difficulty range
@@ -839,6 +853,10 @@ class Game(Channel):
 
     # sets the allowed circle size range
     def set_cs_range(self, range):
+        if range[0] == "":
+            range[0] = self.__cs_range[0]
+        if range[1] == "":
+            range[1] = self.__cs_range[1]
         self.__cs_range = (float(range[0]), float(range[1]))
 
     # gets the allowed circle size range
@@ -847,6 +865,10 @@ class Game(Channel):
 
     # sets the allowed hp range
     def set_hp_range(self, range):
+        if range[0] == "":
+            range[0] = self.__hp_range[0]
+        if range[1] == "":
+            range[1] = self.__hp_range[1]
         self.__hp_range = (float(range[0]), float(range[1]))
 
     # gets the allowed hp range
@@ -855,6 +877,10 @@ class Game(Channel):
 
     # sets the allowed bpm range
     def set_bpm_range(self, range):
+        if range[0] == "":
+            range[0] = self.__bpm_range[0]
+        if range[1] == "":
+            range[1] = self.__bpm_range[1]
         self.__bpm_range = (float(range[0]), float(range[1]))
 
     # returns the allowed bpm range
@@ -863,6 +889,10 @@ class Game(Channel):
 
     # sets the allowed beatmap length range
     def set_length_range(self, range):
+        if range[0] == "":
+            range[0] = self.__length_range[0]
+        if range[1] == "":
+            range[1] = self.__length_range[1]
         self.__length_range = (int(range[0]), int(range[1]))
 
     # returns the allowed beatmap length range
