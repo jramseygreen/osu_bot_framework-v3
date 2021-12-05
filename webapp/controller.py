@@ -221,7 +221,7 @@ class Controller:
             elif data["command"] == "set_length_range":
                 channel = self.bot.get_channel(data["channel"])
                 if channel and channel.is_game():
-                    channel.set_ar_range(data["range"])
+                    channel.set_length_range(data["range"])
             elif data["command"] == "set_diff_range":
                 channel = self.bot.get_channel(data["channel"])
                 if channel and channel.is_game():
