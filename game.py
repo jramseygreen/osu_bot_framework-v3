@@ -778,7 +778,7 @@ class Game(Channel):
     def change_beatmap(self, beatmapID):
         game_mode = ""
         if self.__game_mode != "any":
-            game_mode = GAME_ATTR[self.__game_mode]
+            game_mode = str(GAME_ATTR[self.__game_mode])
         self.send_message("!mp map " + str(beatmapID) + " " + game_mode)
 
     # getters and setters for limits and ranges
