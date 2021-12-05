@@ -350,7 +350,7 @@
                                 <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#broadcastsModal">Broadcasts</button>
                             </span>
 
-                                <!-- Modal -->
+                                <!-- edit title Modal -->
                             <div class="modal fade" id="editTitleModal" tabindex="-1" aria-labelledby="editTitleLabel" aria-hidden="true">
                               <div class="modal-dialog">
                                 <div class="modal-content text-dark">
@@ -412,7 +412,7 @@
                                   <tr v-for="broadcast in broadcasts">
                                       <td>{{broadcast.id}}</td>
                                       <td>{{broadcast.secs}}sec</td>
-                                      <td>{{broadcast.message}}</td>
+                                      <td>{{broadcast.message.replace(/ /g, "&nbsp;")}}</td>
                                       <td><button class="badge bg-danger badge-sm" @click="del_broadcast(broadcast.id);">X</button></td>
                                   </tr>
                                   </tbody>
