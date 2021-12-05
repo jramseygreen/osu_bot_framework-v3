@@ -766,7 +766,7 @@ class Game(Channel):
         self.__beatmap = beatmap
         game_mode = ""
         if self.__game_mode != "any":
-            game_mode = GAME_ATTR[self.__game_mode]
+            game_mode = str(GAME_ATTR[self.__game_mode])
         if beatmap:
             self.send_message("!mp map " + str(beatmap["id"]) + " " + game_mode)
         else:
