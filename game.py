@@ -495,6 +495,9 @@ class Game(Channel):
                 abort = True
             elif "beatmap" in match and self.__beatmap["id"] != match["beatmap"]["id"]:
                 abort = True
+            elif not self.__allow_unsubmitted and "beatmap" not in match:
+                abort = True
+                error = {"type": "unsubmitted", "message": "Only submitted beatmaps are allowed"}
 
             if abort:
                 # execute on_rule_break
