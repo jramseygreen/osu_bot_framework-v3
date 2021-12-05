@@ -166,7 +166,6 @@ class Chimu:
                 for q in queries:
                     beatmapsets += self.search(" ".join(q).strip(), **attributes)
             else:
-                attributes["offset"] = random.randint(0, 500)
                 beatmapsets = self.search(query, **attributes)
         else:
             beatmapsets = self.search(query, **attributes)
