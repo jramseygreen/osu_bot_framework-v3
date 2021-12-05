@@ -30,7 +30,6 @@ class CommonCommands:
             offset = 0
             if query == "":
                 self.channel.send_message("Searching for beatmap...")
-                offset = random.randint(0, 500)
             else:
                 self.channel.send_message("Searching for '" + query + "'...")
 
