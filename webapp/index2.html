@@ -865,13 +865,14 @@
                         <!--                    players-->
                         <div class="col-3">
                             <div class="card text-white bg-secondary">
-                                <h3 class="text-center mt-2">
-                                    <div v-if="channel.includes('mp_')">
+                                <div v-if="channel.includes('mp_')">
                                         <button class="card-header badge bg-light text-dark" data-bs-toggle="modal" data-bs-target="#sizeModal">{{total_users}}</button>
                                     </div>
                                     <div v-else>
                                         <span class="card-header badge bg-light text-dark">{{total_users}}</span>
                                     </div>
+                                <h3 class="text-center mt-2">
+
                                     Players
                                     <button v-show="channel.includes('mp_')" class="btn btn-sm btn-dark rounded-pill ms-4" onclick="document.getElementById('global_blacklist').checked = false;" data-bs-toggle="modal" data-bs-target="#playerBlacklistModal">blacklist</button>
                                 </h3>
@@ -895,7 +896,7 @@
                                                           {{size}}
                                                       </button>
                                                       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                                            <li v-for="(slot, index) in slots"><a class="dropdown-item" href="javascript:void(0);" @click="set_size(index + 1)">{{index + 1}}</a></li>
+                                                            <li v-for="(slot, index) in slots"><a class="dropdown-item" href="javascript:void(0);" @click="set_size(parseInt(index) + 1)" data-bs-dismiss="modal">{{parseInt(index) + 1}}</a></li>
                                                       </ul>
                                                 </div>
                                             </div>
