@@ -260,7 +260,7 @@ class Bot:
         return self.__broadcast_controller.get_broadcasts(channel)
 
     # makes a tournament lobby and returns the channel object
-    def make_room(self, title="game room", password="", size=16, beatmapID=22538, mods=["ANY"], game_mode="any", team_type="any", scoring_type="any", allow_convert=True):
+    def make_room(self, title="game room", password="", size=16, beatmapID=22538, mods=["ANY"], game_mode="any", team_type="any", scoring_type="any", allow_convert=True, logic_profile=""):
         self.__make_room_lock.acquire()
         self.__room_limit_reached = False
         self.send_personal_message("BanchoBot", "!mp make " + title)
@@ -282,8 +282,10 @@ class Bot:
         channel.set_scoring_type(scoring_type)
         if beatmapID != 22538:
             channel.change_beatmap(beatmapID)
-        channel.get_config_link()
+        if logic_profile:
+            channel.implement_logic_profile(logic_profile)
         self.send_personal_message(self.__username, self.__username + " a game room was created: [" + channel.get_invite_link() + " " + title + "]")
+        channel.get_config_link()
         return channel
 
     # uploads to paste2.org with passed description and content

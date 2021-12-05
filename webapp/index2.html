@@ -31,6 +31,7 @@
             background: #555;
         }
 
+        /* arrows for ranges */
         input[type=number]::-webkit-inner-spin-button {
             opacity: 1;
         }
@@ -185,17 +186,17 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('game_mode', 'any')">any</a></li>
+                                                           @click="make_room_dropdown('game_mode', 'any')">any</a></li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('game_mode', 'osu')">osu</a></li>
+                                                           @click="make_room_dropdown('game_mode', 'osu')">osu</a></li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('game_mode', 'taiko')">taiko</a>
+                                                           @click="make_room_dropdown('game_mode', 'taiko')">taiko</a>
                                                     </li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('game_mode', 'mania')">mania</a>
+                                                           @click="make_room_dropdown('game_mode', 'mania')">mania</a>
                                                     </li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('game_mode', 'fruits')">fruits</a>
+                                                           @click="make_room_dropdown('game_mode', 'fruits')">fruits</a>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -213,18 +214,18 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('team_type', 'any')">any</a></li>
+                                                           @click="make_room_dropdown('team_type', 'any')">any</a></li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('team_type', 'head-to-head')">head-to-head</a>
+                                                           @click="make_room_dropdown('team_type', 'head-to-head')">head-to-head</a>
                                                     </li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('team_type', 'tag-coop')">tag-coop</a>
+                                                           @click="make_room_dropdown('team_type', 'tag-coop')">tag-coop</a>
                                                     </li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('team_type', 'team-vs')">team-vs</a>
+                                                           @click="make_room_dropdown('team_type', 'team-vs')">team-vs</a>
                                                     </li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('team_type', 'tag-team-vs')">tag-team-vs</a>
+                                                           @click="make_room_dropdown('team_type', 'tag-team-vs')">tag-team-vs</a>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -242,24 +243,44 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('scoring_type', 'any')">any</a>
+                                                           @click="make_room_dropdown('scoring_type', 'any')">any</a>
                                                     </li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('scoring_type', 'score')">score</a>
+                                                           @click="make_room_dropdown('scoring_type', 'score')">score</a>
                                                     </li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('scoring_type', 'scorev2')">scorev2</a>
+                                                           @click="make_room_dropdown('scoring_type', 'scorev2')">scorev2</a>
                                                     </li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('scoring_type', 'accuracy')">accuracy</a>
+                                                           @click="make_room_dropdown('scoring_type', 'accuracy')">accuracy</a>
                                                     </li>
                                                     <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           onclick="make_room_dropdown('scoring_type', 'combo')">combo</a>
+                                                           @click="make_room_dropdown('scoring_type', 'combo')">combo</a>
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>
+                                        <div class="col">
+                                            <h5>LP</h5>
+                                            <div class="dropdown">
+                                              <button class="btn btn-secondary dropdown-toggle" type="button" id="logicProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                  {{make_room.logic_profile}}
+                                              </button>
+                                              <ul class="dropdown-menu" aria-labelledby="logicProfileDropdown">
+                                                  <li>
+                                                      <a class="dropdown-item" href="javascript:void(0);" @click="make_room_dropdown('logic_profile', '')">Clear Current Logic Profile</a>
+                                                  </li>
+                                                  <li>
+                                                      <hr class="dropdown-divider">
+                                                  </li>
+                                                  <li v-for="profile in logic_profiles">
+                                                      <a class="dropdown-item" href="javascript:void(0);" @click="make_room_dropdown('logic_profile', profile)">{{profile}}</a>
+                                                  </li>
+                                              </ul>
+                                            </div>
+                                        </div>
                                     </div>
+
                                 </div>
 
                                 <div class="modal-footer">
@@ -1449,9 +1470,9 @@
                 app.buffer = buffer;
                 app.channels = Object.keys(buffer["channels"]);
                 app.personal_messages = buffer["pm"];
+                app.logic_profiles = buffer["logic_profiles"];
                 if (app.channel !== "" && app.channels.includes(app.channel)) {
                     app.title = app.channel;
-                    app.logic_profiles = buffer["logic_profiles"];
                     app.logic_profile = buffer["channels"][app.channel]["logic_profile"];
                     app.slots = buffer["channels"][app.channel]["slots"];
                     app.messages = buffer["channels"][app.channel]["messages"];
@@ -1576,7 +1597,8 @@
             make_room: {
                 "game_mode": "any",
                 "scoring_type": "any",
-                "team_type": "any"
+                "team_type": "any",
+                "logic_profile": ""
             },
             game_mode: "",
             scoring_type: "",
@@ -1689,6 +1711,9 @@
                 };
                 sock.send(JSON.stringify(payload));
             },
+            make_room_dropdown: function (dropdown, option) {
+                this.make_room[dropdown] = option;
+            }
         }
     })
 
@@ -1764,20 +1789,18 @@
             "game_mode": app.make_room["game_mode"],
             "team_type": app.make_room["team_type"],
             "scoring_type": app.make_room["scoring_type"],
+            "logic_profile": app.make_room["logic_profile"]
         };
         form.reset();
         app.make_room["game_mode"] = "any";
         app.make_room["team_type"] = "any";
         app.make_room["scoring_type"] = "any";
-        if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
+        app.make_room["logic_profile"] = "";
+        if (/^[\u0000-\u007f]*$/.test(payload["title"]) && /^[\u0000-\u007f]*$/.test(payload["password"])) {
             sock.send(JSON.stringify(payload));
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
-    }
-
-    function make_room_dropdown(dropdown, option) {
-        app["make_room"][dropdown] = option;
     }
 
     function join_channel(form) {
