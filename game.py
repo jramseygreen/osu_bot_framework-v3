@@ -426,7 +426,10 @@ class Game(Channel):
                         error = self.check_beatmap(beatmap)
                         if error:
                             self.abort_start_timer()
-                            self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap","[" + beatmap["url"] + " selected beatmap]"))
+                            if beatmap:
+                                self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap","[" + beatmap["url"] + " selected beatmap]"))
+                            else:
+                                self.send_message("Rule violation: " + error["type"] + " - " + error["message"])
                             self.set_beatmap(self.__beatmap)
                             if self.__on_rule_violation_method:
                                 if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
