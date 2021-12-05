@@ -1,6 +1,5 @@
 import json
 import os
-from getpass import getpass
 
 from framework import Bot
 from config.startup import startup
@@ -15,8 +14,8 @@ if not config["password"] or config["password"] == "password":
     print("Please go to http://osu.ppy.sh/p/irc/ and generate your username and password!")
     while not config["password"] or config["password"] == "password":
         config["username"] = input("Enter your irc username: ")
-        password = getpass(prompt="Enter your irc password (hidden): ")
-        confirm = getpass(prompt="Enter your irc password again to confirm (hidden): ")
+        password = input("Enter your irc password: ")
+        confirm = input("Enter your irc password again to confirm: ")
         if confirm == password:
             config["password"] = password
         else:
