@@ -629,6 +629,67 @@
                                 </ul>
                             </div>
                         </div>
+
+                        <div class="col-1 card bg-secondary">
+                            Score Type
+                            <hr>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark" disabled>
+                                    {{scoring_type}}
+                                </button>
+                                <button type="button"
+                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_scoring_type('any')">any</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_scoring_type('score')">score</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_scoring_type('scorev2')">scorev2</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_scoring_type('accuracy')">accuracy</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_scoring_type('combo')">combo</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-1 card bg-secondary">
+                            Team Type
+                            <hr>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark" disabled>
+                                    {{team_type}}
+                                </button>
+                                <button type="button"
+                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_team_type('any')">any</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_team_type('head-to-head')">head-to-head</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_team_type('tag-coop')">tag-coop</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_team_type('team-vs')">team-vs</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);"
+                                           onclick="set_team_type('tag-team-vs')">tag-team-vs</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                         <div class="col-1 card bg-secondary">
                             Mods
                             <!-- mod select modal -->
@@ -766,66 +827,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-1 card bg-secondary">
-                            Score Type
-                            <hr>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-dark" disabled>
-                                    {{scoring_type}}
-                                </button>
-                                <button type="button"
-                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span class="visually-hidden">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                           onclick="set_scoring_type('any')">any</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                           onclick="set_scoring_type('score')">score</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                           onclick="set_scoring_type('scorev2')">scorev2</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                           onclick="set_scoring_type('accuracy')">accuracy</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                           onclick="set_scoring_type('combo')">combo</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-1 card bg-secondary">
-                            Team Type
-                            <hr>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-dark" disabled>
-                                    {{team_type}}
-                                </button>
-                                <button type="button"
-                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span class="visually-hidden">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                           onclick="set_team_type('any')">any</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                           onclick="set_team_type('head-to-head')">head-to-head</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                           onclick="set_team_type('tag-coop')">tag-coop</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                           onclick="set_team_type('team-vs')">team-vs</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                           onclick="set_team_type('tag-team-vs')">tag-team-vs</a>
-                                    </li>
-                                </ul>
                             </div>
                         </div>
                         <div class="col-1 card bg-secondary">
