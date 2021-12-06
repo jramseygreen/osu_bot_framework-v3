@@ -1854,7 +1854,6 @@
         app.make_room["logic_profile"] = "";
         app.make_room["invite_list"] = [];
         app.make_room["size"] = 16;
-        app.make_room["beatmapID"] = 22538;
         if (/^[\u0000-\u007f]*$/.test(payload["title"]) && /^[\u0000-\u007f]*$/.test(payload["password"])) {
             sock.send(JSON.stringify(payload));
         } else {
