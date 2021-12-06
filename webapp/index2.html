@@ -145,7 +145,7 @@
             <hr>
             <!-- make room -->
             <button id="make_room_button" type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
-                    data-bs-target="#makeRoom">
+                    data-bs-target="#makeRoom" onclick="app.make_room.invite_list = [app.bot_username]">
                 Make Room
             </button>
 
@@ -171,6 +171,7 @@
                                     <h5 class="text-dark">Password</h5>
                                     <input type="text" class="form-control" id="make_room_password">
                                 </div>
+                            </form>
                                 <div class="container mb-4">
                                     <div class="row text-center justify-content-center">
                                         <div class="card col-3">
@@ -282,17 +283,39 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    <hr>
+                                    <h5>Invite players</h5>
+                                    <div class="text-center" style="overflow-y: scroll; max-height: 20vh">
+                                        <table class="table table-secondary table-sm table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-11">Username</th>
+                                                    <th class="col-1 text-danger">🗑️</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="user in make_room.invite_list">
+                                                    <td>{{user}}</td>
+                                                    <td><button class="badge badge-sm bg-danger" @click="del_invite_list(user)">X</button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <form onsubmit="return false">
+                                        <div class="input-group">
+                                            <input id="invite_players_input" class="form-control" type="text" placeholder="username...">
+                                            <button class="btn btn-primary" onclick="add_invite_list(this.form);">+</button>
+                                        </div>
+                                    </form>
                                 </div>
 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close
                                     </button>
                                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                                            onclick="make_room(this.form)">Create
+                                            onclick="make_room(document.getElementById('make_room_form'))">Create
                                     </button>
                                 </div>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -1473,6 +1496,7 @@
                 app.channels = Object.keys(buffer["channels"]);
                 app.personal_messages = buffer["pm"];
                 app.logic_profiles = buffer["logic_profiles"];
+                app.bot_username = buffer["bot_username"];
                 if (app.channel !== "" && app.channels.includes(app.channel)) {
                     app.title = app.channel;
                     app.logic_profile = buffer["channels"][app.channel]["logic_profile"];
@@ -1600,7 +1624,8 @@
                 "game_mode": "any",
                 "scoring_type": "any",
                 "team_type": "any",
-                "logic_profile": ""
+                "logic_profile": "",
+                "invite_list": []
             },
             game_mode: "",
             scoring_type: "",
@@ -1646,6 +1671,7 @@
             welcome_message: "",
             autostart_timer: -1,
             auto_download: {},
+            bot_username: ""
         },
         methods: {
             set_current_username: function (username) {
@@ -1715,7 +1741,15 @@
             },
             make_room_dropdown: function (dropdown, option) {
                 this.make_room[dropdown] = option;
-            }
+            },
+            del_invite_list: function (username) {
+                for (i = 0; i < this.make_room.invite_list.length; i++) {
+                    if (this.make_room.invite_list[i] === username) {
+                        this.make_room.invite_list.splice(i, 1);
+                        break;
+                    }
+                }
+            },
         }
     })
 
@@ -1791,13 +1825,15 @@
             "game_mode": app.make_room["game_mode"],
             "team_type": app.make_room["team_type"],
             "scoring_type": app.make_room["scoring_type"],
-            "logic_profile": app.make_room["logic_profile"]
+            "logic_profile": app.make_room["logic_profile"],
+            "invite_list": app.make_room["invite_list"]
         };
         form.reset();
         app.make_room["game_mode"] = "any";
         app.make_room["team_type"] = "any";
         app.make_room["scoring_type"] = "any";
         app.make_room["logic_profile"] = "";
+        app.make_room["invite_list"] = [];
         if (/^[\u0000-\u007f]*$/.test(payload["title"]) && /^[\u0000-\u007f]*$/.test(payload["password"])) {
             sock.send(JSON.stringify(payload));
         } else {
@@ -2181,6 +2217,15 @@
             "range": [form.elements.min_diff.value.trim(), form.elements.max_diff.value.trim()]
         };
         sock.send(JSON.stringify(payload));
+    }
+
+    function add_invite_list(form) {
+        if (/^[\u0000-\u007f]*$/.test(form.elements.invite_players_input.value)) {
+            app.make_room.invite_list.push(form.elements.invite_players_input.value);
+            form.elements.invite_players_input.value = "";
+        } else {
+            alert("Sorry, special characters are not currently supported!");
+        }
     }
 </script>
 

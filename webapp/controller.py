@@ -78,7 +78,7 @@ class Controller:
                 if data["message"]:
                     self.bot.send_personal_message(data["channel"], data["message"])
             elif data["command"] == "make_room":
-                self.bot.make_room(title=data["title"], password=data["password"], game_mode=data["game_mode"], scoring_type=data["scoring_type"], team_type=data["team_type"], logic_profile=data["logic_profile"])
+                self.bot.make_room(title=data["title"], password=data["password"], game_mode=data["game_mode"], scoring_type=data["scoring_type"], team_type=data["team_type"], logic_profile=data["logic_profile"], invite_list=data["invite_list"])
             elif data["command"] == "join":
                 self.bot.join(data["channel"])
             elif data["command"] == "part":
@@ -298,6 +298,7 @@ class Controller:
             data["pm"] = self.bot.get_personal_message_log()
             data["logic_profiles"] = list(self.bot.get_logic_profiles().keys())
             data["current_user_profile"] = self.__current_user_profile
+            data["bot_username"] = self.bot.get_username()
             self.send_message(json.dumps(data))
         except:
             pass
