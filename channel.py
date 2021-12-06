@@ -70,6 +70,7 @@ class Channel:
             self._bot.log("-- on message method executed --")
 
     def send_message(self, message):
+        message = message.strip()
         self._bot.get_sock().sendall(("PRIVMSG " + self._channel + " :" + str(message) + "\n").encode())
         if len(self._message_log) == self._message_log_length:
             self._message_log = self._message_log[1:]

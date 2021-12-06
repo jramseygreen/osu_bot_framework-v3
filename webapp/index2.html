@@ -145,7 +145,7 @@
             <hr>
             <!-- make room -->
             <button id="make_room_button" type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
-                    data-bs-target="#makeRoom" onclick="app.make_room.invite_list = [app.bot_username]">
+                    data-bs-target="#makeRoom" onclick="app.make_room.invite_list = [app.bot_username];">
                 Make Room
             </button>
 
@@ -172,151 +172,164 @@
                                     <input type="text" class="form-control" id="make_room_password">
                                 </div>
                             </form>
-                                <div class="container mb-4">
-                                    <div class="row text-center justify-content-center">
-                                        <div class="card col-3">
-                                            <h5>Game Mode</h5>
-                                            <div class="btn-group mb-3">
-                                                <button type="button" class="btn btn-dark" disabled>
-                                                    {{make_room.game_mode}}
-                                                </button>
-                                                <button type="button"
-                                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <span class="visually-hidden">Toggle Dropdown</span>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('game_mode', 'any')">any</a></li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('game_mode', 'osu')">osu</a></li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('game_mode', 'taiko')">taiko</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('game_mode', 'mania')">mania</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('game_mode', 'fruits')">fruits</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="card col-3 mx-2">
-                                            <h5>Team Type</h5>
-                                            <div class="btn-group mb-3">
-                                                <button type="button" class="btn btn-dark" disabled>
-                                                    {{make_room.team_type}}
-                                                </button>
-                                                <button type="button"
-                                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <span class="visually-hidden">Toggle Dropdown</span>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('team_type', 'any')">any</a></li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('team_type', 'head-to-head')">head-to-head</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('team_type', 'tag-coop')">tag-coop</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('team_type', 'team-vs')">team-vs</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('team_type', 'tag-team-vs')">tag-team-vs</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="card col-3">
-                                            <h5>Scoring Type</h5>
-                                            <div class="btn-group mb-3">
-                                                <button type="button" class="btn btn-dark" disabled>
-                                                    {{make_room.scoring_type}}
-                                                </button>
-                                                <button type="button"
-                                                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <span class="visually-hidden">Toggle Dropdown</span>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('scoring_type', 'any')">any</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('scoring_type', 'score')">score</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('scoring_type', 'scorev2')">scorev2</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('scoring_type', 'accuracy')">accuracy</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0);"
-                                                           @click="make_room_dropdown('scoring_type', 'combo')">combo</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="col ms-2">
-                                            <div class="card mt-2">
-                                                <h5>LP</h5>
-                                                <div class="dropdown mb-2">
-                                                  <button class="btn btn-secondary dropdown-toggle" type="button" id="logicProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                                      {{make_room.logic_profile}}
-                                                  </button>
-                                                  <ul class="dropdown-menu" aria-labelledby="logicProfileDropdown">
-                                                      <li>
-                                                          <a class="dropdown-item" href="javascript:void(0);" @click="make_room_dropdown('logic_profile', '')">Clear Current Logic Profile</a>
-                                                      </li>
-                                                      <li>
-                                                          <hr class="dropdown-divider">
-                                                      </li>
-                                                      <li v-for="profile in logic_profiles">
-                                                          <a class="dropdown-item" href="javascript:void(0);" @click="make_room_dropdown('logic_profile', profile)">{{profile}}</a>
-                                                      </li>
-                                                  </ul>
-                                                </div>
-                                            </div>
+                            <div class="container mb-4">
+                                <div class="row text-center justify-content-center">
+                                    <div class="card col-3">
+                                        <h5>Game Mode</h5>
+                                        <div class="btn-group mb-3">
+                                            <button type="button" class="btn btn-dark" disabled>
+                                                {{make_room.game_mode}}
+                                            </button>
+                                            <button type="button"
+                                                    class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="visually-hidden">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('game_mode', 'any')">any</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('game_mode', 'osu')">osu</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('game_mode', 'taiko')">taiko</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('game_mode', 'mania')">mania</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('game_mode', 'fruits')">fruits</a>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
-
-                                </div>
-                                <hr>
-                                <h5>Invite players</h5>
-                                <div class="text-center" style="overflow-y: scroll; max-height: 20vh">
-                                    <table class="table table-secondary table-sm table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th class="col-11">Username</th>
-                                                <th class="col-1 text-danger">🗑️</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="user in make_room.invite_list">
-                                                <td>{{user}}</td>
-                                                <td><button class="badge badge-sm bg-danger" @click="del_invite_list(user)">X</button></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <form onsubmit="return false">
-                                    <div class="input-group">
-                                        <input id="invite_players_input" class="form-control" type="text" placeholder="username...">
-                                        <button class="btn btn-primary" onclick="add_invite_list(this.form);">+</button>
+                                    <div class="card col-3 mx-2">
+                                        <h5>Team Type</h5>
+                                        <div class="btn-group mb-3">
+                                            <button type="button" class="btn btn-dark" disabled>
+                                                {{make_room.team_type}}
+                                            </button>
+                                            <button type="button"
+                                                    class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="visually-hidden">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('team_type', 'any')">any</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('team_type', 'head-to-head')">head-to-head</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('team_type', 'tag-coop')">tag-coop</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('team_type', 'team-vs')">team-vs</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('team_type', 'tag-team-vs')">tag-team-vs</a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                </form>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close
-                                    </button>
-                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                                            onclick="make_room(document.getElementById('make_room_form'))">Create
-                                    </button>
+                                    <div class="card col-3">
+                                        <h5>Score Type</h5>
+                                        <div class="btn-group mb-3">
+                                            <button type="button" class="btn btn-dark" disabled>
+                                                {{make_room.scoring_type}}
+                                            </button>
+                                            <button type="button"
+                                                    class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="visually-hidden">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('scoring_type', 'any')">any</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('scoring_type', 'score')">score</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('scoring_type', 'scorev2')">scorev2</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('scoring_type', 'accuracy')">accuracy</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                       @click="make_room_dropdown('scoring_type', 'combo')">combo</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+                            <hr>
+                            <div class="input-group mb-4">
+                                <span class="input-group-text">Beatmap ID</span>
+                                <input type="text" class="form-control" :value="22538" placeholder="Beatmap ID applied upon creating the room..." onchange="app.make_room.beatmapID = this.value;">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text">Logic Profile</span>
+                                <div class="dropdown">
+                                      <button class="btn btn-secondary dropdown-toggle" type="button" id="logicProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                          {{make_room.logic_profile}}
+                                      </button>
+                                      <ul class="dropdown-menu" aria-labelledby="logicProfileDropdown">
+                                          <li>
+                                              <a class="dropdown-item" href="javascript:void(0);" @click="make_room_dropdown('logic_profile', '')">Clear Current Logic Profile</a>
+                                          </li>
+                                          <li>
+                                              <hr class="dropdown-divider">
+                                          </li>
+                                          <li v-for="profile in logic_profiles">
+                                              <a class="dropdown-item" href="javascript:void(0);" @click="make_room_dropdown('logic_profile', profile)">{{profile}}</a>
+                                          </li>
+                                      </ul>
+                                </div>
+                            </div>
+                            <div class="input-group mt-4">
+                                <span class="input-group-text">Room Size</span>
+                                <div class="dropdown dropup">
+                                  <button class="btn btn-secondary dropdown-toggle" type="button" id="room_size_dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                      {{make_room.size}}
+                                  </button>
+                                  <ul class="dropdown-menu" aria-labelledby="room_size_dropdown">
+                                    <li v-for="i in 16"><a class="dropdown-item" href="#" @click="make_room_dropdown('size', i)">{{i}}</a></li>
+                                  </ul>
+                                </div>
+                            </div>
+                            <hr>
+                            <h5>Invite Players</h5>
+                            <div class="text-center" style="overflow-y: scroll; max-height: 20vh">
+                                <table class="table table-secondary table-sm table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-11">Username</th>
+                                            <th class="col-1 text-danger">🗑️</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="user in make_room.invite_list">
+                                            <td>{{user}}</td>
+                                            <td><button class="badge badge-sm bg-danger" @click="del_invite_list(user)">X</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <form onsubmit="return false">
+                                <div class="input-group">
+                                    <input id="invite_players_input" class="form-control" type="text" placeholder="username...">
+                                    <button class="btn btn-primary" onclick="add_invite_list(this.form);">+</button>
+                                </div>
+                            </form>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close
+                                </button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                                        onclick="make_room(document.getElementById('make_room_form'))">Create
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -933,7 +946,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                       </div>
                                       <div class="modal-body">
-                                        <div class="row">F
+                                        <div class="row">
                                             <div class="col">
                                                 <h5>Select Size:</h5>
                                             </div>
@@ -943,7 +956,7 @@
                                                           {{size}}
                                                       </button>
                                                       <ul class="dropdown-menu bg-secondary" aria-labelledby="dropdownMenuButton2">
-                                                            <li v-for="(slot, index) in slots"><a class="dropdown-item text-light" href="javascript:void(0);" @click="set_size(parseInt(index) + 1)" data-bs-dismiss="modal">{{parseInt(index) + 1}}</a></li>
+                                                            <li v-for="i in 16"><a class="dropdown-item text-light" href="javascript:void(0);" @click="set_size(i)" data-bs-dismiss="modal">{{i}}</a></li>
                                                       </ul>
                                                 </div>
                                             </div>
@@ -1067,9 +1080,7 @@
                                                                         <h6>Play Count: {{current_user_profile.statistics.play_count}}</h6>
                                                                     </div>
                                                                 </div>
-
                                                             </h5>
-
                                                         </div>
                                                         <div class="modal-body text-center">
                                                             <div class="card border-0 bg-secondary">
@@ -1077,13 +1088,13 @@
                                                                     View Profile
                                                                 </button>
                                                             </div>
-                                                            <div class="card border-0 bg-secondary">
+                                                            <div v-show="users.includes(current_username)" class="card border-0 bg-secondary">
                                                                 <button class="btn btn-success mb-4"
                                                                         data-bs-dismiss="modal" onclick="set_host();">
                                                                     Transfer Host
                                                                 </button>
                                                             </div>
-                                                            <div class="card border-0 bg-secondary">
+                                                            <div v-show="users.includes(current_username)" class="card border-0 bg-secondary">
                                                                 <button class="btn btn-warning mb-4"
                                                                         data-bs-dismiss="modal" onclick="kick_user();">
                                                                     Kick Player
@@ -1629,7 +1640,9 @@
                 "scoring_type": "any",
                 "team_type": "any",
                 "logic_profile": "",
-                "invite_list": []
+                "invite_list": [],
+                "size": 16,
+                "beatmapID": 22538
             },
             game_mode: "",
             scoring_type: "",
@@ -1830,7 +1843,9 @@
             "team_type": app.make_room["team_type"],
             "scoring_type": app.make_room["scoring_type"],
             "logic_profile": app.make_room["logic_profile"],
-            "invite_list": app.make_room["invite_list"]
+            "invite_list": app.make_room["invite_list"],
+            "size": app.make_room["size"],
+            "beatmapID": app.make_room["beatmapID"]
         };
         form.reset();
         app.make_room["game_mode"] = "any";
@@ -1838,6 +1853,8 @@
         app.make_room["scoring_type"] = "any";
         app.make_room["logic_profile"] = "";
         app.make_room["invite_list"] = [];
+        app.make_room["size"] = 16;
+        app.make_room["beatmapID"] = 22538;
         if (/^[\u0000-\u007f]*$/.test(payload["title"]) && /^[\u0000-\u007f]*$/.test(payload["password"])) {
             sock.send(JSON.stringify(payload));
         } else {

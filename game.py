@@ -779,14 +779,9 @@ class Game(Channel):
         self.send_message("!mp settings")
 
     def set_beatmap(self, beatmap):
-        self.__beatmap = beatmap
-        game_mode = ""
-        if self.__game_mode != "any":
-            game_mode = str(GAME_ATTR[self.__game_mode])
         if beatmap:
-            self.send_message("!mp map " + str(beatmap["id"]) + " " + game_mode)
-        else:
-            self.send_message("!mp map 22538" + " " + game_mode)
+            self.__beatmap = beatmap
+            self.change_beatmap(beatmap["id"])
 
     def get_beatmap(self):
         return self.__beatmap
