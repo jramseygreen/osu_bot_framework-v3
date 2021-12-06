@@ -261,7 +261,7 @@ class Bot:
 
     # makes a tournament lobby and returns the channel object
     def make_room(self, title="game room", password="", size=16, beatmapID=22538, mods=["ANY"], game_mode="any", team_type="any", scoring_type="any", allow_convert=True, logic_profile="", invite_list=None):
-        if not invite_list:
+        if invite_list is None:
             invite_list = [self.__username]
         self.__make_room_lock.acquire()
         self.__room_limit_reached = False
