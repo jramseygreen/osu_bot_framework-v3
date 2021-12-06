@@ -913,7 +913,7 @@
                         <div class="col-3">
                             <div class="card text-white bg-secondary">
                                 <div v-if="channel.includes('mp_')">
-                                        <button class="card-header badge bg-light text-dark" data-bs-toggle="modal" data-bs-target="#sizeModal">{{total_users}}</button>
+                                        <button class="card-header badge bg-light text-dark" data-bs-toggle="modal" data-bs-target="#sizeModal" title="Change room size">{{total_users}}</button>
                                     </div>
                                     <div v-else>
                                         <span class="card-header badge bg-light text-dark">{{total_users}}</span>
@@ -933,7 +933,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                       </div>
                                       <div class="modal-body">
-                                        <div class="row">
+                                        <div class="row">F
                                             <div class="col">
                                                 <h5>Select Size:</h5>
                                             </div>
@@ -942,8 +942,8 @@
                                                       <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
                                                           {{size}}
                                                       </button>
-                                                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                                            <li v-for="(slot, index) in slots"><a class="dropdown-item" href="javascript:void(0);" @click="set_size(parseInt(index) + 1)" data-bs-dismiss="modal">{{parseInt(index) + 1}}</a></li>
+                                                      <ul class="dropdown-menu bg-secondary" aria-labelledby="dropdownMenuButton2">
+                                                            <li v-for="(slot, index) in slots"><a class="dropdown-item text-light" href="javascript:void(0);" @click="set_size(parseInt(index) + 1)" data-bs-dismiss="modal">{{parseInt(index) + 1}}</a></li>
                                                       </ul>
                                                 </div>
                                             </div>
