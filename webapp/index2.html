@@ -1498,7 +1498,7 @@
                 app.personal_messages = buffer["pm"];
                 app.logic_profiles = buffer["logic_profiles"];
                 app.bot_username = buffer["bot_username"];
-                if (app.make_room.includes("")) {
+                if (app.make_room.invite_list.includes("")) {
                     app.make_room.invite_list = [app.bot_username];
                 }
                 if (app.channel !== "" && app.channels.includes(app.channel)) {
