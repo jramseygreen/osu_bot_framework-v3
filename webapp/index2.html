@@ -2223,10 +2223,10 @@
     function add_invite_list(form) {
         if (/^[\u0000-\u007f]*$/.test(form.elements.invite_players_input.value)) {
             app.make_room.invite_list.push(form.elements.invite_players_input.value);
-            form.elements.invite_players_input.value = "";
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
+        form.elements.invite_players_input.value = "";
     }
 </script>
 
