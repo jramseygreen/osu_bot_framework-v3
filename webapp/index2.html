@@ -283,31 +283,32 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <hr>
-                                    <h5>Invite players</h5>
-                                    <div class="text-center" style="overflow-y: scroll; max-height: 20vh">
-                                        <table class="table table-secondary table-sm table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th class="col-11">Username</th>
-                                                    <th class="col-1 text-danger">🗑️</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="user in make_room.invite_list">
-                                                    <td>{{user}}</td>
-                                                    <td><button class="badge badge-sm bg-danger" @click="del_invite_list(user)">X</button></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <form onsubmit="return false">
-                                        <div class="input-group">
-                                            <input id="invite_players_input" class="form-control" type="text" placeholder="username...">
-                                            <button class="btn btn-primary" onclick="add_invite_list(this.form);">+</button>
-                                        </div>
-                                    </form>
+
                                 </div>
+                                <hr>
+                                <h5>Invite players</h5>
+                                <div class="text-center" style="overflow-y: scroll; max-height: 20vh">
+                                    <table class="table table-secondary table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-11">Username</th>
+                                                <th class="col-1 text-danger">🗑️</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="user in make_room.invite_list">
+                                                <td>{{user}}</td>
+                                                <td><button class="badge badge-sm bg-danger" @click="del_invite_list(user)">X</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <form onsubmit="return false">
+                                    <div class="input-group">
+                                        <input id="invite_players_input" class="form-control" type="text" placeholder="username...">
+                                        <button class="btn btn-primary" onclick="add_invite_list(this.form);">+</button>
+                                    </div>
+                                </form>
 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close
