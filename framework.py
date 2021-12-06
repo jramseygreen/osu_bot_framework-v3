@@ -19,11 +19,11 @@ import requests
 class Bot:
     def __init__(self, username="", password="", host="irc.ppy.sh", port=6667, server_ip="localhost", message_log_length=50, logging=False, verbose=False):
         self.__sock = Sock()
-        self.__controller = Controller(self, host=server_ip)
         self.__host = host
         self.__port = port
         self.__username = username
         self.__password = password
+        self.__controller = Controller(self, host=server_ip)
         self.__started = False
         self.__channels = {}
         self.__default_message_log_length = message_log_length
@@ -444,3 +444,6 @@ class Bot:
             self.part(channel)
         self.set_logging(False)
         os.abort()
+
+    def get_password(self):
+        return self.__password
