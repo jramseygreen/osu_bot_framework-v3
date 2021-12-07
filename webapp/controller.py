@@ -190,7 +190,6 @@ class Controller:
                     channel.set_autostart_timer(True, data["autostart_timer"])
                     channel.set_welcome_message(data["welcome_message"])
                     channel.auto_download(data["auto_download"], data["auto_download_path"], data["auto_open"], data["download_video"])
-                print(data["osu_directory"])
                 self.bot.set_osu_directory(data["osu_directory"])
                 self.bot.chimu.set_redownload(data["redownload_owned_beatmaps"])
             elif data["command"] == "set_password":
