@@ -2,6 +2,7 @@ import importlib
 import inspect
 import json
 import os
+import sys
 import threading
 import time
 from datetime import datetime
@@ -466,7 +467,7 @@ class Bot:
             self.part(channel)
         self.set_logging(False)
         self.__started = False
-        exit(0)
+        sys.exit(0)
 
     def get_password(self):
         return self.__password
