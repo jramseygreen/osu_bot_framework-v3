@@ -170,7 +170,7 @@ class Channel:
     def clear_commands(self):
         if self.is_game():
             self._commands = {"!info": {
-                "response": "built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3]",
+                "response": "built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3] | [https://osu.ppy.sh/u/qqzzy Developer]",
                 "description": "built with osu_bot_framework v3"}}
         else:
             self._commands = {}

@@ -194,7 +194,7 @@ class Bot:
                 command = winreg.QueryValueEx(key, '')[0]
                 path = shlex.split(command)[0].replace(os.sep + "osu!.exe", "", 1)
                 self.set_osu_directory(path)
-                self.log("-- Discovered osu directory: " + path + " --")
+                self.log("-- Discovered osu directory: '" + path + "' --")
         except:
             self.log("-- Could not discover osu directory! --")
 
