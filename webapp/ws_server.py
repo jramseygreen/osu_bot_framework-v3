@@ -94,14 +94,18 @@ class ws_server:
 
     def listen(self, running=False):
         if not running:
-            threading.Thread(target=self.listen, args=(True,)).start()
+            x = threading.Thread(target=self.listen, args=(True,))
+            x.setDaemon(True)
+            x.start()
         else:
             self.__sock.bind((self.__host, self.__port))
             self.__sock.listen()
             while self.__running:
                 conn, addr = self.__sock.accept()
                 self.__handshake(conn)
-                threading.Thread(target=self.__client_thread, args=(conn,)).start()
+                x = threading.Thread(target=self.__client_thread, args=(conn,))
+                x.setDaemon(True)
+                x.start()
 
     def send(self, conn, message):
         conn.send(self.__ws_encode(message))

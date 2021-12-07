@@ -94,12 +94,15 @@ class Game(Channel):
                         team = "red"
                     if self.__on_team_addition_method:
                         argnum = len(str(inspect.signature(self.__on_team_addition_method)).strip("()").split(", "))
+                        x = None
                         if argnum == 2:
-                            threading.Thread(target=self.__on_team_addition_method, args=(username, team,)).start()
+                            x = threading.Thread(target=self.__on_team_addition_method, args=(username, team,))
                         elif str(inspect.signature(self.__on_team_addition_method)).strip("()").split(", ") != [""]:
-                            threading.Thread(target=self.__on_team_addition_method, args=(username,)).start()
+                            x = threading.Thread(target=self.__on_team_addition_method, args=(username,))
                         else:
-                            threading.Thread(target=self.__on_team_addition_method).start()
+                            x = threading.Thread(target=self.__on_team_addition_method)
+                        x.setDaemon(True)
+                        x.start()
                         self._bot.log("-- on team addition method executed --")
                 else:
                     self.clear_teams()
@@ -120,12 +123,15 @@ class Game(Channel):
                 self.set_slot(slot, {"username": username, "team": team, "score": score})
                 if self.__on_slot_change_method:
                     argnum = len(str(inspect.signature(self.__on_slot_change_method)).strip("()").split(", "))
+                    x = None
                     if argnum == 2:
-                        threading.Thread(target=self.__on_slot_change_method, args=(username, slot,)).start()
+                        x = threading.Thread(target=self.__on_slot_change_method, args=(username, slot,))
                     elif str(inspect.signature(self.__on_slot_change_method)).strip("()").split(", ") != [""]:
-                        threading.Thread(target=self.__on_slot_change_method, args=(username,)).start()
+                        x = threading.Thread(target=self.__on_slot_change_method, args=(username,))
                     else:
-                        threading.Thread(target=self.__on_slot_change_method).start()
+                        x = threading.Thread(target=self.__on_slot_change_method)
+                    x.setDaemon(True)
+                    x.start()
                     self._bot.log("-- on slot change method executed --")
 
             elif "changed to Blue" in message["content"]:
@@ -135,12 +141,15 @@ class Game(Channel):
                 self.set_slot(slot, {"username": username, "team": "blue", "score": score})
                 if self.__on_team_change_method:
                     argnum = len(str(inspect.signature(self.__on_team_change_method)).strip("()").split(", "))
+                    x = None
                     if argnum == 2:
-                        threading.Thread(target=self.__on_team_change_method, args=(username, "blue",)).start()
+                        x = threading.Thread(target=self.__on_team_change_method, args=(username, "blue",))
                     elif str(inspect.signature(self.__on_team_change_method)).strip("()").split(", ") != [""]:
-                        threading.Thread(target=self.__on_team_change_method, args=(username,)).start()
+                        x = threading.Thread(target=self.__on_team_change_method, args=(username,))
                     else:
-                        threading.Thread(target=self.__on_team_change_method).start()
+                        x = threading.Thread(target=self.__on_team_change_method)
+                    x.setDaemon(True)
+                    x.start()
                     self._bot.log("-- on team change method executed --")
 
             elif "changed to Red" in message["content"]:
@@ -150,12 +159,15 @@ class Game(Channel):
                 self.set_slot(slot, {"username": username, "team": "red", "score": score})
                 if self.__on_team_change_method:
                     argnum = len(str(inspect.signature(self.__on_team_change_method)).strip("()").split(", "))
+                    x = None
                     if argnum == 2:
-                        threading.Thread(target=self.__on_team_change_method, args=(username, "red",)).start()
+                        x = threading.Thread(target=self.__on_team_change_method, args=(username, "red",))
                     elif str(inspect.signature(self.__on_team_change_method)).strip("()").split(", ") != [""]:
-                        threading.Thread(target=self.__on_team_change_method, args=(username,)).start()
+                        x = threading.Thread(target=self.__on_team_change_method, args=(username,))
                     else:
-                        threading.Thread(target=self.__on_team_change_method).start()
+                        x = threading.Thread(target=self.__on_team_change_method)
+                    x.setDaemon(True)
+                    x.start()
                     self._bot.log("-- on team change method executed --")
             elif "became the host" in message["content"]:
                 self.__set_host(message["content"].replace(" became the host.", ""))
@@ -167,7 +179,9 @@ class Game(Channel):
                 self.__fetch_scores()
                 self.__maintain_attributes()
                 if self.__on_match_finish_method:
-                    threading.Thread(target=self.__on_match_finish_method).start()
+                    x = threading.Thread(target=self.__on_match_finish_method)
+                    x.setDaemon(True)
+                    x.start()
                     self._bot.log("-- on match finish method executed --")
             elif "Aborted the match" == message["content"]:
                 self.__in_progress = False
@@ -183,20 +197,27 @@ class Game(Channel):
             elif "Host is changing map..." == message["content"]:
                 self.abort_start_timer()
                 if self.__on_changing_beatmap_method:
-                    threading.Thread(target=self.__on_changing_beatmap_method).start()
+                    x = threading.Thread(target=self.__on_changing_beatmap_method)
+                    x.setDaemon(True)
+                    x.start()
                     self._bot.log("-- on changing beatmap method executed --")
             elif "All players are ready" == message["content"]:
                 if self.__on_all_players_ready_method:
-                    threading.Thread(target=self.__on_all_players_ready_method).start()
+                    x = threading.Thread(target=self.__on_all_players_ready_method)
+                    x.setDaemon(True)
+                    x.start()
                     self._bot.log("-- on all players ready method executed --")
                 if self.__start_on_players_ready:
                     self.start_match()
             elif "Cleared match host" == message["content"]:
                 if self.__on_clear_host_method:
+                    x = None
                     if str(inspect.signature(self.__on_clear_host_method)).strip("()").split(", ") != [""]:
-                        threading.Thread(target=self.__on_clear_host_method, args=(self.__host,)).start()
+                        x = threading.Thread(target=self.__on_clear_host_method, args=(self.__host,))
                     else:
-                        threading.Thread(target=self.__on_clear_host_method).start()
+                        x = threading.Thread(target=self.__on_clear_host_method)
+                    x.setDaemon(True)
+                    x.start()
                     self._bot.log("-- on clear host method executed --")
                 self.__host = ""
             elif "Room name updated to " in message["content"]:
@@ -261,7 +282,9 @@ class Game(Channel):
                         self.__size = int(args[0])
                 elif command == "!mp abort" and self.in_progress():
                     if self.__on_match_abort_method:
-                        threading.Thread(target=self.__on_match_abort_method).start()
+                        x = threading.Thread(target=self.__on_match_abort_method)
+                        x.setDaemon(True)
+                        x.start()
                         self._bot.log("-- on match abort method executed --")
 
         self.__execute_commands(message)
@@ -270,10 +293,13 @@ class Game(Channel):
         for command in self._commands:
             if not message["content"].replace(command, "") or message["content"].replace(command, "")[0] == " ":
                 if callable(self._commands[command]["response"]):
+                    x = None
                     if str(inspect.signature(self._commands[command]["response"])).strip("()").split(", ") != [""]:
-                        threading.Thread(target=self._commands[command]["response"], args=(message,)).start()
+                        x = threading.Thread(target=self._commands[command]["response"], args=(message,))
                     else:
-                        threading.Thread(target=self._commands[command]["response"]).start()
+                        x = threading.Thread(target=self._commands[command]["response"])
+                    x.setDaemon(True)
+                    x.start()
                 else:
                     self.send_message(str(self._commands[command]["response"]))
                 self._bot.log("-- Command '" + command + "' Executed --")
@@ -404,7 +430,9 @@ class Game(Channel):
 
     def __check_beatmap_attributes(self, beatmapID, running=False):
         if not running:
-            threading.Thread(target=self.__check_beatmap_attributes, args=(beatmapID, True,)).start()
+            x = threading.Thread(target=self.__check_beatmap_attributes, args=(beatmapID, True,))
+            x.setDaemon(True)
+            x.start()
         else:
             self._bot.log("-- Beatmap checker started --")
             beatmapID = int(beatmapID)
@@ -433,10 +461,13 @@ class Game(Channel):
                                 self.send_message("Rule violation: " + error["type"] + " - " + error["message"])
                             self.set_beatmap(self.__beatmap)
                             if self.__on_rule_violation_method:
+                                x = None
                                 if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
-                                    threading.Thread(target=self.__on_rule_violation_method, args=(error,)).start()
+                                    x = threading.Thread(target=self.__on_rule_violation_method, args=(error,))
                                 else:
-                                    threading.Thread(target=self.__on_rule_violation_method).start()
+                                    x = threading.Thread(target=self.__on_rule_violation_method)
+                                x.setDaemon(True)
+                                x.start()
                                 self._bot.log("-- on rule violation method executed --")
                         else:
                             accept_beatmap = True
@@ -451,12 +482,15 @@ class Game(Channel):
                 self.__beatmap = beatmap
                 if self.__on_beatmap_change_method:
                     argnum = len(str(inspect.signature(self.__on_beatmap_change_method)).strip("()").split(", "))
+                    x = None
                     if argnum == 2:
-                        threading.Thread(target=self.__on_beatmap_change_method, args=(old_beatmap, beatmap,)).start()
+                        x = threading.Thread(target=self.__on_beatmap_change_method, args=(old_beatmap, beatmap,))
                     elif str(inspect.signature(self.__on_beatmap_change_method)).strip("()").split(", ") != [""]:
-                        threading.Thread(target=self.__on_beatmap_change_method, args=(beatmap,)).start()
+                        x = threading.Thread(target=self.__on_beatmap_change_method, args=(beatmap,))
                     else:
-                        threading.Thread(target=self.__on_beatmap_change_method).start()
+                        x = threading.Thread(target=self.__on_beatmap_change_method)
+                    x.setDaemon(True)
+                    x.start()
                     self._bot.log("-- on beatmap change method executed --")
 
                 if old_beatmap != beatmap:
@@ -468,7 +502,9 @@ class Game(Channel):
 
     def __check_attributes(self, running=False):
         if not running:
-            threading.Thread(target=self.__check_attributes, args=(True,)).start()
+            x = threading.Thread(target=self.__check_attributes, args=(True,))
+            x.setDaemon(True)
+            x.start()
         else:
             self._bot.log("-- Attribute checker started --")
             self.__match_history = self.fetch_match_history()
@@ -516,15 +552,20 @@ class Game(Channel):
                 self.set_mods(self.__mods)
                 self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap", "[" + self.__beatmap["url"] + " selected beatmap]"))
                 if self.__on_rule_violation_method:
+                    x = None
                     if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
-                        threading.Thread(target=self.__on_rule_violation_method, args=(error,)).start()
+                        x = threading.Thread(target=self.__on_rule_violation_method, args=(error,))
                     else:
-                        threading.Thread(target=self.__on_rule_violation_method).start()
+                        x = threading.Thread(target=self.__on_rule_violation_method)
+                    x.setDaemon(True)
+                    x.start()
                     self._bot.log("-- on rule violation method executed --")
             else:
                 self.__in_progress = True
                 if self.__on_match_start_method:
-                    threading.Thread(target=self.__on_match_start_method).start()
+                    x = threading.Thread(target=self.__on_match_start_method)
+                    x.setDaemon(True)
+                    x.start()
                     self._bot.log("-- on match start method executed --")
                 if "team" not in match["team_type"]:
                     self.clear_teams()
@@ -571,7 +612,9 @@ class Game(Channel):
         self.send_message("!mp abort")
         self.__maintain_attributes()
         if self.__on_match_abort_method:
-            threading.Thread(target=self.__on_match_abort_method).start()
+            x = threading.Thread(target=self.__on_match_abort_method)
+            x.setDaemon(True)
+            x.start()
             self._bot.log("-- on match abort method executed --")
 
     def __maintain_attributes(self):
@@ -584,7 +627,9 @@ class Game(Channel):
 
     def start_match(self, secs=0, running=False):
         if not running:
-            threading.Thread(target=self.start_match, args=(secs, True,)).start()
+            x = threading.Thread(target=self.start_match, args=(secs, True,))
+            x.setDaemon(True)
+            x.start()
         else:
             self.__start_timer = False
             secs = int(secs)
@@ -717,12 +762,15 @@ class Game(Channel):
         self.__host = username
         if self.__on_host_change_method:
             argnum = len(str(inspect.signature(self.__on_host_change_method)).strip("()").split(", "))
+            x = None
             if argnum == 2:
-                threading.Thread(target=self.__on_host_change_method, args=(old_host, username,)).start()
+                x = threading.Thread(target=self.__on_host_change_method, args=(old_host, username,))
             elif str(inspect.signature(self.__on_host_change_method)).strip("()").split(", ") != [""]:
-                threading.Thread(target=self.__on_host_change_method, args=(username,)).start()
+                x = threading.Thread(target=self.__on_host_change_method, args=(username,))
             else:
-                threading.Thread(target=self.__on_host_change_method).start()
+                x = threading.Thread(target=self.__on_host_change_method)
+            x.setDaemon(True)
+            x.start()
             self._bot.log("-- on host change method executed --")
 
     def set_host(self, username):

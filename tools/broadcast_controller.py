@@ -62,7 +62,9 @@ class BroadcastController:
     # send broadcast messages on threads
     def __start_broadcast(self, broadcast, running=False):
         if not running:
-            threading.Thread(target=self.__start_broadcast, args=(broadcast, True,)).start()
+            x = threading.Thread(target=self.__start_broadcast, args=(broadcast, True,))
+            x.setDaemon(True)
+            x.start()
         else:
             # end condition
             while self.get_broadcast(broadcast["id"]):

@@ -37,7 +37,9 @@ class Vote:
 
     def stop(self):
         self.is_in_progress = False
-        threading.Thread(target=self.__cooldown_timer).start()
+        x = threading.Thread(target=self.__cooldown_timer)
+        x.setDaemon(True)
+        x.start()
 
     def __cooldown_timer(self):
         self.cooldown = True
@@ -50,10 +52,13 @@ class Vote:
 
     def __trigger(self):
         if self.get_ballot_number() >= len(self.channel.get_users()) or (self.results and any([list(self.results.values()).count(x) >= self.threshold for x in set(self.results.values())])):
+            x = None
             if str(inspect.signature(self.method)).strip("()").split(", ") != [""]:
-                threading.Thread(target=self.method, args=(self,)).start()
+                x = threading.Thread(target=self.method, args=(self,))
             else:
-                threading.Thread(target=self.method).start()
+                x = threading.Thread(target=self.method)
+            x.setDaemon(True)
+            x.start()
             self.stop()
 
     def cast_ballot(self, username, choice=""):
@@ -123,12 +128,15 @@ class Vote:
 
         if self.__on_join_method:
             argnum = len(str(inspect.signature(self.__on_join_method)).strip("()").split(", "))
+            x = None
             if argnum == 2:
-                threading.Thread(target=self.__on_join_method, args=(username, slot,)).start()
+                x = threading.Thread(target=self.__on_join_method, args=(username, slot,))
             elif str(inspect.signature(self.__on_join_method)).strip("()").split(", ") != [""]:
-                threading.Thread(target=self.__on_join_method, args=(username,)).start()
+                x = threading.Thread(target=self.__on_join_method, args=(username,))
             else:
-                threading.Thread(target=self.__on_join_method).start()
+                x = threading.Thread(target=self.__on_join_method)
+            x.setDaemon(True)
+            x.start()
 
     def __on_part(self, username, slot):
         if self.is_in_progress:
@@ -140,9 +148,12 @@ class Vote:
 
         if self.__on_part_method:
             argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
+            x = None
             if argnum == 2:
-                threading.Thread(target=self.__on_part_method, args=(username, slot,)).start()
+                x = threading.Thread(target=self.__on_part_method, args=(username, slot,))
             elif str(inspect.signature(self.__on_part_method)).strip("()").split(", ") != [""]:
-                threading.Thread(target=self.__on_part_method, args=(username,)).start()
+                x = threading.Thread(target=self.__on_part_method, args=(username,))
             else:
-                threading.Thread(target=self.__on_part_method).start()
+                x = threading.Thread(target=self.__on_part_method)
+            x.setDaemon(True)
+            x.start()

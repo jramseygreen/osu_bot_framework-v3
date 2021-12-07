@@ -33,12 +33,15 @@ class Channel:
                 if self.is_game():
                     slot = self.get_slot_num(username)
                 argnum = len(str(inspect.signature(self.__on_join_method)).strip("()").split(", "))
+                x = None
                 if argnum == 2:
-                    threading.Thread(target=self.__on_join_method, args=(username, slot,)).start()
+                    x = threading.Thread(target=self.__on_join_method, args=(username, slot,))
                 elif str(inspect.signature(self.__on_join_method)).strip("()").split(", ") != [""]:
-                    threading.Thread(target=self.__on_join_method, args=(username,)).start()
+                    x = threading.Thread(target=self.__on_join_method, args=(username,))
                 else:
-                    threading.Thread(target=self.__on_join_method).start()
+                    x = threading.Thread(target=self.__on_join_method)
+                x.setDaemon(True)
+                x.start()
                 self._bot.log("-- on join method executed --")
 
     def del_user(self, username):
@@ -50,12 +53,15 @@ class Channel:
             self._bot.log("-- Removed user: " + username + " from: " + self._channel + " --")
             if self.__on_part_method:
                 argnum = len(str(inspect.signature(self.__on_part_method)).strip("()").split(", "))
+                x = None
                 if argnum == 2:
-                    threading.Thread(target=self.__on_part_method, args=(username, slot,)).start()
+                    x = threading.Thread(target=self.__on_part_method, args=(username, slot,))
                 elif str(inspect.signature(self.__on_part_method)).strip("()").split(", ") != [""]:
-                    threading.Thread(target=self.__on_part_method, args=(username,)).start()
+                    x = threading.Thread(target=self.__on_part_method, args=(username,))
                 else:
-                    threading.Thread(target=self.__on_part_method).start()
+                    x = threading.Thread(target=self.__on_part_method)
+                x.setDaemon(True)
+                x.start()
                 self._bot.log("-- on part method executed --")
 
     def process_message(self, message):
@@ -63,10 +69,13 @@ class Channel:
             self._message_log = self._message_log[1:]
         self._message_log.append(message)
         if self.__on_message_method:
+            x = None
             if str(inspect.signature(self.__on_message_method)).strip("()").split(", ") != [""]:
-                threading.Thread(target=self.__on_message_method, args=(message,)).start()
+                x = threading.Thread(target=self.__on_message_method, args=(message,))
             else:
-                threading.Thread(target=self.__on_message_method).start()
+                x = threading.Thread(target=self.__on_message_method)
+            x.setDaemon(True)
+            x.start()
             self._bot.log("-- on message method executed --")
 
     def send_message(self, message):

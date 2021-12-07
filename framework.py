@@ -55,7 +55,7 @@ class Bot:
             self.__started = True
             buffer = ""
             # end condition
-            while True:
+            while self.__started:
                 # add to the buffer every loop
                 data = self.__sock.get_socket().recv(2048)
                 try:
@@ -95,7 +95,9 @@ class Bot:
                             if channel in self.__channels:
                                 if self.__channels[channel].is_game():
                                     if self.__channels[channel].get_logic()["on_room_close"]:
-                                        threading.Thread(target=self.__channels[channel].get_logic()["on_room_close"]).start()
+                                        x = threading.Thread(target=self.__channels[channel].get_logic()["on_room_close"])
+                                        x.setDaemon(True)
+                                        x.start()
                                     del self.__channels[channel]
                                 elif self.__channels[channel].has_user(username):
                                     self.__channels[channel].del_user(username)
@@ -121,15 +123,21 @@ class Bot:
                                 channels = self.__channels.copy()
                                 for channel in channels:
                                     if channels[channel].get_on_personal_message_method():
+                                        x = None
                                         if str(inspect.signature(channels[channel].get_on_personal_message_method())).strip("()").split(", ") != [""]:
-                                            threading.Thread(target=channels[channel].get_on_personal_message_method(), args=(message,)).start()
+                                            x = threading.Thread(target=channels[channel].get_on_personal_message_method(), args=(message,))
                                         else:
-                                            threading.Thread(target=channels[channel].get_on_personal_message_method()).start()
+                                            x = threading.Thread(target=channels[channel].get_on_personal_message_method())
+                                        x.setDaemon(True)
+                                        x.start()
                                 if self.__on_personal_message_method:
+                                    x = None
                                     if str(inspect.signature(self.__on_personal_message_method)).strip("()").split(", ") != [""]:
-                                        threading.Thread(target=self.__on_personal_message_method, args=(message,)).start()
+                                        x = threading.Thread(target=self.__on_personal_message_method, args=(message,))
                                     else:
-                                        threading.Thread(target=self.__on_personal_message_method).start()
+                                        x = threading.Thread(target=self.__on_personal_message_method)
+                                    x.setDaemon(True)
+                                    x.start()
                                     self.log("-- on personal message method executed --")
                     # functional information
                     else:
@@ -457,7 +465,7 @@ class Bot:
         for channel in self.__channels.copy():
             self.part(channel)
         self.set_logging(False)
-        os.abort()
+        self.__started = False
 
     def get_password(self):
         return self.__password

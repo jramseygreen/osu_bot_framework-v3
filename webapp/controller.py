@@ -72,7 +72,9 @@ class Controller:
                                         channel._size = int(args[0])
                                 elif command == "!abort" and channel.in_progress():
                                     if channel.get_logic()["on_match_abort"]:
-                                        threading.Thread(target=channel.get_logic()["on_match_abort"]).start()
+                                        x = threading.Thread(target=channel.get_logic()["on_match_abort"])
+                                        x.setDaemon(True)
+                                        x.start()
                                         self.bot.log("-- on match abort method executed --")
             elif data["command"] == "personal_message":
                 if data["message"]:
@@ -243,7 +245,9 @@ class Controller:
 
     def start(self, running=False):
         if not running:
-            threading.Thread(target=self.start, args=(True,)).start()
+            x = threading.Thread(target=self.start, args=(True,))
+            x.setDaemon(True)
+            x.start()
         else:
             # start websocket server
             self.__ws.listen()
@@ -310,7 +314,9 @@ class Controller:
 
     def __update_loop(self, running=False):
         if not running:
-            threading.Thread(target=self.__update_loop, args=(True,)).start()
+            x = threading.Thread(target=self.__update_loop, args=(True,))
+            x.setDaemon(True)
+            x.start()
         else:
             while True:
                 time.sleep(1)
