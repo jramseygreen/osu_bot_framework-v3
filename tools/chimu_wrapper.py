@@ -90,12 +90,13 @@ class Chimu:
             x.setDaemon(True)
             x.start()
         else:
-            if not self.redownload and self.songs_directory:
+            if not self.redownload:
                 try:
-                    for item in os.listdir(self.songs_directory):
-                        if str(beatmapsetID) in item:
-                            self.bot.log("-- Beatmapset " + str(beatmapsetID) + " already owned, not downloading --")
-                            return
+                    if self.songs_directory:
+                        for item in os.listdir(self.songs_directory):
+                            if str(beatmapsetID) in item:
+                                self.bot.log("-- Beatmapset " + str(beatmapsetID) + " already owned, not downloading --")
+                                return
                     for item in os.listdir(path):
                         if str(beatmapsetID) in item and ".osz" in item:
                             self.bot.log("-- Beatmapset " + str(beatmapsetID) + " already owned, not downloading --")
