@@ -1135,7 +1135,9 @@
                                                 <tr v-for="message in messages">
                                                     <td class="col-12">
                                                         <span v-if="message.username === 'BanchoBot'" :message="message" class="badge bg-secondary text-danger">{{message.username}}</span>
-                                                        <span v-else class="badge bg-secondary">{{message.username}}</span>
+                                                        <span v-else class="badge bg-secondary">{{message.username}}
+                                                            <span v-show="message.username === host.replace(/ /g, '_')" :message="message" class="badge bg-dark text-warning" disabled>♔</span>
+                                                        </span>
                                                         <p class="ms-1">{{message.content.replace(/ /g, "&nbsp;")}}</p>
                                                     </td>
                                                 </tr>
