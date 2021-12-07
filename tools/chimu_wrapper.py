@@ -91,13 +91,16 @@ class Chimu:
             x.start()
         else:
             if not self.redownload and self.songs_directory:
-                for item in os.listdir(self.songs_directory):
-                    if str(beatmapsetID) in item:
-                        self.bot.log("-- Beatmapset " + str(beatmapsetID) + " already owned, not downloading --")
-                        return
+                try:
+                    for item in os.listdir(self.songs_directory):
+                        if str(beatmapsetID) in item:
+                            self.bot.log("-- Beatmapset " + str(beatmapsetID) + " already owned, not downloading --")
+                            return
+                except:
+                    pass
 
             path = path.replace("/", os.sep).replace("\\", os.sep)
-            if path != "" and path[-1] != os.sep and path[-1] != "/":
+            if path and path[-1] != os.sep and path[-1] != "/":
                 path = path + os.sep
             url = self.fetch_set_download_link(beatmapsetID, with_video=with_video)
             self.bot.log("-- Downloading beatmapset " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " to /" + path + " --")

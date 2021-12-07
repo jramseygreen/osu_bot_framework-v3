@@ -463,11 +463,16 @@ class Bot:
         return self.__password
 
     def set_osu_directory(self, path):
-        path = path.replace("/", os.sep).replace("\\", os.sep)
-        if path[-1] == os.sep:
-            path = path[:-1]
+        if path:
+            path = path.replace("/", os.sep).replace("\\", os.sep)
+            if path[-1] == os.sep:
+                path = path[:-1]
+
         self.__osu_directory = path
-        self.chimu.set_songs_directory(path + os.sep + "Songs")
+        if path:
+            self.chimu.set_songs_directory(path + os.sep + "Songs")
+        else:
+            self.chimu.set_songs_directory("")
 
     def get_osu_directory(self):
         return self.__osu_directory
