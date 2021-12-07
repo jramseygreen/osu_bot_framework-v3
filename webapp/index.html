@@ -1133,7 +1133,13 @@
                                             <table id="chat" class="table table-sm text-white" style="table-layout: fixed;">
                                                 <tbody>
                                                 <tr v-for="message in messages">
-                                                    <td class="col-12"><span class="badge bg-secondary">{{message.username}}</span>
+                                                    <td class="col-12">
+                                                        <div v-if="message.username === 'BanchoBot'" :message="message">
+                                                            <span class="badge bg-primary">{{message.username}}</span>
+                                                        </div>
+                                                        <div v-else>
+                                                            <span class="badge bg-secondary">{{message.username}}</span>
+                                                        </div>
                                                         <p class="ms-1">{{message.content.replace(/ /g, "&nbsp;")}}</p>
                                                     </td>
                                                 </tr>
