@@ -459,10 +459,11 @@ class Game(Channel):
                         threading.Thread(target=self.__on_beatmap_change_method).start()
                     self._bot.log("-- on beatmap change method executed --")
 
-                if old_beatmap != beatmap and self.__auto_download["status"]:
-                    self._bot.chimu.download_beatmap(beatmap["id"], path=self.__auto_download["path"], with_video=self.__auto_download["with_video"], auto_open=self.__auto_download["auto_open"])
-                if self.__autostart_timer > 0:
-                    self.start_match(self.__autostart_timer)
+                if old_beatmap != beatmap:
+                    if self.__auto_download["status"]:
+                        self._bot.chimu.download_beatmap(beatmap["id"], path=self.__auto_download["path"], with_video=self.__auto_download["with_video"], auto_open=self.__auto_download["auto_open"])
+                    if self.__autostart_timer > 0:
+                        self.start_match(self.__autostart_timer)
             self._bot.log("-- Beatmap checker finished --")
 
     def __check_attributes(self, running=False):
