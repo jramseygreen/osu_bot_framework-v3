@@ -96,6 +96,10 @@ class Chimu:
                         if str(beatmapsetID) in item:
                             self.bot.log("-- Beatmapset " + str(beatmapsetID) + " already owned, not downloading --")
                             return
+                    for item in os.listdir(path):
+                        if str(beatmapsetID) in item and ".osz" in item:
+                            self.bot.log("-- Beatmapset " + str(beatmapsetID) + " already owned, not downloading --")
+                            return
                 except:
                     pass
 
