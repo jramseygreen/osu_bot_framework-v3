@@ -90,19 +90,19 @@ class Chimu:
             x.setDaemon(True)
             x.start()
         else:
-            if not self.redownload:
-                try:
+            try:
+                if not self.redownload:
                     if self.songs_directory:
                         for item in os.listdir(self.songs_directory):
                             if str(beatmapsetID) in item:
                                 self.bot.log("-- Beatmapset " + str(beatmapsetID) + " already owned, not downloading --")
                                 return
-                    for item in os.listdir(path):
-                        if str(beatmapsetID) in item and ".osz" in item:
-                            self.bot.log("-- Beatmapset " + str(beatmapsetID) + " already owned, not downloading --")
-                            return
-                except:
-                    pass
+                for item in os.listdir(path):
+                    if str(beatmapsetID) in item and ".osz" in item:
+                        self.bot.log("-- Beatmapset " + str(beatmapsetID) + " already owned, not downloading --")
+                        return
+            except:
+                pass
 
             path = path.replace("/", os.sep).replace("\\", os.sep)
             if path and path[-1] != os.sep and path[-1] != "/":
