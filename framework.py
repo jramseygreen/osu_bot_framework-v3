@@ -466,6 +466,7 @@ class Bot:
             self.part(channel)
         self.set_logging(False)
         self.__started = False
+        exit(0)
 
     def get_password(self):
         return self.__password
