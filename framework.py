@@ -36,6 +36,7 @@ class Bot:
         self.__on_personal_message_method = None
         self.__logic_profiles = {}
         self.__player_blacklist = []
+        self.__osu_directory = ""
         self.chimu = Chimu(self)
         self.__logger = Logger("config" + os.sep + "logs" + os.sep + str(datetime.now()).replace(" ", "_", 1).replace(":", "-").split(".", 1)[0] + ".txt", "a", encoding="utf8")
         self.logging = logging
@@ -183,6 +184,19 @@ class Bot:
                 for name, obj in inspect.getmembers(m):
                     if inspect.isclass(obj):
                         self.__logic_profiles[obj.__name__] = obj
+
+        # attempt to auto locate osu directory
+        try:
+            import winreg
+            import shlex
+            class_root = winreg.QueryValue(winreg.HKEY_CLASSES_ROOT, ".osz")
+            with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, r'{}\shell\open\command'.format(class_root)) as key:
+                command = winreg.QueryValueEx(key, '')[0]
+                path = shlex.split(command)[0].replace(os.sep + "osu!.exe", "", 1)
+                self.set_osu_directory(path)
+                self.log("-- Discovered osu directory: " + path + " --")
+        except:
+            self.log("-- Could not discover osu directory! --")
 
         try:
             self.__sock.get_socket().connect((self.__host, self.__port))
@@ -447,3 +461,13 @@ class Bot:
 
     def get_password(self):
         return self.__password
+
+    def set_osu_directory(self, path):
+        path = path.replace("/", os.sep).replace("\\", os.sep)
+        if path[-1] == os.sep:
+            path = path[:-1]
+        self.__osu_directory = path
+        self.chimu.set_songs_directory(path + os.sep + "Songs")
+
+    def get_osu_directory(self):
+        return self.__osu_directory

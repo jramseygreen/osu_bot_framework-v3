@@ -188,6 +188,7 @@ class Controller:
                     channel.set_autostart_timer(True, data["autostart_timer"])
                     channel.set_welcome_message(data["welcome_message"])
                     channel.auto_download(data["auto_download"], data["auto_download_path"], data["auto_open"], data["download_video"])
+                self.bot.set_osu_directory(data["osu_directory"])
             elif data["command"] == "set_password":
                 channel = self.bot.get_channel(data["channel"])
                 if channel and channel.is_game():
@@ -299,6 +300,8 @@ class Controller:
             data["logic_profiles"] = list(self.bot.get_logic_profiles().keys())
             data["current_user_profile"] = self.__current_user_profile
             data["bot_username"] = self.bot.get_username()
+            data["redownload_owned_beatmaps"] = self.bot.chimu.is_redownload()
+            data["osu_directory"] = self.bot.get_osu_directory()
             self.send_message(json.dumps(data))
         except:
             pass

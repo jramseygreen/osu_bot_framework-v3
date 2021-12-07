@@ -216,12 +216,13 @@ class Game(Channel):
                 host = False
                 team = ""
                 username = attr[0].split("osu.ppy.sh/u/", 1)[1].split(" ", 1)[1]
-                if "Host" in attr[1]:
-                    host = True
-                if "Team Blue" in attr[1]:
-                    team = "blue"
-                elif "Team Red" in attr[1]:
-                    team = "red"
+                if len(attr) > 1:
+                    if "Host" in attr[1]:
+                        host = True
+                    if "Team Blue" in attr[1]:
+                        team = "blue"
+                    elif "Team Red" in attr[1]:
+                        team = "red"
                 self.set_slot(int(message["content"].split(" ", 2)[1]) - 1, {"username": username, "team": team, "score": {}})
                 if host:
                     self.__host = username

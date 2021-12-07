@@ -1336,6 +1336,13 @@
                                                       <input id="auto_open_switch" class="form-check-input" type="checkbox">
                                                       Open beatmaps automatically after downloading
                                                   </div>
+                                                  <div class="form-check form-switch">
+                                                      <input id="redownload_owned_beatmaps" class="form-check-input" type="checkbox">
+                                                      Redownload owned beatmaps
+                                                      <div class="col-4 float-end input-group-sm">
+                                                          <input id="osu_directory" type="text" class="form-control" placeholder="osu directory...">
+                                                      </div>
+                                                  </div>
 
 <!--                                                  whitelists / blacklists-->
                                                   <hr>
@@ -1510,6 +1517,8 @@
                 app.personal_messages = buffer["pm"];
                 app.logic_profiles = buffer["logic_profiles"];
                 app.bot_username = buffer["bot_username"];
+                app.redownload_owned_beatmaps = buffer["redownload_owned_beatmaps"];
+                app.osu_directory = buffer["osu_directory"];
                 if (app.make_room.invite_list.includes("")) {
                     app.make_room.invite_list = [app.bot_username];
                 }
@@ -1689,7 +1698,9 @@
             welcome_message: "",
             autostart_timer: -1,
             auto_download: {},
-            bot_username: ""
+            bot_username: "",
+            redownload_owned_beatmaps: false,
+            osu_directory: ""
         },
         methods: {
             set_current_username: function (username) {
@@ -2133,7 +2144,9 @@
             "auto_download": form.elements.auto_download_switch.checked,
             "auto_download_path": form.elements.auto_download_path.value.trim(),
             "download_video": form.elements.download_video_switch.checked,
-            "auto_open": form.elements.auto_open_switch.checked
+            "auto_open": form.elements.auto_open_switch.checked,
+            "redownload_owned_beatmaps": form.elements.redownload_owned_beatmaps.checked,
+            "osu_directory": form.elements.osu_directory.value,
         };
         if (!form.elements.autostart_timer_switch.checked) {
             payload["autostart_timer"] = -1;
@@ -2161,6 +2174,8 @@
         form.elements.auto_download_path.value = app.auto_download.path;
         form.elements.download_video_switch.checked = app.auto_download.with_video;
         form.elements.auto_open_switch.checked = app.auto_download.auto_open;
+        form.elements.redownload_owned_beatmaps.checked = app.redownload_owned_beatmaps;
+        form.elements.osu_directory.value = app.osu_directory;
     }
 
     function set_password(form) {

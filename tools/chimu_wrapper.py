@@ -15,6 +15,8 @@ class Chimu:
         self.bot = bot
         self.url = "https://api.chimu.moe/v1/"
         self.session = requests.Session()
+        self.redownload = False
+        self.songs_directory = bot.get_osu_directory() + os.sep + "Songs"
         try:
             f = open("config" + os.sep + "unsubmitted.obf", "r")
             self.unsubmitted = f.readlines()
@@ -88,6 +90,12 @@ class Chimu:
             x.setDaemon(True)
             x.start()
         else:
+            if not self.redownload and self.songs_directory:
+                for item in os.listdir(self.songs_directory):
+                    if str(beatmapsetID) in item:
+                        self.bot.log("-- Beatmapset " + str(beatmapsetID) + " already owned, not downloading --")
+                        return
+
             path = path.replace("/", os.sep).replace("\\", os.sep)
             if path != "" and path[-1] != os.sep and path[-1] != "/":
                 path = path + os.sep
@@ -264,3 +272,15 @@ class Chimu:
         attributes["artist_whitelist"] = channel.get_artist_whitelist()
         attributes["artist_blacklist"] = channel.get_artist_blacklist()
         return attributes
+
+    def set_songs_directory(self, path):
+        self.songs_directory = path
+
+    def get_songs_directory(self):
+        return self.songs_directory
+
+    def set_redownload(self, status):
+        self.redownload = status
+
+    def is_redownload(self):
+        return self.redownload
