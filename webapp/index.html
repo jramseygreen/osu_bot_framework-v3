@@ -1134,12 +1134,8 @@
                                                 <tbody>
                                                 <tr v-for="message in messages">
                                                     <td class="col-12">
-                                                        <div v-if="message.username === 'BanchoBot'" :message="message">
-                                                            <span class="badge bg-primary">{{message.username}}</span>
-                                                        </div>
-                                                        <div v-else>
-                                                            <span class="badge bg-secondary">{{message.username}}</span>
-                                                        </div>
+                                                        <span v-if="message.username === 'BanchoBot'" :message="message" class="badge bg-secondary text-danger">{{message.username}}</span>
+                                                        <span v-else class="badge bg-secondary">{{message.username}}</span>
                                                         <p class="ms-1">{{message.content.replace(/ /g, "&nbsp;")}}</p>
                                                     </td>
                                                 </tr>
