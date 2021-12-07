@@ -268,7 +268,7 @@ class Controller:
                 text = 'HTTP/1.0 200 OK\n'
                 text += 'Content-Type: text/html\n'
                 text += 'Content-Type: text/html\n\n'
-                f = open("webapp/index2.html", "r", encoding="utf8")
+                f = open("webapp/index.html", "r", encoding="utf8")
                 text += f.read()
                 f.close()
                 text = text.replace("ws://localhost:9876", "ws://" + ws_host + ":" + str(self.__ws.get_port()), 1)
