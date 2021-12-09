@@ -1532,7 +1532,12 @@
     var app;
     window.onload = function () {
         sock.onopen = async function () {
-            send(JSON.stringify({"command": "update"}));
+            if (document.cookie !== "") {
+                console.log(document.cookie)
+                cookies = JSON.parse(document.cookie);
+                app.bot_password = cookies["bot_password"];
+                sock.send(encrypt(JSON.stringify({"command": "authenticate"})));
+            }
             while (!exit) {
                 await sleep(1000);
                 send(JSON.stringify({"command": "update"}));
@@ -1556,12 +1561,11 @@
             message = e.data;
             if (message === "authenticate") {
                 app.authenticate = true;
+            } else {
+                app.authenticated = true;
             }
             if (app.authenticate) {
                 message = decrypt(message);
-            }
-            if (message === "success") {
-                app.authenticated = true;
             }
             console.log('Server: ' + message);
             buffer = JSON.parse(message);
@@ -2327,6 +2331,7 @@
         app.bot_password = document.getElementById("bot_password_input").value;
         send(JSON.stringify({"command": "authenticate"}));
         document.getElementById("bot_password_input").value = "";
+        document.cookie = JSON.stringify({"bot_password": app.bot_password})
     }
 
     function send(message) {
