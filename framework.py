@@ -160,7 +160,7 @@ class Bot:
                         # invite link
                         elif command == "332":
                             channel = line[3]
-                            if self.__channels[channel].is_game():
+                            if channel in self.__channels and self.__channels[channel].is_game():
                                 self.__channels[channel].set_invite_link("osump://" + line[-1][1:] + "/")
                         # users already in game channel
                         elif command == "366":
