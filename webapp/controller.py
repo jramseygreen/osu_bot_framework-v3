@@ -296,7 +296,7 @@ class Controller:
 
     def send_message(self, message):
         for conn in self.__ws.get_clients():
-            if self.bot.is_authenticate() and not message == "authenticate":
+            if self.bot.is_authenticate() and not message == "authenticate" and not message == "success":
                 message = self.crypto.encrypt(message)
             self.__ws.send(conn, message)
 

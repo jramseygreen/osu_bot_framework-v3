@@ -1567,16 +1567,21 @@
             if (message === "authenticate") {
                 console.log('Server: ' + message);
                 app.authenticate = true;
-                document.cookie = "-";
                 return
-            } else {
+            }
+            if (message === "success") {
                 app.authenticated = true;
             }
             if (app.authenticate) {
                 message = decrypt(message);
             }
             console.log('Server: ' + message);
-            buffer = JSON.parse(message);
+            buffer = {}
+            try {
+                buffer = JSON.parse(message);
+            } catch(e) {
+                return
+            }
             if (message !== JSON.stringify(app.buffer)) {
                 app.buffer = buffer;
                 app.channels = Object.keys(buffer["channels"]);
