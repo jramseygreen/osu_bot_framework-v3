@@ -1532,20 +1532,20 @@
     var app;
     window.onload = function () {
         sock.onopen = async function () {
-            if (document.cookie !== "") {
-                console.log(document.cookie)
+            if (document.cookie !== "" && document.cookie !== "-") {
+                console.log("cookies: " + document.cookie)
                 cookies = {}
                 try {
                     cookies = JSON.parse(document.cookie);
                     app.bot_password = cookies["bot_password"];
                     sock.send(encrypt(JSON.stringify({"command": "authenticate"})));
                 } catch(e) {
-                    document.cookie = "";
+                    document.cookie = "-";
                 }
             }
             while (!exit) {
-                await sleep(1000);
                 send(JSON.stringify({"command": "update"}));
+                await sleep(1000);
             }
         };
 
@@ -1565,7 +1565,10 @@
         sock.onmessage = function (e) {
             message = e.data;
             if (message === "authenticate") {
+                console.log('Server: ' + message);
                 app.authenticate = true;
+                document.cookie = "-";
+                return
             } else {
                 app.authenticated = true;
             }
