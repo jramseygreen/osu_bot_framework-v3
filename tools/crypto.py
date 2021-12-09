@@ -38,14 +38,19 @@ class CryptoWrapper:
         return base64.b64encode(b"Salted__" + salt + aes.encrypt(self.__pad(message))).decode()
 
     def decrypt(self, encrypted):
-        encrypted = base64.b64decode(encrypted)
-        assert encrypted[0:8] == b"Salted__"
-        salt = encrypted[8:16]
-        key_iv = self.__bytes_to_key(self.__password, salt, 32 + 16)
-        key = key_iv[:32]
-        iv = key_iv[32:]
-        aes = AES.new(key, AES.MODE_CBC, iv)
-        return self.__unpad(aes.decrypt(encrypted[16:])).decode()
+        decrypted = None
+        try:
+            encrypted = base64.b64decode(encrypted)
+            assert encrypted[0:8] == b"Salted__"
+            salt = encrypted[8:16]
+            key_iv = self.__bytes_to_key(self.__password, salt, 32 + 16)
+            key = key_iv[:32]
+            iv = key_iv[32:]
+            aes = AES.new(key, AES.MODE_CBC, iv)
+            decrypted = self.__unpad(aes.decrypt(encrypted[16:])).decode()
+        except:
+            pass
+        return decrypted
 
     def set_password(self, password):
         self.__password = password.encode()

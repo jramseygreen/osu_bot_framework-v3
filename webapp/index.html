@@ -39,8 +39,31 @@
 </head>
 <body>
 <div id="app" class="container-fluid">
+    <div v-if="authenticate && !authenticated">
+        <div class="bg-dark" style="height: 100vh;">
+            <div class="row">
+                <div class="col-6">
+                    <img src="https://github.com/jramseygreen/osu_bot_framework-v3/blob/main/webapp/assets/images/logo_blue.png?raw=true"
+                             width="600" height="600" class="mt-4">
+                </div>
+                <div class="col-6">
+                    <div class="card top-50 me-4">
+                        <h4 class="card-header">Login</h4>
+                        <form onsubmit="return false">
+                            <div class="card-body">
+                                <input id="bot_password_input" type="password" class="form-control" placeholder="osu irc password...">
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-primary" onclick="authenticate();">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--    sidebar-->
-    <div class="row">
+    <div v-else class="row">
         <div class="col d-flex flex-column text-white bg-dark" style="height: 100vh;">
             <div class="row">
                 <span class="col-9">
@@ -1496,6 +1519,7 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
     var host = "ws://localhost:9876/";
     if (!window.location.href.includes(host.split(":")[1])) {
@@ -1509,7 +1533,7 @@
         sock.onopen = async function () {
             while (!exit) {
                 await sleep(1000);
-                sock.send(JSON.stringify({"command": "update"}));
+                send(JSON.stringify({"command": "update"}));
             }
         };
 
@@ -1527,9 +1551,19 @@
         };
 
         sock.onmessage = function (e) {
-            console.log('Server: ' + e.data);
-            buffer = JSON.parse(e.data);
-            if (e.data !== JSON.stringify(app.buffer)) {
+            message = e.data;
+            if (message === "authenticate") {
+                app.authenticate = true;
+            }
+            if (app.authenticate) {
+                message = decrypt(message);
+            }
+            if (message === "success") {
+                app.authenticated = true;
+            }
+            console.log('Server: ' + message);
+            buffer = JSON.parse(message);
+            if (message !== JSON.stringify(app.buffer)) {
                 app.buffer = buffer;
                 app.channels = Object.keys(buffer["channels"]);
                 app.personal_messages = buffer["pm"];
@@ -1641,6 +1675,8 @@
     app = new Vue({
         el: "#app",
         data: {
+            authenticate: false,
+            authenticated: false,
             buffer: {},
             config_link: "",
             channel: "",
@@ -1717,6 +1753,7 @@
             autostart_timer: -1,
             auto_download: {},
             bot_username: "",
+            bot_password: "",
             redownload_owned_beatmaps: false,
             osu_directory: ""
         },
@@ -1728,7 +1765,7 @@
                     "channel": app.channel,
                     "username": username
                 };
-                sock.send(JSON.stringify(payload));
+                send(JSON.stringify(payload));
             },
             del_broadcast: function (broadcast_id) {
                 payload = {
@@ -1736,7 +1773,7 @@
                     "channel": app.channel,
                     "broadcast_id": broadcast_id
                 };
-                sock.send(JSON.stringify(payload));
+                send(JSON.stringify(payload));
             },
             del_player_blacklist: function (username) {
                 payload = {
@@ -1744,7 +1781,7 @@
                     "channel": app.channel,
                     "username": username
                 };
-                sock.send(JSON.stringify(payload));
+                send(JSON.stringify(payload));
             },
             del_artist_whitelist: function (artist) {
                 payload = {
@@ -1752,7 +1789,7 @@
                     "channel": app.channel,
                     "artist": artist
                 };
-                sock.send(JSON.stringify(payload));
+                send(JSON.stringify(payload));
             },
             del_artist_blacklist: function (artist) {
                 payload = {
@@ -1760,7 +1797,7 @@
                     "channel": app.channel,
                     "artist": artist
                 };
-                sock.send(JSON.stringify(payload));
+                send(JSON.stringify(payload));
             },
             del_creator_whitelist: function (creator) {
                 payload = {
@@ -1768,7 +1805,7 @@
                     "channel": app.channel,
                     "creator": creator
                 };
-                sock.send(JSON.stringify(payload));
+                send(JSON.stringify(payload));
             },
             del_creator_blacklist: function (creator) {
                 payload = {
@@ -1776,7 +1813,7 @@
                     "channel": app.channel,
                     "creator": creator
                 };
-                sock.send(JSON.stringify(payload));
+                send(JSON.stringify(payload));
             },
             set_size: function (size) {
                 payload = {
@@ -1784,7 +1821,7 @@
                     "channel": app.channel,
                     "size": size
                 };
-                sock.send(JSON.stringify(payload));
+                send(JSON.stringify(payload));
             },
             make_room_dropdown: function (dropdown, option) {
                 this.make_room[dropdown] = option;
@@ -1806,7 +1843,7 @@
 
     function exit_handler() {
         exit = true;
-        sock.send(JSON.stringify({"command": "exit_handler"}));
+        send(JSON.stringify({"command": "exit_handler"}));
         sock.close();
     }
 
@@ -1816,12 +1853,12 @@
                 document.getElementById("players").scrollTo(0, 0);
             }
             app.user_num = 20;
-            sock.send(JSON.stringify({"command": "set_user_num", "user_num": app.user_num}));
+            send(JSON.stringify({"command": "set_user_num", "user_num": app.user_num}));
             remove_active_channels()
 
             app.channel = data.getAttribute("name");
             document.getElementById(app.channel).classList.add("active");
-            sock.send(JSON.stringify({"command": "update"}));
+            send(JSON.stringify({"command": "update"}));
        }
     }
 
@@ -1837,7 +1874,7 @@
         if (obj.scrollTop === (obj.scrollHeight - obj.offsetHeight)) {
             if (app.user_num < app.total_users) {
                 app.user_num += 20;
-                sock.send(JSON.stringify({"command": "set_user_num", "user_num": app.user_num}));
+                send(JSON.stringify({"command": "set_user_num", "user_num": app.user_num}));
             }
         }
     }
@@ -1848,8 +1885,8 @@
             "channel": app.channel,
             "profile": profile.getAttribute("id")
         };
-        sock.send(JSON.stringify(payload));
-        sock.send(JSON.stringify({"command": "update"}));
+        send(JSON.stringify(payload));
+        send(JSON.stringify({"command": "update"}));
     }
 
     function start_match() {
@@ -1857,7 +1894,7 @@
             "command": "start_match",
             "channel": app.channel
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function abort_match() {
@@ -1865,7 +1902,7 @@
             "command": "abort_match",
             "channel": app.channel
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function make_room(form) {
@@ -1889,7 +1926,7 @@
         app.make_room["invite_list"] = [];
         app.make_room["size"] = 16;
         if (/^[\u0000-\u007f]*$/.test(payload["title"]) && /^[\u0000-\u007f]*$/.test(payload["password"])) {
-            sock.send(JSON.stringify(payload));
+            send(JSON.stringify(payload));
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
@@ -1902,7 +1939,7 @@
         };
         if (payload["channel"] !== "" ) {
             if (/^[\u0000-\u007f]*$/.test(payload["channel"])) {
-                sock.send(JSON.stringify(payload));
+                send(JSON.stringify(payload));
             } else {
                 alert("Sorry, special characters are not currently supported!");
             }
@@ -1915,7 +1952,7 @@
             "command": "part",
             "channel": data.getAttribute("name"),
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
         remove_active_channels()
     }
 
@@ -1928,7 +1965,7 @@
             "message": message
         };
         if (/^[\u0000-\u007f]*$/.test(payload["message"])) {
-            sock.send(JSON.stringify(payload));
+            send(JSON.stringify(payload));
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
@@ -1939,7 +1976,7 @@
             "command": "close_room",
             "channel": app.channel
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function set_title(form) {
@@ -1949,7 +1986,7 @@
             "title": form.elements.title_input.value
         };
         if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
-            sock.send(JSON.stringify(payload));
+            send(JSON.stringify(payload));
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
@@ -1962,7 +1999,7 @@
             "channel": app.channel,
             "game_mode": mode
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function set_team_type(type) {
@@ -1971,7 +2008,7 @@
             "channel": app.channel,
             "team_type": type
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function set_scoring_type(type) {
@@ -1980,7 +2017,7 @@
             "channel": app.channel,
             "scoring_type": type
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function mod_select_toggle(mod) {
@@ -2003,7 +2040,7 @@
             "mods": app.mod_select
         };
         app.mod_select = [];
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function map_status_select_toggle(status) {
@@ -2026,7 +2063,7 @@
             "map_status": app.map_status_select
         };
         app.mod_select = [];
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function set_host() {
@@ -2036,7 +2073,7 @@
             "username": app.current_username
         };
         app.current_username = "";
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function kick_user() {
@@ -2046,7 +2083,7 @@
             "username": app.current_username
         };
         app.current_username = "";
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function add_broadcast(form) {
@@ -2058,7 +2095,7 @@
         };
         if (payload["message"] !== "" && payload["secs"] !== "") {
             if (/^[\u0000-\u007f]*$/.test(payload["message"])) {
-                sock.send(JSON.stringify(payload));
+                send(JSON.stringify(payload));
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
@@ -2084,7 +2121,7 @@
             };
         }
         if (payload["username"] !== "") {
-            sock.send(JSON.stringify(payload));
+            send(JSON.stringify(payload));
         }
         form.elements.blacklist_username.value = "";
     }
@@ -2096,7 +2133,7 @@
             "artist": form.elements.artist_whitelist_input.value.trim()
         };
         if (/^[\u0000-\u007f]*$/.test(payload["artist"])) {
-            sock.send(JSON.stringify(payload));
+            send(JSON.stringify(payload));
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
@@ -2110,7 +2147,7 @@
             "artist": form.elements.artist_blacklist_input.value.trim()
         };
         if (/^[\u0000-\u007f]*$/.test(payload["artist"])) {
-            sock.send(JSON.stringify(payload));
+            send(JSON.stringify(payload));
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
@@ -2124,7 +2161,7 @@
             "creator": form.elements.creator_whitelist_input.value.trim()
         };
         if (/^[\u0000-\u007f]*$/.test(payload["creator"])) {
-            sock.send(JSON.stringify(payload));
+            send(JSON.stringify(payload));
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
@@ -2138,7 +2175,7 @@
             "creator": form.elements.creator_blacklist_input.value.trim()
         };
         if (/^[\u0000-\u007f]*$/.test(payload["creator"])) {
-            sock.send(JSON.stringify(payload));
+            send(JSON.stringify(payload));
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
@@ -2172,7 +2209,7 @@
         if (!form.elements.welcome_message_switch.checked) {
             payload["welcome_message"] = "";
         }
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function reset_advanced_options() {
@@ -2203,7 +2240,7 @@
             "password": form.elements.password_input.value
         };
         if (/^[\u0000-\u007f]*$/.test(payload["password"])) {
-            sock.send(JSON.stringify(payload));
+            send(JSON.stringify(payload));
         } else {
             alert("Sorry, special characters are not currently supported!");
         }
@@ -2216,7 +2253,7 @@
             "channel": app.channel,
             "range": [form.elements.min_ar.value.trim(), form.elements.max_ar.value.trim()]
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function set_od_range(form) {
@@ -2225,7 +2262,7 @@
             "channel": app.channel,
             "range": [form.elements.min_od.value.trim(), form.elements.max_od.value.trim()]
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function set_cs_range(form) {
@@ -2234,7 +2271,7 @@
             "channel": app.channel,
             "range": [form.elements.min_cs.value.trim(), form.elements.max_cs.value.trim()]
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function set_hp_range(form) {
@@ -2243,7 +2280,7 @@
             "channel": app.channel,
             "range": [form.elements.min_hp.value.trim(), form.elements.max_hp.value.trim()]
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function set_bpm_range(form) {
@@ -2252,7 +2289,7 @@
             "channel": app.channel,
             "range": [form.elements.min_bpm.value.trim(), form.elements.max_bpm.value.trim()]
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function set_length_range(form) {
@@ -2261,7 +2298,7 @@
             "channel": app.channel,
             "range": [form.elements.min_length.value.trim(), form.elements.max_length.value.trim()]
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function set_diff_range(form) {
@@ -2270,7 +2307,7 @@
             "channel": app.channel,
             "range": [form.elements.min_diff.value.trim(), form.elements.max_diff.value.trim()]
         };
-        sock.send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function add_invite_list(form) {
@@ -2283,6 +2320,29 @@
         }
         form.elements.invite_players_input.value = "";
     }
+
+    function authenticate() {
+        app.bot_password = document.getElementById("bot_password_input").value;
+        send(JSON.stringify({"command": "authenticate"}));
+        document.getElementById("bot_password_input").value = "";
+    }
+
+    function send(message) {
+        if (app.authenticate) {
+            message = encrypt(message);
+        }
+        sock.send(message);
+    }
+
+    function encrypt(message) {
+         var encrypted = CryptoJS.AES.encrypt(message, app.bot_password);
+         return encrypted.toString();
+     }
+
+     function decrypt(message) {
+         var decrypted = CryptoJS.AES.decrypt(message, app.bot_password);
+         return decrypted.toString(CryptoJS.enc.Utf8);
+     }
 </script>
 
 </body>
