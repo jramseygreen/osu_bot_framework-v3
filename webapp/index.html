@@ -1534,9 +1534,14 @@
         sock.onopen = async function () {
             if (document.cookie !== "") {
                 console.log(document.cookie)
-                cookies = JSON.parse(document.cookie);
-                app.bot_password = cookies["bot_password"];
-                sock.send(encrypt(JSON.stringify({"command": "authenticate"})));
+                cookies = {}
+                try {
+                    cookies = JSON.parse(document.cookie);
+                    app.bot_password = cookies["bot_password"];
+                    sock.send(encrypt(JSON.stringify({"command": "authenticate"})));
+                } catch(e) {
+                    document.cookie = "";
+                }
             }
             while (!exit) {
                 await sleep(1000);
@@ -2331,7 +2336,7 @@
         app.bot_password = document.getElementById("bot_password_input").value;
         send(JSON.stringify({"command": "authenticate"}));
         document.getElementById("bot_password_input").value = "";
-        document.cookie = JSON.stringify({"bot_password": app.bot_password})
+        document.cookie = JSON.stringify({"bot_password": app.bot_password});
     }
 
     function send(message) {
