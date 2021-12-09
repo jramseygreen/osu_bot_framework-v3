@@ -54,6 +54,7 @@ class Bot:
         if not running:
             threading.Thread(target=self.__listen, args=(True,)).start()
         else:
+            channels = self.__channels.copy()
             self.__started = True
             buffer = ""
             # end condition
@@ -88,31 +89,31 @@ class Bot:
                     if command.isalpha():
                         channel = line[2].replace(":", "")
                         if command == "JOIN":
-                            if username == self.__username and channel not in self.__channels and "#mp_" in channel:
+                            if username == self.__username and channel not in channels and "#mp_" in channel:
                                 self.__join_helper(channel)
                                 self.__new_tournament = channel
-                            if channel in self.__channels and not self.__channels[channel].is_game():
-                                self.__channels[channel].add_user(username)
+                            if channel in channels and not channels[channel].is_game():
+                                channels[channel].add_user(username)
                         elif command == "PART":
-                            if channel in self.__channels:
-                                if self.__channels[channel].is_game():
-                                    if self.__channels[channel].get_logic()["on_room_close"]:
-                                        x = threading.Thread(target=self.__channels[channel].get_logic()["on_room_close"])
+                            if channel in channels:
+                                if channels[channel].is_game():
+                                    if channels[channel].get_logic()["on_room_close"]:
+                                        x = threading.Thread(target=channels[channel].get_logic()["on_room_close"])
                                         x.setDaemon(True)
                                         x.start()
-                                    del self.__channels[channel]
-                                elif self.__channels[channel].has_user(username):
-                                    self.__channels[channel].del_user(username)
+                                    del channels[channel]
+                                elif channels[channel].has_user(username):
+                                    channels[channel].del_user(username)
                         elif command == "QUIT":
-                            channels = self.__channels.copy()
+                            channels = channels.copy()
                             for channel in channels:
                                 channels[channel].del_user(username)
                         elif command == "PRIVMSG":
                             content = msg.split(channel + " :", 1)[1]
                             message = {"username": username, "channel": channel, "content": content}
                             # channel messages
-                            if channel in self.__channels:
-                                self.__channels[channel].process_message(message)
+                            if channel in channels:
+                                channels[channel].process_message(message)
                             # personal messages
                             elif channel == self.__username:
                                 if len(self.__personal_message_log) == self.__personal_message_log_length:
@@ -122,7 +123,6 @@ class Bot:
                                 if message["username"] == "BanchoBot":
                                     if message["content"] == "You cannot create any more tournament matches. Please close any previous tournament matches you have open.":
                                         self.__room_limit_reached = True
-                                channels = self.__channels.copy()
                                 for channel in channels:
                                     if channels[channel].get_on_personal_message_method():
                                         x = None
@@ -146,27 +146,27 @@ class Bot:
                         # users already in channel
                         if command == "353":
                             channel = line[4]
-                            if channel in self.__channels:
+                            if channel in channels:
                                 users = line[5:]
                                 users[0] = users[0][1:]
                                 for username in users:
                                     if username != "" and username[0] != "+" and username[0] != "@":
-                                        if self.__channels[channel].is_game():
+                                        if channels[channel].is_game():
                                             # game users are added from match history
-                                            self.__channels[channel].get_users().append(username)
+                                            channels[channel].get_users().append(username)
                                         else:
-                                            self.__channels[channel].add_user(username)
+                                            channels[channel].add_user(username)
 
                         # invite link
                         elif command == "332":
                             channel = line[3]
-                            if self.__channels[channel].is_game():
-                                self.__channels[channel].set_invite_link("osump://" + line[-1][1:] + "/")
+                            if channel in channels and channels[channel].is_game():
+                                channels[channel].set_invite_link("osump://" + line[-1][1:] + "/")
                         # users already in game channel
                         elif command == "366":
                             channel = line[3]
-                            if channel in self.__channels and self.__channels[channel].is_game():
-                                self.__channels[channel].get_existing_attributes()
+                            if channel in channels and channels[channel].is_game():
+                                channels[channel].get_existing_attributes()
                         # bad credentials
                         elif command == "464":
                             if not self.verbose:
