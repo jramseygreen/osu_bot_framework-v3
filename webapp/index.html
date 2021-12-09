@@ -1536,7 +1536,6 @@
     var app;
     window.onload = function () {
         sock.onopen = function () {
-            console.log("websocket opened")
             if (document.cookie !== "" && document.cookie !== "-") {
                 console.log("cookies: " + document.cookie)
                 cookies = {}
