@@ -50,7 +50,7 @@ class KingOfTheHill:
             key = "score"
         elif "accuracy" == match["scoring_type"]:
             key = "accuracy"
-        self.channel.send_message(self.scores[0]["username"] + " wins with " + match["scoring_type"].replace("v2", "") + ": " + str(round(self.scores[0][key] * 10) / 10))
+        self.channel.send_message(self.scores[0]["username"] + " wins with " + match["scoring_type"].replace("v2", "") + ": " + str(round(self.scores[0][key] * 100) / 100))
         self.channel.set_host(self.scores[0]["username"])
 
     def on_match_abort(self):

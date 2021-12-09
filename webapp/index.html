@@ -1530,11 +1530,12 @@
         host = "ws://" + window.location.href.slice(0, -1).replace("http://", "").split(":")[0] + ":" + host.split(":")[2];
     }
     var sock = new WebSocket(host);
+    var polling = false;
     var exit = false;
     var buffer;
     var app;
     window.onload = function () {
-        sock.onopen = async function () {
+        sock.onopen = function () {
             if (document.cookie !== "" && document.cookie !== "-") {
                 console.log("cookies: " + document.cookie)
                 cookies = {}
@@ -1546,10 +1547,7 @@
                     document.cookie = "-";
                 }
             }
-            while (!exit) {
-                send(JSON.stringify({"command": "update"}));
-                await sleep(1000);
-            }
+            update_poll();
         };
 
         sock.onclose = function () {
@@ -1566,6 +1564,9 @@
         };
 
         sock.onmessage = function (e) {
+            if (!polling) {
+                update_poll();
+            }
             message = e.data;
             if (message === "authenticate") {
                 console.log('Server: ' + message);
@@ -1861,6 +1862,15 @@
 
     function sleep (time) {
         return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
+    async function update_poll() {
+        console.log("Started polling backend")
+        polling = true;
+        while (!exit) {
+            send(JSON.stringify({"command": "update"}));
+            await sleep(1000);
+        }
     }
 
     function exit_handler() {
