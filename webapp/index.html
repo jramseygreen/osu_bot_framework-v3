@@ -1543,19 +1543,7 @@
     var app;
     window.onload = function () {
         sock.onopen = function () {
-            console.log("ran");
-            app.authenticate = false;
-            if (document.cookie !== "" && document.cookie !== "-") {
-                console.log("cookies: " + document.cookie)
-                cookies = {}
-                try {
-                    cookies = JSON.parse(document.cookie);
-                    app.bot_password = cookies["bot_password"];
-                    sock.send(encrypt(JSON.stringify({"command": "authenticate"})));
-                } catch(e) {
-                    document.cookie = "-";
-                }
-            }
+
 
         };
 
@@ -1580,6 +1568,17 @@
             if (message === "authenticate") {
                 console.log('Server: ' + message);
                 app.authenticate = true;
+                if (document.cookie !== "" && document.cookie !== "-") {
+                    console.log("cookies: " + document.cookie)
+                    cookies = {}
+                    try {
+                        cookies = JSON.parse(document.cookie);
+                        app.bot_password = cookies["bot_password"];
+                        sock.send(encrypt(JSON.stringify({"command": "authenticate"})));
+                    } catch(e) {
+                        document.cookie = "-";
+                    }
+                }
                 return
             }
             if (message === "success") {
@@ -1888,7 +1887,6 @@
     function exit_handler() {
         exit = true;
         send(JSON.stringify({"command": "exit_handler"}));
-        sock.close();
     }
 
     function setChannel(data) {
