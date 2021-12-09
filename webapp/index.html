@@ -40,14 +40,15 @@
 <body>
 <div id="app" class="container-fluid">
     <div v-if="authenticate && !authenticated">
-        <div class="bg-dark" style="height: 100vh;">
+        <div class="card bg-dark" style="height: 100vh;">
+            <h2 class="card-header text-center text-light">Welcome to Osu Bot Framework v3!</h2>
             <div class="row">
                 <div class="col-6">
                     <img src="https://github.com/jramseygreen/osu_bot_framework-v3/blob/main/webapp/assets/images/logo_blue.png?raw=true"
                              width="600" height="600" class="mt-4">
                 </div>
                 <div class="col-6">
-                    <div class="card top-50 me-4">
+                    <div class="card top-50 me-4 ">
                         <h4 class="card-header">Login</h4>
                         <form onsubmit="return false">
                             <div class="card-body">
