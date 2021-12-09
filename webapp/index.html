@@ -1531,6 +1531,7 @@
     var app;
     window.onload = function () {
         sock.onopen = async function () {
+            send(JSON.stringify({"command": "update"}));
             while (!exit) {
                 await sleep(1000);
                 send(JSON.stringify({"command": "update"}));
