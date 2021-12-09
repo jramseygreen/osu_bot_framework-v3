@@ -1543,6 +1543,7 @@
     var app;
     window.onload = function () {
         sock.onopen = function () {
+            app.authenticate = false;
             if (document.cookie !== "" && document.cookie !== "-") {
                 console.log("cookies: " + document.cookie)
                 cookies = {}
@@ -1705,7 +1706,7 @@
     app = new Vue({
         el: "#app",
         data: {
-            authenticate: false,
+            authenticate: true,
             authenticated: false,
             buffer: {},
             config_link: "",
@@ -2363,6 +2364,8 @@
     function authenticate() {
         app.bot_password = document.getElementById("bot_password_input").value;
         send(JSON.stringify({"command": "authenticate"}));
+        send(JSON.stringify({"command": "update"}));
+        sock.send(JSON.stringify({"command": "update"}));
         document.getElementById("bot_password_input").value = "";
         document.getElementById("bot_password_validation").innerHTML = "Password incorrect!";
         document.cookie = JSON.stringify({"bot_password": app.bot_password});
