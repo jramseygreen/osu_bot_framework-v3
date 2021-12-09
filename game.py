@@ -406,20 +406,6 @@ class Game(Channel):
                 scores.append(self.__slots[slot]["score"])
         return scores
 
-    def get_red_scores(self):
-        scores = []
-        for score in self.get_scores():
-            if score["team"] == "red":
-                scores.append(score)
-        return scores
-
-    def get_blue_scores(self):
-        scores = []
-        for score in self.get_scores():
-            if score["team"] == "blue":
-                scores.append(score)
-        return scores
-
     def get_ordered_scores(self):
         passed = []
         failed = []
