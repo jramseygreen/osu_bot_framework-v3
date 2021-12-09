@@ -1542,11 +1542,6 @@
     var buffer;
     var app;
     window.onload = function () {
-        sock.onopen = function () {
-
-
-        };
-
         sock.onclose = function () {
             if (exit) {
                 document.body.innerHTML = '<div class="bg-dark text-light text-center" style="height: 100vh; width: 100vw;"><h5><span class="badge bg-success">Exited osu bot framework successfully!</span></h5><img src="https://github.com/jramseygreen/osu_bot_framework-v3/blob/main/webapp/assets/images/logo_blue.png?raw=true" width="600" height="600" class="mt-4 mb-4"><p mt-4>See you next time...</p></div>';
@@ -1708,7 +1703,7 @@
     app = new Vue({
         el: "#app",
         data: {
-            authenticate: true,
+            authenticate: false,
             authenticated: false,
             buffer: {},
             config_link: "",
@@ -1877,7 +1872,9 @@
     async function update_poll() {
         console.log("Started polling backend")
         polling = true;
-        await sleep(2000);
+        while (sock.readyState !== 1) {
+            await sleep(100);
+        }
         while (!exit) {
             send(JSON.stringify({"command": "update"}));
             await sleep(1000);
