@@ -44,18 +44,20 @@
             <h2 class="card-header text-center text-light">Welcome to Osu Bot Framework v3!</h2>
             <div class="row">
                 <div class="col-6">
-                    <img src="https://github.com/jramseygreen/osu_bot_framework-v3/blob/main/webapp/assets/images/logo_blue.png?raw=true"
-                             width="600" height="600" class="mt-4">
+                    <div class="text-center mt-4">
+                        <img src="https://github.com/jramseygreen/osu_bot_framework-v3/blob/main/webapp/assets/images/logo_blue.png?raw=true"
+                                 width="600" height="600" class="mt-4">
+                    </div>
                 </div>
                 <div class="col-6">
-                    <div class="card top-50 me-4 ">
+                    <div class="card me-4 top-50" style="max-width: 33vw">
                         <h4 class="card-header">Login</h4>
                         <form onsubmit="return false">
                             <div class="card-body">
                                 <input id="bot_password_input" type="password" class="form-control" placeholder="osu irc password...">
                             </div>
                             <div class="card-footer">
-                                <button class="btn btn-primary" onclick="authenticate();">Login</button>
+                                <button class="btn btn-primary float-end mb-2" onclick="authenticate();">Login</button>
                             </div>
                         </form>
                     </div>
