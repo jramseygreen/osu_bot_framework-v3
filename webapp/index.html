@@ -1556,7 +1556,7 @@
                     document.cookie = "-";
                 }
             }
-            update_poll();
+
         };
 
         sock.onclose = function () {
@@ -1592,6 +1592,7 @@
             buffer = {}
             try {
                 buffer = JSON.parse(message);
+                app.authenticated = true;
             } catch(e) {
                 return
             }
@@ -1702,6 +1703,7 @@
                 }
             }
         };
+        update_poll();
     };
 
     app = new Vue({
@@ -1876,6 +1878,7 @@
     async function update_poll() {
         console.log("Started polling backend")
         polling = true;
+        await sleep(2000);
         while (!exit) {
             send(JSON.stringify({"command": "update"}));
             await sleep(1000);
@@ -2364,9 +2367,6 @@
 
     function authenticate() {
         app.bot_password = document.getElementById("bot_password_input").value;
-        send(JSON.stringify({"command": "authenticate"}));
-        send(JSON.stringify({"command": "update"}));
-        sock.send(JSON.stringify({"command": "update"}));
         document.getElementById("bot_password_input").value = "";
         document.getElementById("bot_password_validation").innerHTML = "Password incorrect!";
         document.cookie = JSON.stringify({"bot_password": app.bot_password});
