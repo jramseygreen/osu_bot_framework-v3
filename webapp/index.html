@@ -1088,9 +1088,16 @@
                                                             <h5 class="modal-title" id="playerModalLabel">
                                                                 <div class="row">
                                                                     <div class="col-4">
-                                                                        <a :href="'https://osu.ppy.sh/u/' + current_username" style="text-decoration: none;" target="_blank">
-                                                                            <img :src="current_user_profile.avatar_url" class="img-thumbnail" width="100" height="100">
-                                                                        </a>
+                                                                        <div v-if="current_username !== ''">
+                                                                            <a :href="'https://osu.ppy.sh/u/' + current_username" style="text-decoration: none;" target="_blank">
+                                                                                <img :src="current_user_profile.avatar_url" class="img-thumbnail" width="100" height="100">
+                                                                            </a>
+                                                                        </div>
+                                                                        <div v-else>
+                                                                            <a href="https://raw.githubusercontent.com/jramseygreen/osu_bot_framework-v3/main/webapp/assets/images/default_pfp.png" style="text-decoration: none;" target="_blank">
+                                                                                <img :src="current_user_profile.avatar_url" class="img-thumbnail" width="100" height="100">
+                                                                            </a>
+                                                                        </div>
                                                                         <div class="text-center mt-3">
                                                                             <img :src="'https://www.geonames.org/flags/x/' + current_user_profile.country_code + '.gif'" width="40" height="20">
                                                                             <span class="text-uppercase">{{current_user_profile.country_code}}</span>
