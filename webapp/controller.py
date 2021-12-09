@@ -302,30 +302,27 @@ class Controller:
             self.__ws.send(conn, message)
 
     def update(self):
-        try:
-            data = {"channels": {}}
-            channels = self.bot.get_channels().copy()
-            for channel in channels:
-                data["channels"][channel] = channels[channel].get_attributes()
-                data["channels"][channel]["total_users"] = len(data["channels"][channel]["users"])
-                data["channels"][channel]["users"] = data["channels"][channel]["users"][:self.__user_num]
-                if "mp_" in channel:
-                    data["channels"][channel]["host"] = channels[channel].get_host()
-                else:
-                    data["channels"][channel]["host"] = ""
-                    data["channels"][channel]["in_progress"] = False
-                    data["channels"][channel]["slots"] = {int(data["channels"][channel]["users"].index(user)): {"username": user} for user in data["channels"][channel]["users"]}
-                if "commands" in data["channels"][channel]:
-                    del data["channels"][channel]["commands"]
-            data["pm"] = self.bot.get_personal_message_log()
-            data["logic_profiles"] = list(self.bot.get_logic_profiles().keys())
-            data["current_user_profile"] = self.__current_user_profile
-            data["bot_username"] = self.bot.get_username()
-            data["redownload_owned_beatmaps"] = self.bot.chimu.is_redownload()
-            data["osu_directory"] = self.bot.get_osu_directory()
-            self.send_message(json.dumps(data))
-        except:
-            pass
+        data = {"channels": {}}
+        channels = self.bot.get_channels().copy()
+        for channel in channels:
+            data["channels"][channel] = channels[channel].get_attributes()
+            data["channels"][channel]["total_users"] = len(data["channels"][channel]["users"])
+            data["channels"][channel]["users"] = data["channels"][channel]["users"][:self.__user_num]
+            if "mp_" in channel:
+                data["channels"][channel]["host"] = channels[channel].get_host()
+            else:
+                data["channels"][channel]["host"] = ""
+                data["channels"][channel]["in_progress"] = False
+                data["channels"][channel]["slots"] = {int(data["channels"][channel]["users"].index(user)): {"username": user} for user in data["channels"][channel]["users"]}
+            if "commands" in data["channels"][channel]:
+                del data["channels"][channel]["commands"]
+        data["pm"] = self.bot.get_personal_message_log()
+        data["logic_profiles"] = list(self.bot.get_logic_profiles().keys())
+        data["current_user_profile"] = self.__current_user_profile
+        data["bot_username"] = self.bot.get_username()
+        data["redownload_owned_beatmaps"] = self.bot.chimu.is_redownload()
+        data["osu_directory"] = self.bot.get_osu_directory()
+        self.send_message(json.dumps(data))
 
     def set_ws_port(self, port):
         self.__ws.set_port(port)
