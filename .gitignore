@@ -1,4 +1,4 @@
 *.pyc
 .idea/
 config/logs/
-.python/
+python/
