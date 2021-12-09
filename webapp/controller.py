@@ -36,7 +36,8 @@ class Controller:
             if not data["command"] == "update":
                 self.bot.log("-- webapp sent: " + msg + " --")
         except:
-            self.send_message("authenticate")
+            if self.bot.is_authenticate():
+                self.send_message("authenticate")
             return
         if data["command"] == "exit_handler":
             self.bot.exit_handler()
