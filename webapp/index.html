@@ -1870,11 +1870,11 @@
     }
 
     async function update_poll() {
-        console.log("Started polling backend")
         polling = true;
         while (sock.readyState !== 1) {
             await sleep(100);
         }
+        console.log("Started polling backend")
         while (!exit) {
             send(JSON.stringify({"command": "update"}));
             await sleep(1000);
