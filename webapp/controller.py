@@ -254,7 +254,7 @@ class Controller:
             # start webapp server
             self.__webapp_sock.bind((self.__host, self.__webapp_port))
             self.__webapp_sock.listen()
-            self.__update_loop()
+            # self.__update_loop()
             self.bot.log("-- Webapp server started at http://" + self.__host + ":" + str(self.__webapp_port) + "/ --")
             if not self.bot.verbose:
                 print("-- Webapp server started at http://" + self.__host + ":" + str(self.__webapp_port) + "/ --")
@@ -310,16 +310,6 @@ class Controller:
             self.send_message(json.dumps(data))
         except:
             pass
-
-    def __update_loop(self, running=False):
-        if not running:
-            x = threading.Thread(target=self.__update_loop, args=(True,))
-            x.setDaemon(True)
-            x.start()
-        else:
-            while True:
-                time.sleep(1)
-                self.update()
 
     def set_ws_port(self, port):
         self.__ws.set_port(port)

@@ -25,6 +25,7 @@ class Bot:
         self.__username = username
         self.__password = password
         self.__controller = Controller(self, host=server_ip)
+        self.__authenticate = False
         self.__started = False
         self.__channels = {}
         self.__default_message_log_length = message_log_length
@@ -486,3 +487,9 @@ class Bot:
 
     def get_osu_directory(self):
         return self.__osu_directory
+
+    def set_authenticate(self, status):
+        self.__authenticate = status
+
+    def is_authenticate(self):
+        return self.__authenticate
