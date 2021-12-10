@@ -147,15 +147,16 @@ class Bot:
                         if command == "353":
                             channel = line[4]
                             if channel in self.__channels:
+                                channel = self.__channels[channel]
                                 users = line[5:]
                                 users[0] = users[0][1:]
                                 for username in users:
                                     if username != "" and username[0] != "+" and username[0] != "@":
-                                        if self.__channels[channel].is_game():
+                                        if channel.is_game():
                                             # game users are added from match history
-                                            self.__channels[channel].get_users().append(username)
+                                            channel.get_users().append(username)
                                         else:
-                                            self.__channels[channel].add_user(username)
+                                            channel.add_user(username)
 
                         # invite link
                         elif command == "332":
