@@ -587,7 +587,7 @@ class Game(Channel):
 
     def check_beatmap(self, beatmap):
         error = ""
-        if not beatmap:
+        if not beatmap or len(beatmap) == 2:
             error = {"type": "unsubmitted", "message": "Only submitted beatmaps are allowed"}
         elif self.__od_range[0] > beatmap["accuracy"] or beatmap["accuracy"] > self.__od_range[1]:
             error = {"type": "od", "message": "The selected beatmap is outside the overall difficulty range: " + str(self.__od_range)}
