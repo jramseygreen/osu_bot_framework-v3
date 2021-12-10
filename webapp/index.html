@@ -1607,7 +1607,11 @@
                 app.authenticated = true;
             }
             if (app.authenticate) {
-                message = decrypt(message);
+                try {
+                    message = decrypt(message);
+                } catch(e) {
+                    return;
+                }
             }
             console.log('Server: ' + message);
             buffer = {};

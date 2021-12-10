@@ -37,12 +37,12 @@ class Controller:
                 self.bot.log("-- webapp sent: " + msg + " --")
         except:
             if self.bot.is_authenticate():
-                self.send_message("authenticate")
+                self.send_message("authenticate", conn)
             return
         if data["command"] == "exit_handler":
             self.bot.exit_handler()
         elif data["command"] == "update":
-            self.update()
+            self.update(conn)
         elif data["command"] == "set_user_num":
             self.__user_num = data["user_num"]
         elif data["command"] == "start_match":
@@ -249,7 +249,7 @@ class Controller:
             if channel and channel.is_game():
                 channel.set_size(data["size"])
         elif data["command"] == "authenticate":
-            self.send_message("success")
+            self.send_message("success", conn)
 
         if "channel" in data:
             channel = self.bot.get_channel(data["channel"])
@@ -295,13 +295,18 @@ class Controller:
                     pass
                 conn.close()
 
-    def send_message(self, message):
-        for conn in self.__ws.get_clients():
+    def send_message(self, message, conn=None):
+        if not conn:
+            for conn in self.__ws.get_clients():
+                if self.bot.is_authenticate() and not message == "authenticate" and not message == "success":
+                    message = self.crypto.encrypt(message)
+                self.__ws.send(conn, message)
+        else:
             if self.bot.is_authenticate() and not message == "authenticate" and not message == "success":
                 message = self.crypto.encrypt(message)
             self.__ws.send(conn, message)
 
-    def update(self):
+    def update(self, conn=None):
         data = {"channels": {}}
         channels = self.bot.get_channels().copy()
         for channel in channels:
@@ -322,7 +327,7 @@ class Controller:
         data["bot_username"] = self.bot.get_username()
         data["redownload_owned_beatmaps"] = self.bot.chimu.is_redownload()
         data["osu_directory"] = self.bot.get_osu_directory()
-        self.send_message(json.dumps(data))
+        self.send_message(json.dumps(data), conn)
 
     def set_ws_port(self, port):
         self.__ws.set_port(port)
