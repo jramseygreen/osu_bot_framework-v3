@@ -1245,6 +1245,7 @@
                                         <span class="badge rounded-pill bg-info text-dark">OD {{beatmap.accuracy}}</span>
                                         <span class="badge rounded-pill bg-info text-dark">CS {{beatmap.cs}}</span>
                                         <span class="badge rounded-pill bg-info text-dark">HP {{beatmap.drain}}</span>
+                                        <button class="badge rounded-pill bg-primary text-dark" onclick="play_preview();">🔊</button>
                                     </div>
                                     <div v-else>
                                         <span class="badge rounded-pill bg-info text-dark">Unsubmitted</span>
@@ -2421,10 +2422,15 @@
          return encrypted.toString();
      }
 
-     function decrypt(message) {
-         var decrypted = CryptoJS.AES.decrypt(message, app.bot_password);
-         return decrypted.toString(CryptoJS.enc.Utf8);
-     }
+    function decrypt(message) {
+        var decrypted = CryptoJS.AES.decrypt(message, app.bot_password);
+        return decrypted.toString(CryptoJS.enc.Utf8);
+    }
+
+    function play_preview() {
+        var audio = new Audio("https://b.ppy.sh/preview/" + app.beatmap["beatmapset_id"] + ".mp3");
+        audio.play();
+    }
 </script>
 
 </body>
