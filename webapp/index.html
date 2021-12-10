@@ -84,7 +84,7 @@
             </div>
             <hr>
             <span class="fs-4 mb-2">Channels</span>
-            <div style="overflow-y: scroll; max-height: 70vh; height: 70vh;">
+            <div style="overflow-y: scroll; height: 70vh;">
                 <ul class="nav nav-pills flex-column mb-auto" id="channels">
                     <li v-for="channel in channels" class="nav-item active">
                         <span :id="channel" class="nav-link">
@@ -413,36 +413,32 @@
                     </h2>
                     <img src="https://github.com/jramseygreen/osu_bot_framework-v3/blob/main/webapp/assets/images/logo_blue.png?raw=true"
                          width="600" height="600" class="mt-4">
-                    <div class="container">
-                        <div class="card bg-dark text-light border-light mt-4">
-                            <h5 class="card-header border-secondary">About this project</h5>
-                            <div class="card-body">
-                                <p>
-                                    This project was created by
-                                    <a href="https://osu.ppy.sh/u/qqzzy" class="text-light" target="_blank">qqzzy</a>.
-                                    For help and documentation, visit the
-                                    <a href="https://github.com/jramseygreen/osu_bot_framework-v3" class="text-light" target="_blank">GitHub Project</a>
-                                    page.
-                                </p>
-                                <p>If you like this project please consider
-                                    <a href="https://paypal.me/joshuargreen" class="text-light" target="_blank">donating</a>
-                                    to allow me to continue development.</p>
-                                <div class="row">
-                                    <h3 class="col-1 text-light">⇦</h3>
-                                    <div class="col-4 card bg-dark border-secondary">
-                                        <span class="text-start"> Get started now by making a room or joining a channel.</span>
-                                    </div>
-                                </div>
-
-
-                            </div>
-                            <div class="card-footer border-secondary">
-                                <p>Special thanks to
-                                    <a href="https://osu.ppy.sh/u/martin71" class="text-light" target="_blank">martin71</a>
-                                    and
-                                    <a href="https://osu.ppy.sh/u/meowhal" class="text-light" target="_blank">meowhal</a>.
-                                </p>
-                            </div>
+                    <div class="card bg-dark text-light border-light position-absolute bottom-0 start-50 translate-middle-x">
+                        <h5 class="card-header border-secondary">About this project</h5>
+                        <div class="card-body">
+                            <p>
+                                This project was created by
+                                <a href="https://osu.ppy.sh/u/qqzzy" class="text-light" target="_blank">qqzzy</a>.
+                                For help and documentation, visit the
+                                <a href="https://github.com/jramseygreen/osu_bot_framework-v3" class="text-light" target="_blank">GitHub Project</a>
+                                page.
+                            </p>
+                            <p>If you like this project please consider
+                                <a href="https://paypal.me/joshuargreen" class="text-light" target="_blank">donating</a>
+                                to allow me to continue development.</p>
+                        </div>
+                        <div class="card-footer border-secondary">
+                            <p>Special thanks to
+                                <a href="https://osu.ppy.sh/u/martin71" class="text-light" target="_blank">martin71</a>
+                                and
+                                <a href="https://osu.ppy.sh/u/meowhal" class="text-light" target="_blank">meowhal</a>.
+                            </p>
+                        </div>
+                    </div>
+                    <div v-show="channels.length === 0" class="row position-absolute bottom-0 mb-4 ms-1">
+                        <h3 class="col-1 text-light">⇦</h3>
+                        <div class="col-7 card bg-dark border-secondary">
+                            <span class="text-start"> Get started by making a room or joining a channel.</span>
                         </div>
                     </div>
                 </div>
