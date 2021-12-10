@@ -51,7 +51,7 @@ class Vote:
         self.hold_vote(self.choices, threshold)
 
     def __trigger(self):
-        if self.get_ballot_number() >= len(self.channel.get_users()) or (self.results and any([list(self.results.values()).count(x) >= self.threshold for x in set(self.results.values())])):
+        if not self.cooldown and (self.get_ballot_number() >= len(self.channel.get_users()) or (self.results and any([list(self.results.values()).count(x) >= self.threshold for x in set(self.results.values())]))):
             x = None
             if str(inspect.signature(self.method)).strip("()").split(", ") != [""]:
                 x = threading.Thread(target=self.method, args=(self,))
@@ -59,7 +59,6 @@ class Vote:
                 x = threading.Thread(target=self.method)
             x.setDaemon(True)
             x.start()
-            print("ran")
             self.stop()
 
     def cast_ballot(self, username, choice=""):

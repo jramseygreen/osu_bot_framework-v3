@@ -45,6 +45,7 @@ class AutoSong:
     def skip(self, message):
         if self.channel.has_referee(message["username"]) and message["content"] == "*skip":
             self.carry_vote(None)
+            self.vote.stop()
         elif not self.channel.in_progress():
             self.vote.cast_ballot(message["username"], "Skip beatmap")
 
