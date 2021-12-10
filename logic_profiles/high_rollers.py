@@ -32,7 +32,7 @@ class HighRollers:
 
     def on_message(self, message):
         if message["username"] == "BanchoBot" and " rolls " in message["content"]:
-            user = message["content"][:message["content"].find("rolls")].strip()
+            user = self.bot.format_username(message["content"][:message["content"].find("rolls")].strip())
             if user not in self.rolls and user in self.validated:
                 points = int(message["content"].replace(user + " rolls ", "").split(" ", 1)[0])
                 self.rolls[user] = points
