@@ -86,7 +86,7 @@
             <span class="fs-4 mb-2">Channels</span>
             <div style="overflow-y: scroll; max-height: 70vh; height: 70vh;">
                 <ul class="nav nav-pills flex-column mb-auto" id="channels">
-                    <li v-for="channel in channels" class="nav-item">
+                    <li v-for="channel in channels" class="nav-item active">
                         <span :id="channel" class="nav-link">
                             <a :name="channel" href="javascript:void(0);" aria-current="page" onclick="setChannel(this)"
                                style="text-decoration: none;">
@@ -1893,9 +1893,8 @@
             }
             app.user_num = 20;
             send(JSON.stringify({"command": "set_user_num", "user_num": app.user_num}));
-            remove_active_channels()
-
             app.channel = data.getAttribute("name");
+            remove_active_channels();
             document.getElementById(app.channel).classList.add("active");
             send(JSON.stringify({"command": "update"}));
        }
@@ -1904,8 +1903,10 @@
     function remove_active_channels() {
         var ul = document.getElementById("channels");
         var items = ul.getElementsByTagName("li");
-        for (var i = 0; i < items.length; ++i) {
-            items[i].firstElementChild.classList.remove("active");
+        for (var i = 0; i < app.channels.length; ++i) {
+            if (app.channels[i] !== app.channel) {
+                document.getElementById(app.channels[i]).classList.remove("active")
+            }
         }
     }
 
@@ -1986,13 +1987,18 @@
         form.reset();
     }
 
-    function part_channel(data) {
+    async function part_channel(data) {
         payload = {
             "command": "part",
             "channel": data.getAttribute("name"),
         };
+        temp = app.channels;
         send(JSON.stringify(payload));
-        remove_active_channels()
+        remove_active_channels();
+        while (JSON.stringify(temp) === JSON.stringify(app.channels)) {
+            await sleep(100);
+        }
+        document.getElementById(app.channel).classList.add("active");
     }
 
     function send_message(inputObj, channel) {
