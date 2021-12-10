@@ -59,6 +59,7 @@ class Vote:
                 x = threading.Thread(target=self.method)
             x.setDaemon(True)
             x.start()
+            print("ran")
             self.stop()
 
     def cast_ballot(self, username, choice=""):

@@ -233,7 +233,7 @@ class Game(Channel):
             elif "Room name:" in message["content"]:
                 self.__title = message["content"].replace("Room name: ", "").split(",", 1)[0]
             elif "osu.ppy.sh/u/" in message["content"]:
-                attr = message["content"].split("   ", 1)
+                attr = message["content"].split("     ", 1)
                 host = False
                 team = ""
                 username = attr[0].split("osu.ppy.sh/u/", 1)[1].split(" ", 1)[1]
