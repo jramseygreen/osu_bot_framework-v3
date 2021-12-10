@@ -1734,8 +1734,9 @@
                             document.getElementById("max_diff").value = app.diff_range[1];
                         }
                     }
-                } else {
+                } else if (app.channel !== "") {
                     app.channel = "";
+                    remove_active_channels();
                 }
             }
         };
@@ -1944,9 +1945,7 @@
     }
 
     function remove_active_channels() {
-        var ul = document.getElementById("channels");
-        var items = ul.getElementsByTagName("li");
-        for (var i = 0; i < app.channels.length; ++i) {
+        for (var i = 0; i < app.channels.length; i++) {
             if (app.channels[i] !== app.channel) {
                 document.getElementById(app.channels[i]).classList.remove("active")
             }
@@ -2041,7 +2040,7 @@
         while (JSON.stringify(temp) === JSON.stringify(app.channels)) {
             await sleep(100);
         }
-        if (app.channels.includes(app.channel)) {
+        if (app.channel !== "" && app.channels.includes(app.channel)) {
             document.getElementById(app.channel).classList.add("active");
         }
     }
