@@ -2039,10 +2039,10 @@
         };
         temp = app.channels;
         send(JSON.stringify(payload));
-        remove_active_channels();
         while (JSON.stringify(temp) === JSON.stringify(app.channels)) {
             await sleep(100);
         }
+        remove_active_channels();
         if (app.channel !== "" && app.channels.includes(app.channel)) {
             document.getElementById(app.channel).classList.add("active");
         }
