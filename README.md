@@ -8,8 +8,8 @@ A powerful framework to create and manage bots for osu
 - Simply download the source code and execute launch.exe. Easy as cake!
 
 #### Unix
-- Install Python 3.9 with `apt install python3.9` or similar for your distro
-- Install the requests library, pycryptodome library & the Six library with `python3 -m pip install requests six pycryptodome`
+- Install Python 3 with `apt install python3` or similar for your distro
+- Install the required libraries with `python3 -m pip -r install requirements.txt`
 - Execute launch.sh
 
 ### If you are just looking for an auto host rotate bot, you can download [simple-AHR](https://github.com/jramseygreen/osu_bot_framework-v3/releases/tag/ahr)
