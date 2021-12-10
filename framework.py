@@ -289,7 +289,7 @@ class Bot:
         if invite_list is None:
             invite_list = [self.__username]
         if not title:
-            title = "An osu game"
+            title = self.__username + "'s game"
         self.__make_room_lock.acquire()
         self.__room_limit_reached = False
         self.send_personal_message("BanchoBot", "!mp make " + title)
