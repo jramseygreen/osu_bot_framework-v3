@@ -12,8 +12,8 @@ class HighRollers:
     def on_match_finish(self):
         self.rolls = {}
         self.validated = []
-        self.channel.send_message("You have 15sec to !roll for host!")
-        time.sleep(10)
+        self.channel.send_message("You have 30sec to !roll for host!")
+        time.sleep(25)
         for i in range(5, 0, -1):
             self.channel.send_message("Rolling concludes in " + str(i))
             time.sleep(1)
