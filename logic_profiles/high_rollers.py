@@ -39,6 +39,7 @@ class HighRollers:
 
     def roll(self, message):
         if message["content"] == "!roll":
-            self.validated.append(message["username"])
+            if message["username"] not in self.validated:
+                self.validated.append(message["username"])
         else:
             self.channel.send_message(message["username"] + " you may only type '!roll'")
