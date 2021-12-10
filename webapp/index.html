@@ -2399,11 +2399,14 @@
         form.elements.invite_players_input.value = "";
     }
 
-    function authenticate() {
+    async function authenticate() {
         app.bot_password = document.getElementById("bot_password_input").value;
         document.getElementById("bot_password_input").value = "";
-        document.getElementById("bot_password_validation").innerHTML = "Password incorrect!";
         document.cookie = JSON.stringify({"bot_password": app.bot_password});
+        await sleep(200);
+        try {
+            document.getElementById("bot_password_validation").innerHTML = "Password incorrect!";
+        } catch(e) {}
     }
 
     function send(message) {
