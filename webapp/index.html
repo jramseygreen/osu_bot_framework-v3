@@ -1941,6 +1941,8 @@
             app.channel = data.getAttribute("name");
             remove_active_channels();
             document.getElementById(app.channel).classList.add("active");
+            app.referees = [];
+            app.host = "";
             send(JSON.stringify({"command": "update"}));
        }
     }
