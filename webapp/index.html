@@ -1603,8 +1603,10 @@
                     cookies = {};
                     try {
                         cookies = JSON.parse(document.cookie);
-                        app.bot_password = cookies["bot_password"];
-                        sock.send(encrypt(JSON.stringify({"command": "authenticate"})));
+                        if (cookies["time"] === new Date().getDate()) {
+                            app.bot_password = cookies["bot_password"];
+                            sock.send(encrypt(JSON.stringify({"command": "authenticate"})));
+                        }
                         document.cookie = "-";
                     } catch(e) {
                         return;
@@ -1616,7 +1618,7 @@
                 console.log('Server: ' + message);
                 app.authenticated = true;
                 if (app.remember_me) {
-                    document.cookie = JSON.stringify({"bot_password": app.bot_password});
+                    document.cookie = JSON.stringify({"bot_password": app.bot_password, "time": new Date().getDate()});
                 }
             }
             if (app.authenticate) {
