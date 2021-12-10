@@ -417,6 +417,7 @@
                 <div class="text-center">
                     <h2 class="card-header border-secondary">
                         Welcome to Osu Bot Framework v3!
+                        <button class="btn btn-secondary rounded-pill btn-sm float-end" title="Clear any saved password cookies" onclick="clear_cookies();">Clear cookies</button>
                     </h2>
                     <img src="https://github.com/jramseygreen/osu_bot_framework-v3/blob/main/webapp/assets/images/logo_blue.png?raw=true"
                          width="600" height="600" class="mt-4">
@@ -2441,6 +2442,11 @@
     function play_preview() {
         var audio = new Audio("https://b.ppy.sh/preview/" + app.beatmap["beatmapset_id"] + ".mp3");
         audio.play();
+    }
+
+    function clear_cookies() {
+        document.cookie = "-";
+        alert("Cleared cookies!");
     }
 </script>
 
