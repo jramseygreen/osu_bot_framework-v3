@@ -1595,8 +1595,8 @@
                 console.log('Server: ' + message);
                 app.authenticate = true;
                 if (document.cookie !== "" && document.cookie !== "-") {
-                    console.log("cookies: " + document.cookie)
-                    cookies = {}
+                    console.log("cookies: " + document.cookie);
+                    cookies = {};
                     try {
                         cookies = JSON.parse(document.cookie);
                         app.bot_password = cookies["bot_password"];
@@ -1605,7 +1605,7 @@
                         document.cookie = "-";
                     }
                 }
-                return
+                return;
             }
             if (message === "success") {
                 app.authenticated = true;
@@ -1614,12 +1614,12 @@
                 message = decrypt(message);
             }
             console.log('Server: ' + message);
-            buffer = {}
+            buffer = {};
             try {
                 buffer = JSON.parse(message);
                 app.authenticated = true;
             } catch(e) {
-                return
+                return;
             }
             if (message !== JSON.stringify(app.buffer)) {
                 app.buffer = buffer;
