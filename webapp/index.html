@@ -1908,7 +1908,7 @@
         console.log("Started polling backend")
         while (!exit) {
             send(JSON.stringify({"command": "update"}));
-            await sleep(1000);
+            await sleep(800);
         }
     }
 
