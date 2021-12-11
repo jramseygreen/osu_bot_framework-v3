@@ -233,20 +233,25 @@ class Game(Channel):
             elif "Room name:" in message["content"]:
                 self.__title = message["content"].replace("Room name: ", "").split(",", 1)[0]
             elif "osu.ppy.sh/u/" in message["content"]:
-                attr = message["content"].split("     ", 1)
+                slot = int(message["content"].split(" ", 2)[1]) - 1
+                username = ""
                 host = False
                 team = ""
-                username = attr[0].split("osu.ppy.sh/u/", 1)[1].split(" ", 1)[1]
-                if len(attr) > 1:
-                    if "Host" in attr[1]:
-                        host = True
-                    if "Team Blue" in attr[1]:
-                        team = "blue"
-                    elif "Team Red" in attr[1]:
-                        team = "red"
-                self.set_slot(int(message["content"].split(" ", 2)[1]) - 1, {"username": username, "team": team, "score": {}})
+                for user in self._users:
+                    if user in message["content"]:
+                        username = user
+                        break
+                attr = message["content"].split(username, 1)
+                if "Host" in attr[1]:
+                    host = True
+                if "Team Blue" in attr[1]:
+                    team = "blue"
+                elif "Team Red" in attr[1]:
+                    team = "red"
+                self.set_slot(slot, {"username": username, "team": team, "score": {}})
                 if host:
                     self.__host = username
+
             elif "Beatmap:" in message["content"] and self.__beatmap == TUTORIAL:
                 self.change_beatmap(message["content"].replace("Beatmap: ", "").split(" ", 1)[0].replace("https://osu.ppy.sh/b/", "", 1))
             elif "Changed match to size " in message["content"]:
