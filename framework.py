@@ -309,7 +309,7 @@ class Bot:
         channel.set_game_mode(game_mode)
         channel.set_team_type(team_type)
         channel.set_scoring_type(scoring_type)
-        if beatmapID and int(beatmapID) != 22538:
+        if game_mode != "any" or beatmapID != 22538:
             channel.change_beatmap(beatmapID)
         if logic_profile:
             channel.implement_logic_profile(logic_profile)

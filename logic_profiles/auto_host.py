@@ -1,8 +1,10 @@
-class Template:
+class AutoHost:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
-        channel.set_command("!add", self.on_add, "!command description")
+        channel.set_command("!add", self.on_add, "Adds a beatmap to the queue")
+        channel.set_command("!q", self.show_queue, "Shows the queue of beatmaps")
+        channel.set_command("!queue", self.show_queue, "Shows the queue of beatmaps")
         channel.start_on_players_ready(True)
 
         self.queue = []
@@ -10,57 +12,42 @@ class Template:
 
     def on_add(self, message):
         beatmap = {}
-        if len(message["content"].replace("!add").strip()) == 1:
-            beatmap = self.channel.fetch_beatmap()
+        beatmapID = message["content"].split("/")[-1]
+        if len(message["content"].replace("!add", "").strip()) == 1:
+            beatmap = self.channel.fetch_beatmap(beatmapID)
         if self.channel.beatmap_checker_on():
             error = self.channel.check_beatmap(beatmap)
-
-
-    def on_personal_message(self, message):
-        pass
-
-    def on_message(self, message):
-        pass
+            if error:
+                self.channel.send_message(message["username"] + " " + error["message"])
+                return
+        if message["username"] not in self.requested:
+            self.queue.append(message["content"].split("/")[-1])
+            self.requested.append(message["username"])
+            self.channel.send_message(message["username"] + " added [https://osu.ppy.sh/b/" + str(beatmapID) + " https://osu.ppy.sh/b/" + str(beatmapID) + "]")
+        else:
+            self.channel.send_message("Sorry " + message["username"] + " you can only add one beatmap at a time!")
 
     def on_join(self, username, slot):
         if self.channel.get_users() == [username]:
             self.channel.clear_host()
 
-    def on_part(self, username, slot):
-        pass
-
-    def on_match_start(self):
-        pass
-
     def on_match_finish(self):
-        pass
+        self.next_round()
 
     def on_match_abort(self):
         self.on_match_finish()
 
-    def on_host_change(self, old_host, new_host):
-        pass
+    def next_round(self):
+        beatmapID = 22538
+        if self.queue:
+            beatmapID = self.queue.pop(0)
+            self.requested.pop(0)
+        else:
+            beatmapID = self.bot.chimu.fetch_random_beatmap(self.channel)["BeatmapId"]
+        self.channel.change_beatmap(beatmapID)
 
-    def on_team_change(self, username, team):
-        pass
-
-    def on_team_addition(self, username, team):
-        pass
-
-    def on_slot_change(self, username, slot):
-        pass
-
-    def on_beatmap_change(self, old_beatmap, new_beatmap):
-        pass
-
-    def on_changing_beatmap(self):
-        pass
-
-    def on_room_close(self):
-        pass
-
-    def on_clear_host(self, old_host):
-        pass
-
-    def on_rule_violation(self, error):
-        pass
+    def show_queue(self):
+        text = "Beatmap queue:\n\n"
+        for beatmapID in self.queue:
+            text += "https://osu.ppy.sh/b/" + str(beatmapID) + "\n"
+        self.channel.send_message("The current queue of beatmaps is available [" + self.bot.paste2_upload("queue for " + self.channel.get_channel(), text) + " here]")
