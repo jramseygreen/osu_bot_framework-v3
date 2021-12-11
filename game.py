@@ -251,7 +251,6 @@ class Game(Channel):
                 self.set_slot(slot, {"username": username, "team": team, "score": {}})
                 if host:
                     self.__host = username
-
             elif "Beatmap:" in message["content"] and self.__beatmap == TUTORIAL:
                 self.change_beatmap(message["content"].replace("Beatmap: ", "").split(" ", 1)[0].replace("https://osu.ppy.sh/b/", "", 1))
             elif "Changed match to size " in message["content"]:

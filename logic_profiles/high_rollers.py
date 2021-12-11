@@ -1,3 +1,4 @@
+import random
 import time
 
 
@@ -17,11 +18,15 @@ class HighRollers:
         for i in range(5, 0, -1):
             self.channel.send_message("Rolling concludes in " + str(i))
             time.sleep(1)
-        if self.rolls:
-            rolls = sorted(self.rolls, key=self.rolls.get, reverse=True)
-            self.channel.set_host(self.bot.format_username(rolls[0]))
-        elif self.channel.has_users():
-            self.channel.set_host(self.channel.get_formatted_users()[0])
+        if self.channel.has_users():
+            top_user = random.choice(self.channel.get_formatted_users())
+            top_score = 0
+            for user in self.rolls:
+                if self.rolls[user] > top_score:
+                    top_user = user
+                    top_score = self.rolls[user]
+            self.channel.send_message(top_user + " took the host with " + str(top_score) + " points rolled!")
+            self.channel.set_host(top_user)
 
     def on_match_abort(self):
         self.on_match_finish()
