@@ -468,7 +468,7 @@ class Game(Channel):
                     if self.__allow_unsubmitted and not beatmap:
                         beatmap = {"id": beatmapID, "url": "https://osu.ppy.sh/b/" + str(beatmapID)}
                         accept_beatmap = True
-                        self.send_message("Can't check attributes, the selected beatmap is unsubmitted! " + "[" + str(self._bot.chimu.fetch_download_link(beatmapID, False)) + " BeatConnect.io download]")
+                        self.send_message("Can't check attributes, the selected beatmap is unsubmitted! " + "[" + str(self._bot.chimu.fetch_download_link(beatmapID, False)) + " Chimu.moe download]")
                     else:
                         error = self.check_beatmap(beatmap)
                         if error:
@@ -492,7 +492,7 @@ class Game(Channel):
                 else:
                     if not beatmap:
                         beatmap = {"id": beatmapID, "url": "https://osu.ppy.sh/b/" + str(beatmapID)}
-                        self.send_message("The selected beatmap is unsubmitted! " + "[" + str(self._bot.chimu.fetch_download_link(beatmapID, False)) + " BeatConnect.io download]")
+                        self.send_message("The selected beatmap is unsubmitted! " + "[" + str(self._bot.chimu.fetch_download_link(beatmapID, False)) + " Chimu.moe download]")
                     accept_beatmap = True
 
             if accept_beatmap:
@@ -591,7 +591,7 @@ class Game(Channel):
 
     def check_beatmap(self, beatmap):
         error = ""
-        if not beatmap or len(beatmap) == 2:
+        if (not beatmap or len(beatmap) == 2) and not self.__allow_unsubmitted:
             error = {"type": "unsubmitted", "message": "Only submitted beatmaps are allowed"}
         elif self.__od_range[0] > beatmap["accuracy"] or beatmap["accuracy"] > self.__od_range[1]:
             error = {"type": "od", "message": "The selected beatmap is outside the overall difficulty range: " + str(self.__od_range)}

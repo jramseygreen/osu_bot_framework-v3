@@ -11,7 +11,7 @@ class AutoHostRotate:
         channel.set_command("!skip", self.skip, "If you are host, changes the host to the next username in the queue else starts vote to skip current host")
         channel.set_command("!config", channel.common_commands.config_link,"Returns a link to the game room configuration page")
         channel.set_command("!randmap", channel.common_commands.randmap,"When host or referee, searches for a random beatmap matching the room's limits and ranges")
-        channel.set_command("!altlink", channel.common_commands.altlink,"Returns an alternate link for the current beatmap from BeatConnect.io")
+        channel.set_command("!altlink", channel.common_commands.altlink,"Returns an alternate link for the current beatmap from Chimu.moe")
         channel.set_command("!topdiff", channel.common_commands.topdiff,"When host, upgrades the beatmap to the highest difficulty within the room limits and ranges")
         channel.set_command("!start", self.start,"When host starts the game with optional countdown timer else starts vote to start match")
         channel.set_command("!mp start", self.mp_start,"When host starts the game with optional countdown timer else starts vote to start match")

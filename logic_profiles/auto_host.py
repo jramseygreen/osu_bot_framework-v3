@@ -6,9 +6,13 @@ class Template:
         channel.start_on_players_ready(True)
 
         self.queue = []
+        self.requested = []
 
     def on_add(self, message):
-        pass
+        if len(message["content"].replace("!add").strip()) == 1:
+            beatmap = self.channel.fetch_beatmap()
+        if self.channel.beatmap_checker_on():
+
 
 
     def on_personal_message(self, message):
@@ -44,9 +48,6 @@ class Template:
 
     def on_slot_change(self, username, slot):
         pass
-
-    def on_all_players_ready(self):
-        self.channel.
 
     def on_beatmap_change(self, old_beatmap, new_beatmap):
         pass
