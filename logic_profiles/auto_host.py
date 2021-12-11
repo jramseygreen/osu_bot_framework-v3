@@ -9,10 +9,11 @@ class Template:
         self.requested = []
 
     def on_add(self, message):
+        beatmap = {}
         if len(message["content"].replace("!add").strip()) == 1:
             beatmap = self.channel.fetch_beatmap()
         if self.channel.beatmap_checker_on():
-
+            error = self.channel.check_beatmap(beatmap)
 
 
     def on_personal_message(self, message):
