@@ -17,7 +17,7 @@ class Template:
     def on_join(self, username, slot):
         pass
 
-    def on_part(self, susername, slot):
+    def on_part(self, username, slot):
         pass
 
     def on_match_start(self):

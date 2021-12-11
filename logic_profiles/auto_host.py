@@ -2,11 +2,12 @@ class Template:
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
-        channel.set_command("!command", self.on_command, "!command description")
+        channel.set_command("!add", self.on_add, "!command description")
+        channel.start_on_players_ready(True)
 
         self.queue = []
 
-    def on_command(self, message):
+    def on_add(self, message):
         pass
 
 
@@ -20,7 +21,7 @@ class Template:
         if self.channel.get_users() == [username]:
             self.channel.clear_host()
 
-    def on_part(self, susername, slot):
+    def on_part(self, username, slot):
         pass
 
     def on_match_start(self):
@@ -30,7 +31,7 @@ class Template:
         pass
 
     def on_match_abort(self):
-        pass
+        self.on_match_finish()
 
     def on_host_change(self, old_host, new_host):
         pass
@@ -45,7 +46,7 @@ class Template:
         pass
 
     def on_all_players_ready(self):
-        pass
+        self.channel.
 
     def on_beatmap_change(self, old_beatmap, new_beatmap):
         pass
