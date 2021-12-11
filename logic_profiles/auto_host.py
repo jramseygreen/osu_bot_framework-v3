@@ -50,4 +50,4 @@ class AutoHost:
         text = "Beatmap queue:\n\n"
         for beatmapID in self.queue:
             text += "https://osu.ppy.sh/b/" + str(beatmapID) + "\n"
-        self.channel.send_message("The current queue of beatmaps is available [" + self.bot.paste2_upload("queue for " + self.channel.get_channel(), text) + " here]")
+        self.channel.send_message("The current queue of beatmaps is available [" + self.bot.paste2_upload("beatmap queue for " + self.channel.get_channel(), text) + " here]")
