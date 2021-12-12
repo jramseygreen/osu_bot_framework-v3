@@ -191,6 +191,22 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.add_beatmap_creator_blacklist(data["creator"])
+        elif data["command"] == "del_beatmap_blacklist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.del_beatmap_blacklist(data["beatmapID"])
+        elif data["command"] == "del_beatmap_whitelist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.del_beatmap_whitelist(data["beatmapID"])
+        elif data["command"] == "add_beatmap_blacklist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.add_beatmap_blacklist(data["beatmapID"])
+        elif data["command"] == "add_beatmap_whitelist":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.add_beatmap_whitelist(data["beatmapID"])
         elif data["command"] == "set_advanced_options":
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():

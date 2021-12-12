@@ -156,6 +156,8 @@ class Chimu:
         beatmap_creator_blacklist = []
         artist_whitelist = []
         artist_blacklist = []
+        beatmap_whitelist = []
+        beatmap_blacklist = []
         if "beatmap_creator_whitelist" in attributes:
             beatmap_creator_whitelist = attributes["beatmap_creator_whitelist"]
             del attributes["beatmap_creator_whitelist"]
@@ -168,6 +170,12 @@ class Chimu:
         if "artist_blacklist" in attributes:
             artist_blacklist = attributes["artist_blacklist"]
             del attributes["artist_blacklist"]
+        if "beatmap_blacklist" in attributes:
+            beatmap_blacklist = attributes["beatmap_blacklist"]
+            del attributes["beatmap_blacklist"]
+        if "beatmap_whitelist" in attributes:
+            beatmap_whitelist = attributes["beatmap_whitelist"]
+            del attributes["beatmap_whitelist"]
 
         # fetch beatmap set search results
         beatmapsets = []
@@ -238,6 +246,10 @@ class Chimu:
                         continue
                     elif artist_blacklist and beatmapset["Artist"].lower() in artist_blacklist:
                         continue
+                    elif beatmap_blacklist and str(beatmap["BeatmapId"]) in beatmap_blacklist:
+                        continue
+                    elif beatmap_whitelist and str(beatmap["BeatmapId"]) not in beatmap_whitelist:
+                        continue
 
                 beatmaps.append(beatmap)
         if beatmaps:
@@ -279,6 +291,9 @@ class Chimu:
         attributes["beatmap_creator_blacklist"] = channel.get_beatmap_creator_blacklist()
         attributes["artist_whitelist"] = channel.get_artist_whitelist()
         attributes["artist_blacklist"] = channel.get_artist_blacklist()
+        attributes["beatmap_blacklist"] = channel.get_beatmap_blacklist()
+        attributes["beatmap_whitelist"] = channel.get_beatmap_whitelist()
+
         return attributes
 
     def set_songs_directory(self, path):

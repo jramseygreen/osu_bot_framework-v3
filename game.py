@@ -79,6 +79,8 @@ class Game(Channel):
         self.__beatmap_creator_blacklist = []
         self.__artist_whitelist = []
         self.__artist_blacklist = []
+        self.__beatmap_whitelist = []
+        self.__beatmap_blacklist = []
 
     def process_message(self, message):
         super().process_message(message)
@@ -614,7 +616,7 @@ class Game(Channel):
             error = {"type": "difficulty", "message": "The selected beatmap is outside the difficulty range: " + str(self.__diff_range).replace("-1.0", "unlimited") + "*"}
         elif self.__game_mode != "any" and beatmap["mode"] != self.__game_mode and not self.__allow_convert:
             error = {"type": "mode", "message": "The selected beatmap's mode must be: " + self.__game_mode}
-        elif self.__beatmap_creator_blacklist or self.__beatmap_creator_whitelist or self.__artist_blacklist or self.__artist_whitelist:
+        elif self.__beatmap_creator_blacklist or self.__beatmap_creator_whitelist or self.__artist_blacklist or self.__artist_whitelist or self.__beatmap_blacklist or self.__beatmap_whitelist:
             beatmapset = self.__fetch_beatmapset(beatmap["id"])
             if self.__beatmap_creator_whitelist and beatmapset["creator"].lower() not in self.__beatmap_creator_whitelist and all([x not in beatmap["version"].lower() for x in self.__beatmap_creator_whitelist]):
                 error = {"type": "creator_whitelist", "message": "The beatmap creator is not whitelisted. The whitelist is: '" + "', '".join(self.__beatmap_creator_whitelist) + "'"}
@@ -624,6 +626,17 @@ class Game(Channel):
                 error = {"type": "artist_whitelist", "message": "The beatmap artist is not whitelisted. The whitelist is: '" + "', '".join(self.__artist_whitelist) + "'"}
             elif self.__artist_blacklist and beatmapset["artist"].lower() in self.__artist_blacklist:
                 error = {"type": "artist_blacklist", "message": "The beatmap artist is blacklisted. The blacklist is: '" + "', '".join(self.__artist_blacklist) + "'"}
+            elif self.__beatmap_blacklist and str(beatmap["id"]) in self.__beatmap_blacklist:
+                blacklist = []
+                for beatmapID in self.__beatmap_whitelist:
+                    blacklist.append("[https://osu.ppy.sh/b/" + beatmapID + " " + beatmapID + "]")
+                error = {"type": "beatmap_blacklist", "message": "This beatmap has been blacklisted. The blacklist is: '" + "', '".join(blacklist) + "'"}
+            elif self.__beatmap_whitelist and str(beatmap["id"]) not in self.__beatmap_whitelist:
+                whitelist = []
+                for beatmapID in self.__beatmap_whitelist:
+                    whitelist.append("[https://osu.ppy.sh/b/" + beatmapID + " " + beatmapID + "]")
+                error = {"type": "beatmap_whitelist", "message": "This beatmap is not whitelisted. The whitelist is: '" + "', '".join(whitelist) + "'"}
+
         return error
 
     def abort_match(self):
@@ -1066,6 +1079,8 @@ class Game(Channel):
         text += "\n     • Allow unsubmitted beatmaps: " + str(self.__allow_unsubmitted)
         text += "\n     • Mods: " + ", ".join(self.__mods)
         text += "\n     • Beatmap status: " + ", ".join(self.__map_status)
+        text += "\n     • Beatmap whitelist: " + ", ".join(self.__beatmap_whitelist)
+        text += "\n     • Beatmap blacklist: " + ", ".join(self.__beatmap_blacklist)
         text += "\n     • Artist whitelist: " + ", ".join(self.__artist_whitelist)
         text += "\n     • Artist blacklist: " + ", ".join(self.__artist_blacklist)
         text += "\n     • Beatmap creator whitelist: " + ", ".join(self.__beatmap_creator_whitelist)
@@ -1189,6 +1204,8 @@ class Game(Channel):
         data["referees"] = self.__referees
         data["config_link"] = self.__config_link
         data["beatmap_checker"] = self.__beatmap_checker
+        data["beatmap_whitelist"] = self.__beatmap_whitelist
+        data["beatmap_blacklist"] = self.__beatmap_blacklist
         data["creator_whitelist"] = self.__beatmap_creator_whitelist
         data["creator_blacklist"] = self.__beatmap_creator_blacklist
         data["artist_whitelist"] = self.__artist_whitelist
@@ -1289,6 +1306,14 @@ class Game(Channel):
         self.set_allow_convert(data["allow_convert"])
         self.set_allow_convert(data["allow_convert"])
 
+        # blacklists / whitelists
+        self.__beatmap_whitelist = data["beatmap_whitelist"]
+        self.__beatmap_blacklist = data["beatmap_blacklist"]
+        self.__artist_blacklist = data["artist_blacklist"]
+        self.__artist_whitelist = data["artist_whitelist"]
+        self.__beatmap_creator_blacklist = data["creator_blacklist"]
+        self.__beatmap_creator_whitelist = data["creator_whitelist"]
+
     def import_config(self, url):
         if "paste2.org" in url:
             lines = self._bot.paste2_download(url)
@@ -1367,6 +1392,14 @@ class Game(Channel):
                     self.set_bpm_range(line.split("• BPM range: ", 1)[1].strip("()").split(", "))
                 elif "• Beatmap length range: " in line:
                     self.set_length_range(line.split("• Beatmap length range: ", 1)[1].split(" ['", 1)[0].strip("()").split(", "))
+                elif "• Beatmap blacklist: " in line:
+                    self.__beatmap_blacklist = line.split("• Beatmap blacklist: ", 1)[1].split(", ")
+                    if "" in self.__beatmap_blacklist:
+                        self.__beatmap_blacklist.remove("")
+                elif "• Beatmap whitelist: " in line:
+                    self.__beatmap_whitelist = line.split("• Beatmap whitelist: ", 1)[1].split(", ")
+                    if "" in self.__beatmap_whitelist:
+                        self.__beatmap_whitelist.remove("")
             self.send_message("Configuration successfully cloned from " + url)
 
     def invite_user(self, username):
@@ -1523,3 +1556,25 @@ class Game(Channel):
 
     def is_locked(self):
         return self.__locked
+
+    def get_beatmap_blacklist(self):
+        return self.__beatmap_blacklist
+
+    def add_beatmap_blacklist(self, beatmapID):
+        if str(beatmapID).isnumeric() and str(beatmapID) not in self.__beatmap_blacklist:
+            self.__beatmap_blacklist.append(str(beatmapID))
+
+    def del_beatmap_blacklist(self, beatmapID):
+        if str(beatmapID) in self.__beatmap_blacklist:
+            self.__beatmap_blacklist.remove(str(beatmapID))
+
+    def get_beatmap_whitelist(self):
+        return self.__beatmap_whitelist
+
+    def add_beatmap_whitelist(self, beatmapID):
+        if str(beatmapID).isnumeric() and str(beatmapID) not in self.__beatmap_whitelist:
+            self.__beatmap_whitelist.append(str(beatmapID))
+
+    def del_beatmap_whitelist(self, beatmapID):
+        if str(beatmapID) in self.__beatmap_whitelist:
+            self.__beatmap_whitelist.remove(str(beatmapID))

@@ -317,6 +317,44 @@ class CommonCommands:
         else:
             self.channel.send_message("Sorry " + message["username"] + " that command is only for referees!")
 
+    def add_beatmap_blacklist(self, message):
+        if self.channel.has_referee(message["username"]):
+            command = message["content"].split(" ", 1)[0]
+            beatmapID = message["content"].replace(command, "", 1).strip()
+            if beatmapID:
+                if beatmapID not in self.channel.get_beatmap_blacklist():
+                    self.channel.add_beatmap_blacklist(beatmapID)
+                    self.channel.send_message("'" + beatmapID + "'" + " added to the blacklist")
+                else:
+                    self.channel.send_message("'" + beatmapID + "' is already in the blacklist")
+
+    def del_beatmap_blacklist(self, message):
+        if self.channel.has_referee(message["username"]):
+            command = message["content"].split(" ", 1)[0]
+            beatmapID = message["content"].replace(command, "", 1).strip()
+            if beatmapID:
+                self.channel.del_beatmap_blacklist(beatmapID)
+                self.channel.send_message("'" + beatmapID + "'" + " removed from the blacklist")
+
+    def add_beatmap_whitelist(self, message):
+        if self.channel.has_referee(message["username"]):
+            command = message["content"].split(" ", 1)[0]
+            beatmapID = message["content"].replace(command, "", 1).strip()
+            if beatmapID:
+                if beatmapID not in self.channel.get_beatmap_whitelist():
+                    self.channel.add_beatmap_whitelist(beatmapID)
+                    self.channel.send_message("'" + beatmapID + "'" + " added to the whitelist")
+                else:
+                    self.channel.send_message("'" + beatmapID + "' is already in the whitelist")
+
+    def del_beatmap_whitelist(self, message):
+        if self.channel.has_referee(message["username"]):
+            command = message["content"].split(" ", 1)[0]
+            beatmapID = message["content"].replace(command, "", 1).strip()
+            if beatmapID:
+                self.channel.del_beatmap_whitelist(beatmapID)
+                self.channel.send_message("'" + beatmapID + "'" + " removed from the whitelist")
+
     def add_beatmap_creator_whitelist(self, message):
         if self.channel.has_referee(message["username"]):
             command = message["content"].split(" ", 1)[0]
