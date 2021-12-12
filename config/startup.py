@@ -5,7 +5,11 @@ def startup(bot):
     # ---------------------------------------------
     #channel = bot.join("#english")
     #channel2 = bot.join("#osu")
-    channel = bot.make_room(password="abd")
+    # channel = bot.make_room(password="abd")
+    # channel1 = bot.make_room(password="abc")
+    # channel1.implement_logic_profile("Manager")
+    # channel1.set_game_mode("osu")
+    # bot.clone_channel(channel1, channel)
     #print(bot.paste2_download(channel.get_config_link()))
     # channel.implement_logic_profile("Manager")
     # channel.set_game_mode("osu")

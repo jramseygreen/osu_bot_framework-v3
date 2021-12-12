@@ -459,6 +459,7 @@
                     <template>
                         <div v-if="title.includes('mp_')">
                             <h2>
+                                <button class="btn btn-secondary rounded-pill float-start" data-bs-toggle="modal" data-bs-target="#importConfigModal">Import Configuration</button>
                                 <a :href="'https://osu.ppy.sh/mp/' + channel.replace('#mp_', '')" target="_blank"
                                    class="text-light" style="text-decoration: none;">
                                     {{title}}
@@ -467,7 +468,15 @@
                             </h2>
                             <div class="row">
                                 <div class="col-12">
-                                    <button class="btn btn-secondary rounded-pill float-start" data-bs-toggle="modal" data-bs-target="#importConfigModal">Import Configuration</button>
+                                    <div class="btn-group float-start">
+                                      <button type="button" class="btn btn-light" disabled>Clone from</button>
+                                      <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                      </button>
+                                      <ul class="dropdown-menu">
+                                          <li v-for="chan in channels" v-if="chan.includes('mp_') && chan !== channel"><a class="dropdown-item" href="javascript:void(0);" @click="clone_channel(channel)">{{chan}}</a></li>
+                                      </ul>
+                                    </div>
                                     <a :href="config_link" target="_blank" class="text-light">
                                         <small>View configuration page</small>
                                     </a>
@@ -503,6 +512,15 @@
                             <span>
                                 <h2>{{title}}</h2>
                                 <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#broadcastsModal">Broadcasts</button>
+                                <div class="btn-group float-start">
+                                  <button type="button" class="btn btn-light" disabled>Clone from</button>
+                                  <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                  </button>
+                                  <ul class="dropdown-menu">
+                                      <li v-for="chan in channels" v-if="!chan.includes('mp_') && chan !== channel"><a class="dropdown-item" href="javascript:void(0);" @click="clone_channel(channel)">{{chan}}</a></li>
+                                  </ul>
+                                </div>
                             </span>
                         </div>
                     </template>
@@ -2004,6 +2022,14 @@
                     "command": "del_beatmap_blacklist",
                     "channel": app.channel,
                     "beatmapID": beatmapID
+                };
+                send(JSON.stringify(payload));
+            },
+            clone_channel: function(channel) {
+                 payload = {
+                    "command": "clone_channel",
+                    "channel1": channel,
+                    "channel2": app.channel
                 };
                 send(JSON.stringify(payload));
             },

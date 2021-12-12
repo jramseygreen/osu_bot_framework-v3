@@ -268,6 +268,12 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.import_config(data["url"])
+        elif data["command"] == "clone_channel":
+            channel1 = self.bot.get_channel(data["channel1"])
+            channel2 = self.bot.get_channel(data["channel2"])
+            print("yes")
+            self.bot.clone_channel(channel1, channel2)
+            print("yes2")
         elif data["command"] == "authenticate":
             self.send_message("success", conn)
 

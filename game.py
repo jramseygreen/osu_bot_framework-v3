@@ -1190,6 +1190,7 @@ class Game(Channel):
 
     def get_attributes(self):
         data = super().get_attributes()
+        data["title"] = self.__title
         data["creator"] = self.__creator
         data["invite_link"] = self.__invite_link
         data["slots"] = self.__slots
@@ -1274,6 +1275,7 @@ class Game(Channel):
 
     # overwrites certain room attributes
     def import_attributes(self, data):
+        self.set_title(data["title"])
         self.set_beatmap(data["beatmap"])
         self.set_size(data["size"])
         self.set_password(data["password"])
