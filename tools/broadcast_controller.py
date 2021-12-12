@@ -21,7 +21,7 @@ class BroadcastController:
     # adds a new active broadcast and returns its id
     def add_broadcast(self, channel, message, secs):
         id = self.__gen_id()
-        broadcast = {"id": id, "channel": channel, "message": message, "secs": int(secs)}
+        broadcast = {"id": id, "channel": channel, "message": message, "secs": float(secs)}
         if channel not in self.__channels:
             self.__channels[channel] = []
         self.__channels[channel].append(broadcast)

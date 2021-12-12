@@ -5,6 +5,8 @@ def startup(bot):
     # ---------------------------------------------
     #channel = bot.join("#english")
     #channel2 = bot.join("#osu")
+    channel = bot.make_room(password="abd")
+    #print(bot.paste2_download(channel.get_config_link()))
     # channel.implement_logic_profile("Manager")
     # channel.set_game_mode("osu")
     # channel.set_diff_range((4, 6))

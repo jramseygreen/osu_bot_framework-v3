@@ -1,3 +1,4 @@
+import html
 import importlib
 import inspect
 import json
@@ -306,11 +307,9 @@ class Bot:
         channel.set_password(password)
         channel.set_size(size)
         channel.set_mods(mods)
-        channel.set_game_mode(game_mode)
         channel.set_team_type(team_type)
         channel.set_scoring_type(scoring_type)
-        if game_mode != "any" or beatmapID != 22538:
-            channel.change_beatmap(beatmapID)
+        channel.change_beatmap(beatmapID)
         if logic_profile:
             channel.implement_logic_profile(logic_profile)
         for username in invite_list:
@@ -329,6 +328,18 @@ class Bot:
         }
         r = requests.post(url, data=payload)
         return r.url
+
+    def paste2_download(self, url):
+        linesrtn = []
+        if "paste2.org" in url:
+            if url.find("http") != 0:
+                url = "https://" + url
+            r = requests.get(url)
+            text = r.text.split("<ol class='highlight code'>", 1)[1].split("</div></li></ol>", 1)[0]
+            lines = text.split("\n")[1:-1]
+            for line in lines:
+                linesrtn.append(html.unescape(line.split("<div>", 1)[1].split("</div>", 1)[0]))
+        return linesrtn
 
     def fetch_user_profile(self, username):
         url = "https://osu.ppy.sh/users/" + str(username).replace(" ", "%20")
@@ -373,7 +384,7 @@ class Bot:
             return self.__logic_profiles[class_name]
 
     # implements a logic profile
-    def implement_logic(self, profile):
+    def implement_logic_profile(self, profile):
         profile = self.get_logic_profile(profile)(self)
         if hasattr(profile, "on_personal_message") and callable(getattr(profile, "on_personal_message")):
             self.on_personal_message(profile.on_personal_message)

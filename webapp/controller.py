@@ -248,6 +248,10 @@ class Controller:
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.set_size(data["size"])
+        elif data["command"] == "import_config":
+            channel = self.bot.get_channel(data["channel"])
+            if channel and channel.is_game():
+                channel.import_config(data["url"])
         elif data["command"] == "authenticate":
             self.send_message("success", conn)
 

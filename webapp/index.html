@@ -300,7 +300,7 @@
                             <hr>
                             <div class="input-group mb-4">
                                 <span class="input-group-text">Beatmap ID</span>
-                                <input type="text" class="form-control" value="22538" placeholder="Beatmap ID applied upon creating the room..." onchange="app.make_room.beatmapID = this.value;">
+                                <input type="number" step="1" pattern="\d+" class="form-control" value="22538" placeholder="Beatmap ID applied upon creating the room..." onchange="app.make_room.beatmapID = this.value;">
                             </div>
                             <div class="input-group">
                                 <span class="input-group-text">Logic Profile</span>
@@ -465,12 +465,15 @@
                                 </a>
                                 <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#editTitleModal">Edit Title</button>
                             </h2>
-                            <span>
-                                <a :href="config_link" target="_blank" class="text-light">
-                                    <small>View configuration page</small>
-                                </a>
-                                <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#broadcastsModal">Broadcasts</button>
-                            </span>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button class="btn btn-secondary rounded-pill float-start" data-bs-toggle="modal" data-bs-target="#importConfigModal">Import Configuration</button>
+                                    <a :href="config_link" target="_blank" class="text-light">
+                                        <small>View configuration page</small>
+                                    </a>
+                                    <button class="btn btn-secondary rounded-pill float-end" data-bs-toggle="modal" data-bs-target="#broadcastsModal">Broadcasts</button>
+                                </div>
+                            </div>
 
                                 <!-- edit title Modal -->
                             <div class="modal fade" id="editTitleModal" tabindex="-1" aria-labelledby="editTitleLabel" aria-hidden="true">
@@ -544,7 +547,7 @@
                               <form onsubmit="return false">
                                   <div class="input-group mb-4">
                                       <span class="input-group-text">Period</span>
-                                      <input id="broadcast_secs" type="text" class="form-control text-center" style="max-width: 6%;" value="900">
+                                      <input id="broadcast_secs" type="number" step="1" pattern="\d+" class="form-control text-center" style="max-width: 8%;" value="900">
                                       <span class="input-group-text">Message</span>
                                       <input id="broadcast_message" type="text" class="form-control" placeholder="Write your broadcast message here...">
                                       <button class="btn btn-primary" onclick="add_broadcast(this.form);">Add</button>
@@ -557,6 +560,27 @@
                         </div>
                       </div>
                     </div>
+
+                    <!-- import config Modal -->
+                    <div class="modal fade" id="importConfigModal" tabindex="-1" aria-labelledby="importConfigLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content text-dark">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="importConfigLabel">Import settings from configuration link</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <h5>Configuration page url</h5>
+                              <input id="import_config_input" type="text" class="form-control" placeholder="e.g. paste2.org/afXby21">
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="import_config();">Import</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                 </div>
                 <span v-show="in_progress && channel.includes('#mp_')"
                       class="badge bg-success">Match In Progress...</span>
@@ -2449,6 +2473,16 @@
     function clear_cookies() {
         document.cookie = "-";
         alert("Cleared cookies!");
+    }
+
+    function import_config()  {
+        payload = {
+            "command": "import_config",
+            "channel": app.channel,
+            "url": document.getElementById("import_config_input").value
+        };
+        send(JSON.stringify(payload));
+        document.getElementById("import_config_input").value = ""
     }
 </script>
 

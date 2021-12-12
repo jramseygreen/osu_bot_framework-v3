@@ -11,6 +11,7 @@ class Manager:
         channel.set_command("!aborttimer", channel.common_commands.abort_start_timer, "When host or referee, aborts start timer")
         channel.set_command("!update", channel.common_commands.update_beatmap, "Updates current beatmap")
         channel.set_command("R̲e̲f̲e̲r̲e̲e̲ C̲o̲m̲m̲a̲n̲d̲s̲", "")
+        channel.set_command("*import_config", channel.common_commands.import_config, "Import settings from a config page link")
         channel.set_command("*implement", channel.common_commands.implement_logic_profile, "Implements a logic profile")
         channel.set_command("*logic_profiles", channel.common_commands.get_logic_profiles, "Shows available logic profiles")
         channel.set_command("*make_room", channel.common_commands.make_room, "Creates a game room with title which is monitored by the bot. e.g. *make_room an osu room")

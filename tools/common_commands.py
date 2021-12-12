@@ -23,6 +23,15 @@ class CommonCommands:
     def config_link(self, message):
         self.channel.send_message("The configuration of the game room and available commands can be viewed [" + self.channel.get_config_link() + " here]")
 
+    def import_config(self, message):
+        if self.channel.has_referee(message["username"]):
+            if "paste2.org" in message["content"]:
+                self.channel.import_config(message["content"].split(" ", 1)[1])
+            else:
+                self.channel.send_message(message["content"].split(" ", 1)[1] + " is not a valid configuration page")
+        else:
+            self.channel.send_message("This command is only available to referees.")
+
     def randmap(self, message):
         command = message["content"].split(" ", 1)[0]
         if self.channel.get_formatted_host() == message["username"] or self.channel.has_referee(message["username"]):
