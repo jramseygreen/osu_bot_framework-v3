@@ -13,7 +13,6 @@ class AutoSong:
         channel.set_command("!info", "Built with [https://github.com/jramseygreen/osu_bot_framework-v3 osu_bot_framework v3] | Type '!config' to view room configuration and commands", "Built with osu bot framework v3")
         channel.set_command("!skip", self.skip, "Vote to skip the current beatmap.")
         channel.set_command("!altlink", channel.common_commands.altlink, "returns an alternate link for the current beatmap from chimu.moe")
-        channel.set_command("!config", channel.common_commands.config_link, "returns a link to the game room configuration page")
         channel.set_command("R̲e̲f̲e̲r̲e̲e̲ C̲o̲m̲m̲a̲n̲d̲s̲", "")
         channel.set_command("*implement", channel.common_commands.implement_logic_profile, "Implements a logic profile")
         channel.set_command("*logic_profiles", channel.common_commands.get_logic_profiles, "Shows available logic profiles")
