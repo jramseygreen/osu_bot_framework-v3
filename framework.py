@@ -309,8 +309,8 @@ class Bot:
         channel.set_mods(mods)
         channel.set_team_type(team_type)
         channel.set_scoring_type(scoring_type)
-        channel.change_beatmap(beatmapID)
         channel.set_game_mode(game_mode)
+        channel.change_beatmap(beatmapID)
         if logic_profile:
             channel.implement_logic_profile(logic_profile)
         for username in invite_list:
