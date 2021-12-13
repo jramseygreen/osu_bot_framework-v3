@@ -474,7 +474,7 @@
                                         <span class="visually-hidden">Toggle Dropdown</span>
                                       </button>
                                       <ul class="dropdown-menu">
-                                          <li v-for="chan in channels" v-if="chan.includes('mp_') && chan !== channel"><a class="dropdown-item" href="javascript:void(0);" @click="clone_channel(channel)">{{chan}}</a></li>
+                                          <li v-for="chan in channels" v-if="chan.includes('mp_') && chan !== channel"><a class="dropdown-item" href="javascript:void(0);" @click="clone_channel(chan)">{{chan}}</a></li>
                                       </ul>
                                     </div>
                                     <a :href="config_link" target="_blank" class="text-light">
@@ -518,7 +518,7 @@
                                     <span class="visually-hidden">Toggle Dropdown</span>
                                   </button>
                                   <ul class="dropdown-menu">
-                                      <li v-for="chan in channels" v-if="!chan.includes('mp_') && chan !== channel"><a class="dropdown-item" href="javascript:void(0);" @click="clone_channel(channel)">{{chan}}</a></li>
+                                      <li v-for="chan in channels" v-if="!chan.includes('mp_') && chan !== channel"><a class="dropdown-item" href="javascript:void(0);" @click="clone_channel(chan)">{{chan}}</a></li>
                                   </ul>
                                 </div>
                             </span>
@@ -2025,10 +2025,10 @@
                 };
                 send(JSON.stringify(payload));
             },
-            clone_channel: function(channel) {
+            clone_channel: function(chan) {
                  payload = {
                     "command": "clone_channel",
-                    "channel1": channel,
+                    "channel1": chan,
                     "channel2": app.channel
                 };
                 send(JSON.stringify(payload));
@@ -2433,50 +2433,49 @@
         payload = {
             "command": "set_advanced_options",
             "channel": app.channel,
-            "beatmap_checker": form.elements.beatmap_checker_switch.checked,
-            "allow_convert": form.elements.allow_conversion_switch.checked,
-            "allow_unsubmitted": form.elements.allow_unsubmitted_switch.checked,
-            "maintain_title": form.elements.maintain_title_switch.checked,
-            "maintain_password": form.elements.maintain_password_switch.checked,
-            "maintain_size": form.elements.maintain_size_switch.checked,
-            "autostart": form.elements.autostart_switch.checked,
-            "autostart_timer": form.elements.autostart_timer_input.value.trim(),
-            "welcome_message": form.elements.welcome_message_input.value.trim(),
-            "auto_download": form.elements.auto_download_switch.checked,
-            "auto_download_path": form.elements.auto_download_path.value.trim(),
-            "download_video": form.elements.download_video_switch.checked,
-            "auto_open": form.elements.auto_open_switch.checked,
-            "redownload_owned_beatmaps": form.elements.redownload_owned_beatmaps.checked,
-            "osu_directory": form.elements.osu_directory.value,
+            "beatmap_checker":  document.getElementById("beatmap_checker_switch").checked,
+            "allow_convert":  document.getElementById("allow_conversion_switch").checked,
+            "allow_unsubmitted":  document.getElementById("allow_unsubmitted_switch").checked,
+            "maintain_title":  document.getElementById("maintain_title_switch").checked,
+            "maintain_password":  document.getElementById("maintain_password_switch").checked,
+            "maintain_size":  document.getElementById("maintain_size_switch").checked,
+            "autostart":  document.getElementById("autostart_switch").checked,
+            "autostart_timer":  document.getElementById("autostart_timer_input").value.trim(),
+            "welcome_message":  document.getElementById("welcome_message_input").value.trim(),
+            "auto_download":  document.getElementById("auto_download_switch").checked,
+            "auto_download_path":  document.getElementById("auto_download_path").value.trim(),
+            "download_video":  document.getElementById("download_video_switch").checked,
+            "auto_open":  document.getElementById("auto_open_switch").checked,
+            "redownload_owned_beatmaps":  document.getElementById("redownload_owned_beatmaps").checked,
+            "osu_directory":  document.getElementById("osu_directory").value,
         };
-        if (!form.elements.autostart_timer_switch.checked) {
+        if (!document.getElementById("autostart_timer_switch").checked) {
             payload["autostart_timer"] = -1;
         }
-        if (!form.elements.welcome_message_switch.checked) {
+        if (!document.getElementById("welcome_message_switch").checked) {
             payload["welcome_message"] = "";
         }
         send(JSON.stringify(payload));
     }
 
     function reset_advanced_options() {
-        form = document.getElementById("advanced_options_form");
-        form.elements.beatmap_checker_switch.checked = app.beatmap_checker;
-        form.elements.allow_conversion_switch.checked = app.allow_convert;
-        form.elements.allow_unsubmitted_switch.checked = app.allow_unsubmitted;
-        form.elements.maintain_title_switch.checked = app.maintain_title;
-        form.elements.maintain_password_switch.checked = app.maintain_password;
-        form.elements.maintain_size_switch.checked = app.maintain_size;
-        form.elements.autostart_switch.checked = app.start_on_players_ready;
-        form.elements.autostart_timer_switch.checked = app.autostart_timer > 0;
-        form.elements.autostart_timer_input.value = app.autostart_timer;
-        form.elements.welcome_message_switch.checked = app.welcome_message !== "";
-        form.elements.welcome_message_input.value = app.welcome_message;
-        form.elements.auto_download_switch.checked = app.auto_download.status;
-        form.elements.auto_download_path.value = app.auto_download.path;
-        form.elements.download_video_switch.checked = app.auto_download.with_video;
-        form.elements.auto_open_switch.checked = app.auto_download.auto_open;
-        form.elements.redownload_owned_beatmaps.checked = app.redownload_owned_beatmaps;
-        form.elements.osu_directory.value = app.osu_directory;
+        document.getElementById("beatmap_checker_switch").checked = app.beatmap_checker;
+        document.getElementById("allow_conversion_switch").checked = app.allow_convert;
+        document.getElementById("allow_unsubmitted_switch").checked = app.allow_unsubmitted;
+        document.getElementById("maintain_title_switch").checked = app.maintain_title;
+        document.getElementById("maintain_password_switch").checked = app.maintain_password;
+        document.getElementById("maintain_size_switch").checked = app.maintain_size;
+        document.getElementById("autostart_switch").checked = app.start_on_players_ready;
+        document.getElementById("autostart_timer_switch").checked = app.autostart_timer > 0;
+        document.getElementById("autostart_timer_input").value = app.autostart_timer;
+        document.getElementById("welcome_message_switch").checked = app.welcome_message !== "";
+        document.getElementById("welcome_message_input").value = app.welcome_message;
+        document.getElementById("auto_download_switch").checked = app.auto_download.status;
+        document.getElementById("auto_download_path").value = app.auto_download.path;
+        document.getElementById("download_video_switch").checked = app.auto_download.with_video;
+        document.getElementById("auto_open_switch").checked = app.auto_download.auto_open;
+        document.getElementById("redownload_owned_beatmaps").checked = app.redownload_owned_beatmaps;
+        document.getElementById("osu_directory").value = app.osu_directory;
     }
 
     function set_password(form) {
