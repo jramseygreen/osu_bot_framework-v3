@@ -661,11 +661,3 @@ class CommonCommands:
             if message["username"] not in self.fights:
                 self.fights[message["username"]] = 0
             self.channel.send_message(message["username"] + " has defeated " + str(self.fights[message["username"]]) + " opponents.")
-
-    # todo
-    def upload_logic_profile(self, message):
-        f = open("logic_profiles" + os.sep + self.channel.get_logic_profile() + ".py", "r")
-        text = f.read()
-        f.close()
-        url = self.bot.paste2_upload(self.channel.get_logic_profile() + " logic profile", text)
-        self.channel.send_message("The current logic profile is [" + url + " " + self.channel.get_logic_profile() + "]")

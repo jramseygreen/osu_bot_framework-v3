@@ -4,7 +4,7 @@ class Manager:
         self.bot = bot
         self.channel = channel
         channel.set_command("!randmap", channel.common_commands.randmap, "When host or referee, searches for a random beatmap matching the room's limits and ranges")
-        channel.set_command("!altlink", channel.common_commands.altlink, "Returns an alternate link for the current beatmap from BeatConnect.io")
+        channel.set_command("!altlink", channel.common_commands.altlink, "Returns an alternate link for the current beatmap from Chimu.moe")
         channel.set_command("!topdiff", channel.common_commands.topdiff, "When host, upgrades the beatmap to the highest difficulty within the room limits and ranges")
         channel.set_command("!start", channel.common_commands.start_timer, "When host or referee, starts the game with optional countdown timer")
         channel.set_command("!aborttimer", channel.common_commands.abort_start_timer, "When host or referee, aborts start timer")
