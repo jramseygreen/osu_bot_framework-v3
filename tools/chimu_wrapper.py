@@ -113,7 +113,7 @@ class Chimu:
             then = time.time()
             file = requests.get(url)
             if file.status_code < 400 and 'message":"Error:' not in file.text:
-                while time.time() - then >= 1:
+                while time.time() - then <= 1:
                     pass
                 f = open(path + str(beatmapsetID) + ".osz", "wb")
                 f.write(file.content)
