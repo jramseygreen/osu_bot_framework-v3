@@ -1196,29 +1196,29 @@ class Game(Channel):
         data["slots"] = self.__slots
         data["host"] = self.__host
         data["in_progress"] = self.__in_progress
-        data["beatmap"] = self.__beatmap
+        data["beatmap"] = self.__beatmap.copy()
         data["beatmap_name"] = self.__beatmap_name
         data["size"] = self.__size
         data["password"] = self._password
         data["title"] = self.__title
         data["welcome_message"] = self.__welcome_message
-        data["referees"] = self.__referees
+        data["referees"] = self.__referees.copy()
         data["config_link"] = self.__config_link
         data["beatmap_checker"] = self.__beatmap_checker
-        data["beatmap_whitelist"] = self.__beatmap_whitelist
-        data["beatmap_blacklist"] = self.__beatmap_blacklist
-        data["creator_whitelist"] = self.__beatmap_creator_whitelist
-        data["creator_blacklist"] = self.__beatmap_creator_blacklist
-        data["artist_whitelist"] = self.__artist_whitelist
-        data["artist_blacklist"] = self.__artist_blacklist
-        data["player_blacklist"] = self.__player_blacklist
+        data["beatmap_whitelist"] = self.__beatmap_whitelist.copy()
+        data["beatmap_blacklist"] = self.__beatmap_blacklist.copy()
+        data["creator_whitelist"] = self.__beatmap_creator_whitelist.copy()
+        data["creator_blacklist"] = self.__beatmap_creator_blacklist.copy()
+        data["artist_whitelist"] = self.__artist_whitelist.copy()
+        data["artist_blacklist"] = self.__artist_blacklist.copy()
+        data["player_blacklist"] = self.__player_blacklist.copy()
         data["autostart_timer"] = self.__autostart_timer
         data["maintain_title"] = self.__maintain_title
         data["maintain_password"] = self.__maintain_password
         data["maintain_size"] = self.__maintain_size
         data["beatmap_checker"] = self.__beatmap_checker
         data["start_on_players_ready"] = self.__start_on_players_ready
-        data["auto_download"] = self.__auto_download
+        data["auto_download"] = self.__auto_download.copy()
 
         # limits and ranges (done)
         data["ar_range"] = self.__ar_range
@@ -1228,11 +1228,11 @@ class Game(Channel):
         data["diff_range"] = self.__diff_range
         data["bpm_range"] = self.__bpm_range
         data["length_range"] = self.__length_range
-        data["map_status"] = self.__map_status
+        data["map_status"] = self.__map_status.copy()
         data["allow_unsubmitted"] = self.__allow_unsubmitted
 
         # game attributes
-        data["mods"] = self.__mods
+        data["mods"] = self.__mods.copy()
         data["scoring_type"] = self.__scoring_type
         data["team_type"] = self.__team_type
         data["game_mode"] = self.__game_mode
