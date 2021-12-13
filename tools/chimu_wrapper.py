@@ -135,6 +135,9 @@ class Chimu:
 
     def fetch_random_beatmap(self, channel=None, **attributes):
         # grab attributes from channel object
+        if "beatmap_whitelist" in attributes:
+            if attributes["beatmap_whitelist"]:
+                return self.fetch_beatmap(int(random.choice(attributes["beatmap_whitelist"])))
         query = ""
         if "query" in attributes:
             query = attributes["query"]
