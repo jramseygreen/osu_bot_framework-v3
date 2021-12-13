@@ -23,4 +23,4 @@ Coming soon:
 
 my osu username is qqzzy
 
-Yo! Thats me
+Yo! Thats me.
