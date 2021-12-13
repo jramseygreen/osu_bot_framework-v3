@@ -22,5 +22,3 @@ Coming soon:
 - Javascript logic profiles
 
 my osu username is qqzzy
-
-Yo! Thats me.
