@@ -175,6 +175,8 @@ class Channel:
         self._logic_profile = ""
         self.clear_logic()
         self.clear_commands()
+        if self.is_game():
+            self.set_custom_config_text("")
 
     def clear_commands(self):
         if self.is_game():
