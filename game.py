@@ -1348,6 +1348,8 @@ class Game(Channel):
                     self.start_on_players_ready(line.split("• Start on players ready: ", 1)[1] == "True")
                 elif "• Autostart timer: True " in line:
                     self.set_autostart_timer(True, line.split("• Autostart timer: True ", 1)[1].replace("secs", ""))
+                elif "• Autostart timer: False " in line:
+                    self.set_autostart_timer(False)
                 elif "• Room size: " in line:
                     self.set_size(line.split("• Room size: ", 1)[1])
                 elif "• Game mode: " in line:
@@ -1468,7 +1470,7 @@ class Game(Channel):
     def is_start_on_players_ready(self):
         return self.__start_on_players_ready
 
-    def set_autostart_timer(self, status, secs):
+    def set_autostart_timer(self, status, secs=-1):
         if not status:
             secs = -1
         self.__autostart_timer = int(secs)

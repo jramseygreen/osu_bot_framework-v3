@@ -408,7 +408,6 @@ class Bot:
     def clone_channel(self, channel1, channel2):
         attributes = channel1.get_attributes()
         logic = channel1.get_logic_profile()
-        print(logic)
         channel2.implement_logic_profile(logic)
         channel2.import_attributes(attributes)
 
