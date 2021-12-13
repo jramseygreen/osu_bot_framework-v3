@@ -1328,6 +1328,8 @@ class Game(Channel):
     def import_config(self, url):
         if "paste2.org" in url:
             lines = self._bot.paste2_download(url)
+            for broadcast in self._bot.get_broadcast_controller().get_broadcasts(self._channel):
+                self._bot.get_broadcast_controller().del_broadcast(broadcast["id"])
             broadcasts = False
             for line in lines:
                 if broadcasts and line.replace(" ", "") != "":
