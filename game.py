@@ -1112,11 +1112,11 @@ class Game(Channel):
             text += "\n     • " + command + ": " + self._commands[command]["description"]
 
         text += "\n\n 𝚃̲𝚑̲𝚎̲ ̲𝚏̲𝚘̲𝚕̲𝚕̲𝚘̲𝚠̲𝚒̲𝚗̲𝚐̲ ̲𝚖̲𝚎̲𝚜̲𝚜̲𝚊̲𝚐̲𝚎̲𝚜̲ ̲𝚊̲𝚛̲𝚎̲ ̲𝚋̲𝚎̲𝚒̲𝚗̲𝚐̲ ̲𝚋̲𝚛̲𝚘̲𝚊̲𝚍̲𝚌̲𝚊̲𝚜̲𝚝̲ ̲𝚘̲𝚗̲ ̲𝚊̲ ̲𝚝̲𝚒̲𝚖̲𝚎̲𝚛̲:"
-        text += "\n\n     𝙸̲𝙳̲   𝙼̲𝚎̲𝚜̲𝚜̲𝚊̲𝚐̲𝚎̲"
+        text += "\n\n     𝙸̲𝙳̲   ̲𝚝̲𝚒̲𝚖̲𝚎̲  𝙼̲𝚎̲𝚜̲𝚜̲𝚊̲𝚐̲𝚎̲"
         broadcasts = self._bot.get_broadcast_controller().get_broadcasts(self._channel)
         for broadcast in broadcasts:
             if type(broadcasts) == list:
-                text += "\n     " + str(broadcast["id"]) + "    '" + broadcast["message"] + "'"
+                text += "\n     " + str(broadcast["id"]) + "    " + str(broadcast["secs"]) + "    " + "'" + broadcast["message"] + "'"
         if text != self.__config_text:
             self.__config_text = text
             self.__config_link = self._bot.paste2_upload("Room configuration for " + self._channel, text)
@@ -1323,12 +1323,19 @@ class Game(Channel):
         self.__artist_whitelist = data["artist_whitelist"]
         self.__beatmap_creator_blacklist = data["creator_blacklist"]
         self.__beatmap_creator_whitelist = data["creator_whitelist"]
+        super().import_attributes(data)
 
     def import_config(self, url):
         if "paste2.org" in url:
             lines = self._bot.paste2_download(url)
+            broadcasts = False
             for line in lines:
-                if "• Logic profile: " in line:
+                if broadcasts and line.replace(" ", "") != "":
+                    data = line.split(None, 2)
+                    secs = data[1]
+                    message = data[2].strip("'")
+                    self._bot.get_broadcast_controller().add_broadcast(self._channel, message, secs)
+                elif "• Logic profile: " in line:
                     logic_profile = line.split("• Logic profile: ", 1)[1]
                     if logic_profile in self._bot.get_logic_profiles():
                         self.implement_logic_profile(logic_profile)
@@ -1412,6 +1419,9 @@ class Game(Channel):
                     self.__beatmap_whitelist = line.split("• Beatmap whitelist: ", 1)[1].split(", ")
                     if "" in self.__beatmap_whitelist:
                         self.__beatmap_whitelist.remove("")
+                elif "𝙸̲𝙳̲   ̲𝚝̲𝚒̲𝚖̲𝚎̲  𝙼̲𝚎̲𝚜̲𝚜̲𝚊̲𝚐̲𝚎̲" in line:
+                    broadcasts = True
+
             self.send_message("Configuration successfully cloned from " + url)
 
     def invite_user(self, username):
