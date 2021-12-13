@@ -2057,7 +2057,7 @@
         send(JSON.stringify({"command": "exit_handler"}));
     }
 
-    function setChannel(data) {
+    async function setChannel(data) {
         if (app.channel !== data.getAttribute("name")) {
             if (document.getElementById("players")) {
                 document.getElementById("players").scrollTo(0, 0);
@@ -2069,7 +2069,23 @@
             document.getElementById(app.channel).classList.add("active");
             app.referees = [];
             app.host = "";
-            send(JSON.stringify({"command": "update"}));
+            if (app.channel.includes("mp_")) {
+                await sleep(100);
+                document.getElementById("min_ar").value = app.ar_range[0];
+                document.getElementById("max_ar").value = app.ar_range[1];
+                document.getElementById("min_od").value = app.od_range[0];
+                document.getElementById("max_od").value = app.od_range[1];
+                document.getElementById("min_cs").value = app.cs_range[0];
+                document.getElementById("max_cs").value = app.cs_range[1];
+                document.getElementById("min_hp").value = app.hp_range[0];
+                document.getElementById("max_hp").value = app.hp_range[1];
+                document.getElementById("min_bpm").value = app.bpm_range[0];
+                document.getElementById("max_bpm").value = app.bpm_range[1];
+                document.getElementById("min_length").value = app.length_range[0];
+                document.getElementById("max_length").value = app.length_range[1];
+                document.getElementById("min_diff").value = app.diff_range[0];
+                document.getElementById("max_diff").value = app.diff_range[1];
+            }
        }
     }
 
