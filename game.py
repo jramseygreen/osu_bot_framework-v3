@@ -628,7 +628,7 @@ class Game(Channel):
                 error = {"type": "artist_blacklist", "message": "The beatmap artist is blacklisted. The blacklist is: '" + "', '".join(self.__artist_blacklist) + "'"}
             elif self.__beatmap_blacklist and str(beatmap["id"]) in self.__beatmap_blacklist:
                 blacklist = []
-                for beatmapID in self.__beatmap_whitelist:
+                for beatmapID in self.__beatmap_blacklist:
                     blacklist.append("[https://osu.ppy.sh/b/" + beatmapID + " " + beatmapID + "]")
                 error = {"type": "beatmap_blacklist", "message": "This beatmap has been blacklisted. The blacklist is: '" + "', '".join(blacklist) + "'"}
             elif self.__beatmap_whitelist and str(beatmap["id"]) not in self.__beatmap_whitelist:
