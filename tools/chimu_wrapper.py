@@ -112,7 +112,9 @@ class Chimu:
             self.bot.log("-- Downloading beatmapset " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " to /" + path + " --")
             then = time.time()
             file = requests.get(url)
-            if file.status_code < 400 and 'message":"Error:' not in file.text and time.time() - then >= 1:
+            if file.status_code < 400 and 'message":"Error:' not in file.text:
+                while time.time() - then >= 1:
+                    pass
                 f = open(path + str(beatmapsetID) + ".osz", "wb")
                 f.write(file.content)
                 f.close()
