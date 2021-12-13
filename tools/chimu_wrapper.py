@@ -3,6 +3,7 @@ import socket
 import threading
 import random
 import json
+import time
 from itertools import product
 
 import requests
@@ -109,8 +110,9 @@ class Chimu:
                 path = path + os.sep
             url = self.fetch_set_download_link(beatmapsetID, with_video=with_video)
             self.bot.log("-- Downloading beatmapset " + str(beatmapsetID) + " - " + "osu.ppy.sh/s/" + str(beatmapsetID) + " to /" + path + " --")
+            then = time.time()
             file = requests.get(url)
-            if file.status_code < 400 and 'message":"Error:' not in file.text:
+            if file.status_code < 400 and 'message":"Error:' not in file.text and time.time() - then >= 1:
                 f = open(path + str(beatmapsetID) + ".osz", "wb")
                 f.write(file.content)
                 f.close()
