@@ -476,7 +476,7 @@ class Game(Channel):
                         if error:
                             self.abort_start_timer()
                             if beatmap:
-                                self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap","[" + beatmap["url"] + " selected beatmap]"))
+                                self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap","[https://osu.ppy.sh/b/" + str(beatmap["id"]) + " selected beatmap]"))
                             else:
                                 self.send_message("Rule violation: " + error["type"] + " - " + error["message"])
                             self.set_beatmap(self.__beatmap)
@@ -570,7 +570,7 @@ class Game(Channel):
                     game_mode = str(GAME_ATTR[self.__game_mode])
                 self.send_message("!mp map " + str(self.__beatmap["id"]) + " " + game_mode)
                 self.set_mods(self.__mods)
-                self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap", "[" + self.__beatmap["url"] + " selected beatmap]"))
+                self.send_message("Rule violation: " + error["type"] + " - " + error["message"].replace("selected beatmap", "[https://osu.ppy.sh/b/" + str(self.__beatmap["id"]) + " selected beatmap]"))
                 if self.__on_rule_violation_method:
                     x = None
                     if str(inspect.signature(self.__on_rule_violation_method)).strip("()").split(", ") != [""]:
