@@ -343,9 +343,15 @@ class Bot:
         return linesrtn
 
     def fetch_user_profile(self, username):
-        url = "https://osu.ppy.sh/users/" + str(username).replace(" ", "%20")
-        r = requests.get(url)
-        return json.loads(r.text.split('<script id="json-user" type="application/json">\n            ', 1)[1].split("\n", 1)[0])
+        username = str(username).replace(" ", "%20")
+        url = "https://osu.ppy.sh/users/" + username
+        try:
+            r = requests.get(url)
+            return json.loads(r.text.split('<script id="json-user" type="application/json">\n            ', 1)[1].split("\n", 1)[0])
+        except:
+            url = "https://osu.ppy.sh/users/" + username.replace("_", "%20")
+            r = requests.get(url)
+            return json.loads(r.text.split('<script id="json-user" type="application/json">\n            ', 1)[1].split("\n", 1)[0])
 
     def set_websocket_port(self, port):
         if not self.__started:
