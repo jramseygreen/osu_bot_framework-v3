@@ -358,3 +358,7 @@ class Controller:
 
     def set_webapp_port(self, port):
         self.__webapp_port = port
+
+    def stop(self):
+        self.__ws.stop()
+        self.__webapp_sock.close()

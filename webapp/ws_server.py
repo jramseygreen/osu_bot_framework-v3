@@ -124,3 +124,7 @@ class ws_server:
 
     def get_host(self):
         return self.__host
+
+    def stop(self):
+        self.__running = False
+        self.__sock.close()
