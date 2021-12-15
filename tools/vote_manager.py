@@ -104,8 +104,8 @@ class Vote:
             if user.replace(" ", "_") == username.replace(" ", "_"):
                 return self.results[user]
 
-    def get_ballot_number(self):
-        return len(self.results)
+    def get_ballot_number(self, choice=None):
+        return len(self.get_results(choice))
 
     # returns the most voted for option
     def get_majority_vote(self):
