@@ -390,7 +390,7 @@ class Game(Channel):
     def __fetch_beatmapset(self, beatmapID):
         if int(beatmapID) == 0:
             return {}
-        return self._bot.fetch_beatmapset(beatmapID)
+        return self._bot.fetch_parent_set(beatmapID)
 
     def __fetch_scores(self):
         self.clear_scores()

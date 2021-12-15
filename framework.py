@@ -421,7 +421,7 @@ class Bot:
     # fetches beatmap from ppy.sh
     def fetch_beatmap(self, beatmapID):
         try:
-            beatmapset = self.fetch_beatmapset(beatmapID)
+            beatmapset = self.fetch_parent_set(beatmapID)
         except:
             return {}
         if "beatmaps" in beatmapset:
@@ -431,8 +431,18 @@ class Bot:
         return {}
 
     # fetches a beatmapset associated with a beatmapID from ppy.sh
-    def fetch_beatmapset(self, beatmapID):
+    def fetch_parent_set(self, beatmapID):
         url = "https://osu.ppy.sh/b/" + str(beatmapID)
+        r = requests.get(url)
+        try:
+            return json.loads(
+                r.text.split('<script id="json-beatmapset" type="application/json">\n        ', 1)[1].split(
+                    "\n", 1)[0])
+        except:
+            return {}
+
+    def fetch_beatmapset(self, beatmapsetID):
+        url = "https://osu.ppy.sh/s/" + str(beatmapsetID)
         r = requests.get(url)
         try:
             return json.loads(

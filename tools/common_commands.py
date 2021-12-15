@@ -568,7 +568,7 @@ class CommonCommands:
             self.channel.send_message("Sorry this command can only be used by the bot administrator!")
 
     def topdiff(self, message):
-        beatmapset = self.bot.fetch_beatmapset(self.channel.get_beatmap()["id"])
+        beatmapset = self.bot.fetch_parent_set(self.channel.get_beatmap()["id"])
         if beatmapset:
             for beatmap in sorted(beatmapset["beatmaps"], key=lambda x: x["difficulty_rating"], reverse=True):
                 error = None
