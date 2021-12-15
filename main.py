@@ -26,7 +26,7 @@ if not config["password"] or config["password"] == "password":
     if input("Would you like to save these credentials for next time? [y/n]: ").lower() in ["y", "yes"]:
         print("You can change your credentials in the future by modifying ./config/bot_config.conf")
         f = open("config" + os.sep + "bot_config.conf", "w")
-        f.write(json.dumps(config).replace(", ", ",\n").replace("{", "{\n", 1).replace("}", "\n}"))
+        f.write(json.dumps(config).replace(", ", ",\n").replace("{", "{\n", 1)[:-1] + "\n}")
         f.close()
 # set up bot
 try:

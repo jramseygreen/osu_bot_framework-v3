@@ -182,7 +182,7 @@ class Bot:
                             f.truncate(0)
                             config["username"] = "username"
                             config["password"] = "password"
-                            f.write(json.dumps(config).replace(", ", ",\n").replace("{", "{\n", 1).replace("}", "\n}"))
+                            f.write(json.dumps(config).replace(", ", ",\n").replace("{", "{\n", 1)[:-1] + "\n}")
                             f.close()
 
     # attempts to connect to osu using the provided credentials
