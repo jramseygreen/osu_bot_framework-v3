@@ -45,6 +45,11 @@ class Chimu:
                 return data["data"]
             return {}
 
+    def fetch_parent_set(self, beatmapID):
+        beatmap = self.fetch_beatmap(beatmapID)
+        if beatmap:
+            return self.fetch_beatmapset(beatmap["ParentSetId"])
+
     # return list of beatmapsets based on query + provided attributes
     def search(self, query="", pages=5, **attributes):
         # construct urls
