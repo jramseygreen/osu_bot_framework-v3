@@ -3,6 +3,7 @@ import importlib
 import inspect
 import json
 import os
+import pathlib
 import sys
 import threading
 import time
@@ -38,6 +39,7 @@ class Bot:
         self.__broadcast_controller = BroadcastController(self)
         self.__on_personal_message_method = None
         self.__logic_profiles = {}
+        self.__logic_profile_links = {}
         self.__player_blacklist = []
         self.__osu_directory = ""
         self.chimu = Chimu(self)
@@ -185,9 +187,8 @@ class Bot:
                             f.write(json.dumps(config).replace(", ", ",\n").replace("{", "{\n", 1)[:-1] + "\n}")
                             f.close()
 
-    # attempts to connect to osu using the provided credentials
-    def start(self):
-        # grab logic options
+    def refresh_logic_profiles(self):
+        self.__logic_profiles = {}
         location = os.path.dirname(os.path.realpath(__file__)) + os.sep + "logic_profiles"
         os.path.isdir(location)
         for file in os.listdir(location):
@@ -196,6 +197,13 @@ class Bot:
                 for name, obj in inspect.getmembers(m):
                     if inspect.isclass(obj):
                         self.__logic_profiles[obj.__name__] = obj
+                        self.__logic_profile_links[obj.__name__] = ""
+
+
+    # attempts to connect to osu using the provided credentials
+    def start(self):
+        # grab logic options
+        self.refresh_logic_profiles()
 
         # attempt to auto locate osu directory
         try:
@@ -318,6 +326,25 @@ class Bot:
         channel.get_config_link()
         return channel
 
+    def logic_profile_upload(self, profile):
+        path = inspect.getfile(self.get_logic_profile(profile))
+        f = open(path, "r")
+        text = f.read()
+        f.close()
+        self.__logic_profile_links[profile] = self.paste2_upload("OBF3 Logic Profile: " + profile, text)
+        return self.__logic_profile_links[profile]
+
+    def logic_profile_download(self, url):
+        text = self.paste2_download(url)
+        if text:
+            description = text.pop(0)
+            profile = description.split()[-1]
+            if "OBF3 Logic Profile:" in description and profile in text[0]:
+                f = open("logic_profiles" + os.sep + profile + ".py", "w")
+                f.writelines(text)
+                f.close()
+
+
     # uploads to paste2.org with passed description and content
     # returns the url of the created paste2 page
     def paste2_upload(self, description, content):
@@ -336,6 +363,10 @@ class Bot:
             if url.find("http") != 0:
                 url = "https://" + url
             r = requests.get(url)
+            # description is the first value
+            linesrtn.append(html.unescape(r.text.split('<div class="desc">', 1)[1].split("</div>", 1)[0].split("<p>", 1)[1][:-4]))
+
+            # main body
             text = r.text.split("<ol class='highlight code'>", 1)[1].split("</div></li></ol>", 1)[0]
             lines = text.split("\n")[1:-1]
             for line in lines:
