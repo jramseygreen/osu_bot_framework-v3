@@ -347,6 +347,7 @@ class Controller:
                 del data["channels"][channel]["commands"]
         data["pm"] = self.bot.get_personal_message_log()
         data["logic_profiles"] = list(self.bot.get_logic_profiles().keys())
+        data["logic_profile_links"] = self.bot.get_logic_profile_links()
         data["current_user_profile"] = self.__current_user_profile
         data["bot_username"] = self.bot.get_username()
         data["redownload_owned_beatmaps"] = self.bot.chimu.is_redownload()
