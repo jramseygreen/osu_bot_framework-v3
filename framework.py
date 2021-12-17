@@ -199,6 +199,12 @@ class Bot:
                         self.__logic_profiles[obj.__name__] = obj
                         self.__logic_profile_links[obj.__name__] = ""
 
+    def del_logic_profile(self, profile):
+        if profile in self.__logic_profiles:
+            path = inspect.getfile(self.get_logic_profile(profile))
+            os.remove(path)
+            del self.__logic_profiles[profile]
+            del self.__logic_profile_links[profile]
 
     # attempts to connect to osu using the provided credentials
     def start(self):
@@ -344,6 +350,14 @@ class Bot:
                 f.writelines(text)
                 f.close()
 
+    def get_logic_profile_link(self, profile):
+        if profile in self.__logic_profile_links and self.__logic_profile_links[profile]:
+            return self.__logic_profile_links[profile]
+        else:
+            return self.logic_profile_upload(profile)
+
+    def get_logic_profile_links(self):
+        return self.__logic_profile_links
 
     # uploads to paste2.org with passed description and content
     # returns the url of the created paste2 page
