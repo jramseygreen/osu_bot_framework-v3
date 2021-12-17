@@ -416,6 +416,7 @@
             <div class="card text-white bg-dark" style="height: 100vh;">
                 <div class="text-center">
                     <h2 class="card-header border-secondary">
+                        <button class="btn btn-secondary rounded-pill btn-sm float-start">Manage Logic Profiles</button>
                         Welcome to Osu Bot Framework v3!
                         <button class="btn btn-secondary rounded-pill btn-sm float-end" title="Clear any saved password cookies" onclick="clear_cookies();">Clear cookies</button>
                     </h2>
@@ -1739,6 +1740,7 @@
                 app.channels = Object.keys(buffer["channels"]);
                 app.personal_messages = buffer["pm"];
                 app.logic_profiles = buffer["logic_profiles"];
+                app.logic_profile_links = buffer["logic_profile_links"];
                 app.bot_username = buffer["bot_username"];
                 app.redownload_owned_beatmaps = buffer["redownload_owned_beatmaps"];
                 app.osu_directory = buffer["osu_directory"];
@@ -1854,6 +1856,7 @@
             config_link: "",
             channel: "",
             logic_profiles: [],
+            logic_profile_links: {},
             logic_profile: "",
             slots: {},
             users: [],
