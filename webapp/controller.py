@@ -272,6 +272,14 @@ class Controller:
             channel1 = self.bot.get_channel(data["channel1"])
             channel2 = self.bot.get_channel(data["channel2"])
             self.bot.clone_channel(channel1, channel2)
+        elif data["command"] == "refresh_logic_profiles":
+            self.bot.refresh_logic_profiles()
+        elif data["command"] == "del_logic_profile":
+            self.bot.del_logic_profile(data["profile"])
+        elif data["command"] == "download_logic_profile":
+            self.bot.logic_profile_download(data["url"])
+        elif data["command"] == "get_logic_profile_link":
+            self.bot.get_logic_profile_link(data["profile"])
         elif data["command"] == "authenticate":
             self.send_message("success", conn)
 

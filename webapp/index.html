@@ -416,7 +416,7 @@
             <div class="card text-white bg-dark" style="height: 100vh;">
                 <div class="text-center">
                     <h2 class="card-header border-secondary">
-                        <button class="btn btn-secondary rounded-pill btn-sm float-start">Manage Logic Profiles</button>
+                        <button class="btn btn-secondary rounded-pill btn-sm float-start" data-bs-toggle="modal" data-bs-target="#logicProfileManagerModal">Manage Logic Profiles</button>
                         Welcome to Osu Bot Framework v3!
                         <button class="btn btn-secondary rounded-pill btn-sm float-end" title="Clear any saved password cookies" onclick="clear_cookies();">Clear cookies</button>
                     </h2>
@@ -450,6 +450,61 @@
                             <span class="text-start"> Get started by making a game room or joining a channel.</span>
                         </div>
                     </div>
+
+                    <!-- logicProfileManager Modal -->
+                    <div class="modal fade" id="logicProfileManagerModal" tabindex="-1" aria-labelledby="logicProfileManagerModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content text-dark">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="logicProfileManagerModalLabel">Logic Profile Manager</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <button class="btn btn-success mb-3" onclick="refresh_logic_profiles();">Refresh Logic Profiles ↻</button>
+                              <table class="table table-sm table-secondary table-striped" style="display: block; height: 30vh; overflow-y: scroll;">
+                                  <thead>
+                                      <tr>
+                                          <th class="col-11">Logic Profile</th>
+                                          <th class="col1 text-danger">🗑️</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr v-for="profile in logic_profiles">
+                                          <td>{{profile}}</td>
+                                          <td><button class="badge bg-danger text-light badge-sm" @click="del_logic_profile(profile)">X</button></td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                              <hr>
+                              <h5>Download Logic Profile</h5>
+                              <div class="input-group">
+                                  <input id="logic_profile_download_input" type="text" class="form-control" placeholder="e.g. paste2.org/abcdefg">
+                                  <button class="btn btn-primary" onclick="download_logic_profile();">📥</button>
+                              </div>
+                              <hr>
+                              <h5>Share Logic Profile</h5>
+                              <div class="d-grid">
+                                  <div class="btn-group">
+                                      <button type="button" class="btn btn-outline-dark col-11" disabled>{{logic_profile_manager_profile}}</button>
+                                      <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split col-1" data-bs-toggle="dropdown" aria-expanded="false">
+                                          <span class="visually-hidden">Toggle Dropdown</span>
+                                      </button>
+                                      <ul class="dropdown-menu">
+                                          <li v-for="profile in logic_profiles"><a class="dropdown-item" href="javascript:void(0);" @click="get_logic_profile_link(profile)">{{profile}}</a></li>
+                                      </ul>
+                                  </div>
+                              </div>
+                              <div v-show="logic_profile_manager_profile in logic_profile_links" class="card bg-light mt-2 border-dark">
+                                <span class="mt-1 mb-1">{{logic_profile_links.logic_profile_manager_profile}}</span>
+                              </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -1858,6 +1913,7 @@
             logic_profiles: [],
             logic_profile_links: {},
             logic_profile: "",
+            logic_profile_manager_profile: "Select Logic Profile",
             slots: {},
             users: [],
             total_users: 0,
@@ -2033,6 +2089,23 @@
                     "command": "clone_channel",
                     "channel1": chan,
                     "channel2": app.channel
+                };
+                send(JSON.stringify(payload));
+            },
+            del_logic_profile: function(profile) {
+                if (confirm("Are you sure you want to permanently delete the " + profile + " logic profile?")) {
+                    payload = {
+                        "command": "del_logic_profile",
+                        "profile": profile
+                    };
+                    send(JSON.stringify(payload));
+                }
+            },
+            get_logic_profile_link: function(profile) {
+                this.logic_profile_manager_profile = profile;
+                payload = {
+                    "command": "get_logic_profile_link",
+                    "profile": profile
                 };
                 send(JSON.stringify(payload));
             },
@@ -2631,6 +2704,22 @@
         };
         send(JSON.stringify(payload));
         document.getElementById("import_config_input").value = ""
+    }
+
+    function refresh_logic_profiles() {
+        payload = {
+            "command": "refresh_logic_profiles"
+        };
+        send(JSON.stringify(payload));
+    }
+
+    function download_logic_profile() {
+        payload = {
+            "command": "download_logic_profile",
+            "url": document.getElementById("logic_profile_download_input").value
+        };
+        send(JSON.stringify(payload));
+        document.getElementById("logic_profile_download_input").value = "";
     }
 </script>
 
