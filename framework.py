@@ -345,12 +345,9 @@ class Bot:
         if text:
             description = text.pop(0)
             profile = description.split()[-1]
-            if "OBF3 Logic Profile:" in description and profile in text[0]:
+            if "OBF3 Logic Profile:" in description and "class " + profile + ":" in text[0]:
                 f = open("logic_profiles" + os.sep + profile + ".py", "w")
-                f.write("")
-                f = open("logic_profiles" + os.sep + profile + ".py", "a")
-                for line in text:
-                    f.write(line + "\n")
+                f.write("\n".join(text))
                 f.close()
 
     def get_logic_profile_link(self, profile):

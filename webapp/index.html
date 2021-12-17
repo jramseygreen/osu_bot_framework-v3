@@ -485,7 +485,7 @@
                               <h5>Share Logic Profile</h5>
                               <div class="d-grid">
                                   <div class="btn-group">
-                                      <button type="button" class="btn btn-outline-dark col-11" disabled>{{logic_profile_manager_profile}}</button>
+                                      <button type="button" class="btn btn-outline-dark col-11 text-dark" disabled>{{logic_profile_manager_profile}}</button>
                                       <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split col-1" data-bs-toggle="dropdown" aria-expanded="false">
                                           <span class="visually-hidden">Toggle Dropdown</span>
                                       </button>
@@ -497,7 +497,7 @@
                               <div v-show="logic_profile_manager_profile in logic_profile_links" class="card bg-light mt-2 border-dark mb-1">
                                   <div class="input-group text-center">
                                       <span class="input-group-text col-3">Sharable URL</span>
-                                      <div class="col mt-2">{{logic_profile_links[logic_profile_manager_profile]}}</div>
+                                      <span class="col mt-2">{{logic_profile_links[logic_profile_manager_profile]}}</span>
                                   </div>
                               </div>
                           </div>
