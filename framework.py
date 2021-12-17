@@ -345,7 +345,7 @@ class Bot:
         if text:
             description = text.pop(0)
             profile = description.split()[-1]
-            if "OBF3 Logic Profile:" in description and "class " + profile + ":" in text[0]:
+            if "OBF3 Logic Profile:" in description and "class " + profile + ":" in text:
                 f = open("logic_profiles" + os.sep + profile + ".py", "w")
                 f.write("\n".join(text))
                 f.close()
