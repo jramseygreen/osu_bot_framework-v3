@@ -334,7 +334,7 @@ class Bot:
 
     def logic_profile_upload(self, profile):
         path = inspect.getfile(self.get_logic_profile(profile))
-        f = open(path, "r")
+        f = open(path, "r", encoding="utf-8")
         text = f.read()
         f.close()
         self.__logic_profile_links[profile] = self.paste2_upload("OBF3 Logic Profile: " + profile, text)
@@ -346,7 +346,7 @@ class Bot:
             description = text.pop(0)
             profile = description.split()[-1]
             if "OBF3 Logic Profile:" in description and "class " + profile + ":" in text:
-                f = open("logic_profiles" + os.sep + profile + ".py", "w")
+                f = open("logic_profiles" + os.sep + profile + ".py", "w", encoding="utf-8")
                 f.write("\n".join(text))
                 f.close()
 
