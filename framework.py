@@ -376,15 +376,16 @@ class Bot:
         if "paste2.org" in url:
             if url.find("http") != 0:
                 url = "https://" + url
-            r = requests.get(url)
-            # description is the first value
-            linesrtn.append(html.unescape(r.text.split('<div class="desc">', 1)[1].split("</div>", 1)[0].split("<p>", 1)[1][:-5]))
+            if url.split("/")[-1]:
+                r = requests.get(url)
+                # description is the first value
+                linesrtn.append(html.unescape(r.text.split('<div class="desc">', 1)[1].split("</div>", 1)[0].split("<p>", 1)[1][:-5]))
 
-            # main body
-            text = r.text.split("<ol class='highlight code'>", 1)[1].split("</div></li></ol>", 1)[0]
-            lines = text.split("\n")[1:-1]
-            for line in lines:
-                linesrtn.append(html.unescape(line.split("<div>", 1)[1].split("</div>", 1)[0]))
+                # main body
+                text = r.text.split("<ol class='highlight code'>", 1)[1].split("</div></li></ol>", 1)[0]
+                lines = text.split("\n")[1:-1]
+                for line in lines:
+                    linesrtn.append(html.unescape(line.split("<div>", 1)[1].split("</div>", 1)[0]))
         return linesrtn
 
     def fetch_user_profile(self, username):
