@@ -345,7 +345,6 @@ class Bot:
         if text:
             description = text.pop(0)
             profile = description.split()[-1]
-            print(description, profile, text[0])
             if "OBF3 Logic Profile:" in description and profile in text[0]:
                 f = open("logic_profiles" + os.sep + profile + ".py", "w")
                 f.write("")
