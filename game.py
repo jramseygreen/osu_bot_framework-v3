@@ -1328,103 +1328,104 @@ class Game(Channel):
     def import_config(self, url):
         if "paste2.org" in url:
             lines = self._bot.paste2_download(url)
-            for broadcast in self._bot.get_broadcast_controller().get_broadcasts(self._channel):
-                self._bot.get_broadcast_controller().del_broadcast(broadcast["id"])
-            broadcasts = False
-            for line in lines:
-                if broadcasts and line.replace(" ", "") != "":
-                    data = line.split(None, 2)
-                    secs = data[1]
-                    message = data[2].strip("'")
-                    self._bot.get_broadcast_controller().add_broadcast(self._channel, message, secs)
-                elif "• Logic profile: " in line:
-                    logic_profile = line.split("• Logic profile: ", 1)[1]
-                    if logic_profile in self._bot.get_logic_profiles():
-                        self.implement_logic_profile(logic_profile)
-                    elif not logic_profile:
-                        self.clear_logic_profile()
-                elif "• Title: " in line:
-                    self.set_title(line.split("Title: ", 1)[1])
-                elif "• Invite link: " in line:
-                    self.set_password(line.split("/")[-1])
-                elif "• Player blacklist: " in line:
-                    self.__player_blacklist = line.split("Player blacklist: ", 1)[1].split(", ")
-                    if "" in self.__player_blacklist:
-                        self.__player_blacklist.remove("")
-                elif "• Welcome message: " in line:
-                    self.set_welcome_message(line.split("• Welcome message: ", 1)[1])
-                elif "• Beatmap checker: " in line:
-                    self.set_beatmap_checker(line.split("• Beatmap checker: ", 1)[1] == "True")
-                elif "• Maintain title: " in line:
-                    self.maintain_title(line.split("• Maintain title: ", 1)[1] == "True")
-                elif "• Maintain password: " in line:
-                    self.maintain_password(line.split("• Maintain password: ", 1)[1] == "True")
-                elif "• Maintain size: " in line:
-                    self.maintain_size(line.split("• Maintain size: ", 1)[1] == "True")
-                elif "• Start on players ready: " in line:
-                    self.start_on_players_ready(line.split("• Start on players ready: ", 1)[1] == "True")
-                elif "• Autostart timer: True " in line:
-                    self.set_autostart_timer(True, line.split("• Autostart timer: True ", 1)[1].replace("secs", ""))
-                elif "• Autostart timer: False " in line:
-                    self.set_autostart_timer(False)
-                elif "• Room size: " in line:
-                    self.set_size(line.split("• Room size: ", 1)[1])
-                elif "• Game mode: " in line:
-                    self.set_game_mode(line.split("• Game mode: ", 1)[1])
-                elif "• Scoring mode: " in line:
-                    self.set_scoring_type(line.split("• Scoring mode: ", 1)[1])
-                elif "• Team mode: " in line:
-                    self.set_team_type(line.split("• Team mode: ", 1)[1])
-                elif "• Allow beatmap conversion: " in line:
-                    self.set_allow_convert(line.split("• Allow beatmap conversion: ", 1)[1] == "True")
-                elif "• Allow unsubmitted beatmaps: " in line:
-                    self.set_allow_unsubmitted(line.split("• Allow unsubmitted beatmaps: ", 1)[1] == "True")
-                elif "• Mods: " in line:
-                    self.set_mods(line.split("• Mods: ", 1)[1].split(", "))
-                elif "• Beatmap status: " in line:
-                    self.set_map_status(line.split("• Beatmap status: ", 1)[1])
-                elif "• Artist whitelist: " in line:
-                    self.__artist_whitelist = line.split("• Artist whitelist: ", 1)[1].split(", ")
-                    if "" in self.__artist_whitelist:
-                        self.__artist_whitelist.remove("")
-                elif "• Artist blacklist: " in line:
-                    self.__artist_blacklist = line.split("• Artist blacklist: ", 1)[1].split(", ")
-                    if "" in self.__artist_blacklist:
-                        self.__artist_blacklist.remove("")
-                elif "• Beatmap creator whitelist: " in line:
-                    self.__beatmap_creator_whitelist = line.split("• Beatmap creator whitelist: ", 1)[1].split(", ")
-                    if "" in self.__beatmap_creator_whitelist:
-                        self.__beatmap_creator_whitelist.remove("")
-                elif "• Beatmap creator blacklist: " in line:
-                    self.__beatmap_creator_blacklist = line.split("• Beatmap creator blacklist: ", 1)[1].split(", ")
-                    if "" in self.__beatmap_creator_blacklist:
-                        self.__beatmap_creator_blacklist.remove("")
-                elif "• Difficulty rating range: " in line:
-                    self.set_diff_range(line.split("• Difficulty rating range: ", 1)[1].strip("()").split(", "))
-                elif "• Approach rate range: " in line:
-                    self.set_ar_range(line.split("• Approach rate range: ", 1)[1].strip("()").split(", "))
-                elif "• Overall difficulty range: " in line:
-                    self.set_od_range(line.split("• Overall difficulty range: ", 1)[1].strip("()").split(", "))
-                elif "• Circle size range: " in line:
-                    self.set_cs_range(line.split("• Circle size range: ", 1)[1].strip("()").split(", "))
-                elif "• HP range: " in line:
-                    self.set_hp_range(line.split("• HP range: ", 1)[1].strip("()").split(", "))
-                elif "• BPM range: " in line:
-                    self.set_bpm_range(line.split("• BPM range: ", 1)[1].strip("()").split(", "))
-                elif "• Beatmap length range: " in line:
-                    self.set_length_range(line.split("• Beatmap length range: ", 1)[1].split(" ['", 1)[0].strip("()").split(", "))
-                elif "• Beatmap blacklist: " in line:
-                    self.__beatmap_blacklist = line.split("• Beatmap blacklist: ", 1)[1].split(", ")
-                    if "" in self.__beatmap_blacklist:
-                        self.__beatmap_blacklist.remove("")
-                elif "• Beatmap whitelist: " in line:
-                    self.__beatmap_whitelist = line.split("• Beatmap whitelist: ", 1)[1].split(", ")
-                    if "" in self.__beatmap_whitelist:
-                        self.__beatmap_whitelist.remove("")
-                elif "𝙸̲𝙳̲   ̲𝚝̲𝚒̲𝚖̲𝚎̲  𝙼̲𝚎̲𝚜̲𝚜̲𝚊̲𝚐̲𝚎̲" in line:
-                    broadcasts = True
+            if lines:
+                for broadcast in self._bot.get_broadcast_controller().get_broadcasts(self._channel):
+                    self._bot.get_broadcast_controller().del_broadcast(broadcast["id"])
+                broadcasts = False
+                for line in lines:
+                    if broadcasts and line.replace(" ", "") != "":
+                        data = line.split(None, 2)
+                        secs = data[1]
+                        message = data[2].strip("'")
+                        self._bot.get_broadcast_controller().add_broadcast(self._channel, message, secs)
+                    elif "• Logic profile: " in line:
+                        logic_profile = line.split("• Logic profile: ", 1)[1]
+                        if logic_profile in self._bot.get_logic_profiles():
+                            self.implement_logic_profile(logic_profile)
+                        elif not logic_profile:
+                            self.clear_logic_profile()
+                    elif "• Title: " in line:
+                        self.set_title(line.split("Title: ", 1)[1])
+                    elif "• Invite link: " in line:
+                        self.set_password(line.split("/")[-1])
+                    elif "• Player blacklist: " in line:
+                        self.__player_blacklist = line.split("Player blacklist: ", 1)[1].split(", ")
+                        if "" in self.__player_blacklist:
+                            self.__player_blacklist.remove("")
+                    elif "• Welcome message: " in line:
+                        self.set_welcome_message(line.split("• Welcome message: ", 1)[1])
+                    elif "• Beatmap checker: " in line:
+                        self.set_beatmap_checker(line.split("• Beatmap checker: ", 1)[1] == "True")
+                    elif "• Maintain title: " in line:
+                        self.maintain_title(line.split("• Maintain title: ", 1)[1] == "True")
+                    elif "• Maintain password: " in line:
+                        self.maintain_password(line.split("• Maintain password: ", 1)[1] == "True")
+                    elif "• Maintain size: " in line:
+                        self.maintain_size(line.split("• Maintain size: ", 1)[1] == "True")
+                    elif "• Start on players ready: " in line:
+                        self.start_on_players_ready(line.split("• Start on players ready: ", 1)[1] == "True")
+                    elif "• Autostart timer: True " in line:
+                        self.set_autostart_timer(True, line.split("• Autostart timer: True ", 1)[1].replace("secs", ""))
+                    elif "• Autostart timer: False " in line:
+                        self.set_autostart_timer(False)
+                    elif "• Room size: " in line:
+                        self.set_size(line.split("• Room size: ", 1)[1])
+                    elif "• Game mode: " in line:
+                        self.set_game_mode(line.split("• Game mode: ", 1)[1])
+                    elif "• Scoring mode: " in line:
+                        self.set_scoring_type(line.split("• Scoring mode: ", 1)[1])
+                    elif "• Team mode: " in line:
+                        self.set_team_type(line.split("• Team mode: ", 1)[1])
+                    elif "• Allow beatmap conversion: " in line:
+                        self.set_allow_convert(line.split("• Allow beatmap conversion: ", 1)[1] == "True")
+                    elif "• Allow unsubmitted beatmaps: " in line:
+                        self.set_allow_unsubmitted(line.split("• Allow unsubmitted beatmaps: ", 1)[1] == "True")
+                    elif "• Mods: " in line:
+                        self.set_mods(line.split("• Mods: ", 1)[1].split(", "))
+                    elif "• Beatmap status: " in line:
+                        self.set_map_status(line.split("• Beatmap status: ", 1)[1])
+                    elif "• Artist whitelist: " in line:
+                        self.__artist_whitelist = line.split("• Artist whitelist: ", 1)[1].split(", ")
+                        if "" in self.__artist_whitelist:
+                            self.__artist_whitelist.remove("")
+                    elif "• Artist blacklist: " in line:
+                        self.__artist_blacklist = line.split("• Artist blacklist: ", 1)[1].split(", ")
+                        if "" in self.__artist_blacklist:
+                            self.__artist_blacklist.remove("")
+                    elif "• Beatmap creator whitelist: " in line:
+                        self.__beatmap_creator_whitelist = line.split("• Beatmap creator whitelist: ", 1)[1].split(", ")
+                        if "" in self.__beatmap_creator_whitelist:
+                            self.__beatmap_creator_whitelist.remove("")
+                    elif "• Beatmap creator blacklist: " in line:
+                        self.__beatmap_creator_blacklist = line.split("• Beatmap creator blacklist: ", 1)[1].split(", ")
+                        if "" in self.__beatmap_creator_blacklist:
+                            self.__beatmap_creator_blacklist.remove("")
+                    elif "• Difficulty rating range: " in line:
+                        self.set_diff_range(line.split("• Difficulty rating range: ", 1)[1].strip("()").split(", "))
+                    elif "• Approach rate range: " in line:
+                        self.set_ar_range(line.split("• Approach rate range: ", 1)[1].strip("()").split(", "))
+                    elif "• Overall difficulty range: " in line:
+                        self.set_od_range(line.split("• Overall difficulty range: ", 1)[1].strip("()").split(", "))
+                    elif "• Circle size range: " in line:
+                        self.set_cs_range(line.split("• Circle size range: ", 1)[1].strip("()").split(", "))
+                    elif "• HP range: " in line:
+                        self.set_hp_range(line.split("• HP range: ", 1)[1].strip("()").split(", "))
+                    elif "• BPM range: " in line:
+                        self.set_bpm_range(line.split("• BPM range: ", 1)[1].strip("()").split(", "))
+                    elif "• Beatmap length range: " in line:
+                        self.set_length_range(line.split("• Beatmap length range: ", 1)[1].split(" ['", 1)[0].strip("()").split(", "))
+                    elif "• Beatmap blacklist: " in line:
+                        self.__beatmap_blacklist = line.split("• Beatmap blacklist: ", 1)[1].split(", ")
+                        if "" in self.__beatmap_blacklist:
+                            self.__beatmap_blacklist.remove("")
+                    elif "• Beatmap whitelist: " in line:
+                        self.__beatmap_whitelist = line.split("• Beatmap whitelist: ", 1)[1].split(", ")
+                        if "" in self.__beatmap_whitelist:
+                            self.__beatmap_whitelist.remove("")
+                    elif "𝙸̲𝙳̲   ̲𝚝̲𝚒̲𝚖̲𝚎̲  𝙼̲𝚎̲𝚜̲𝚜̲𝚊̲𝚐̲𝚎̲" in line:
+                        broadcasts = True
 
-            self.send_message("Configuration successfully cloned from " + url)
+                self.send_message("Configuration successfully cloned from " + url)
 
     def invite_user(self, username):
         while not self.__title or not self.__invite_link:
