@@ -494,8 +494,11 @@
                                       </ul>
                                   </div>
                               </div>
-                              <div v-show="logic_profile_manager_profile in logic_profile_links" class="card bg-light mt-2 border-dark">
-                                <span class="mt-1 mb-1">{{logic_profile_links.logic_profile_manager_profile}}</span>
+                              <div v-show="logic_profile_manager_profile in logic_profile_links" class="card bg-light mt-2 border-dark mb-1">
+                                  <div class="input-group text-center">
+                                      <span class="input-group-text col-3">Sharable URL</span>
+                                      <div class="col mt-2">{{logic_profile_links[logic_profile_manager_profile]}}</div>
+                                  </div>
                               </div>
                           </div>
                           <div class="modal-footer">
