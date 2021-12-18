@@ -7,6 +7,7 @@ import sys
 import threading
 from datetime import datetime
 
+from tools import js2py
 from tools.broadcast_controller import BroadcastController
 from channel import Channel
 from tools.chimu_wrapper import Chimu
@@ -192,22 +193,38 @@ class Bot:
         for file in os.listdir(location):
             if file[-3:] == ".py":
                 self.load_logic_profile(file)
+            elif file[-3:] == ".js":
+                self.load_js_logic_profile(file)
 
-    def load_logic_profile(self, file):
-        if file[-3:] != ".py":
-            file = file + ".py"
-        m = importlib.import_module("logic_profiles." + file[:-3])
+    def load_logic_profile(self, profile):
+        if profile[-3:] != ".py":
+            profile = profile + ".py"
+        m = importlib.import_module("logic_profiles." + profile[:-3])
         for name, obj in inspect.getmembers(m):
             if inspect.isclass(obj):
                 self.__logic_profiles[obj.__name__] = obj
                 self.__logic_profile_links[obj.__name__] = ""
 
-    def del_logic_profile(self, profile):
-        if profile in self.__logic_profiles:
-            path = inspect.getfile(self.get_logic_profile(profile))
+    def load_js_logic_profile(self, profile):
+        if profile[-3:] != ".js":
+            profile = profile + ".js"
+        f = open("logic_profiles" + os.sep + profile, "r")
+        code = f.read()
+        f.close()
+        self.__logic_profiles[profile[:-3]] = js2py.eval_js(code)
+        self.__logic_profile_links[profile[:-3]] = ""
+
+    def del_logic_profile(self, prof):
+        if prof in self.__logic_profiles:
+            profile = self.get_logic_profile(prof)
+            path = ""
+            if str(type(profile)) == "<class 'js2py.base.JsObjectWrapper'>":
+                path = os.path.dirname(os.path.realpath(__file__)) + os.sep + "logic_profiles" + os.sep + prof + ".js"
+            else:
+                path = inspect.getfile(profile)
             os.remove(path)
-            del self.__logic_profiles[profile]
-            del self.__logic_profile_links[profile]
+            del self.__logic_profiles[prof]
+            del self.__logic_profile_links[prof]
 
     # attempts to connect to osu using the provided credentials
     def start(self):
@@ -336,24 +353,35 @@ class Bot:
         channel.get_config_link()
         return channel
 
-    def logic_profile_upload(self, profile):
-        path = inspect.getfile(self.get_logic_profile(profile))
+    def logic_profile_upload(self, prof):
+        profile = self.get_logic_profile(prof)
+        path = ""
+        if str(type(profile)) == "<class 'js2py.base.JsObjectWrapper'>":
+            path = os.path.dirname(os.path.realpath(__file__)) + os.sep + "logic_profiles" + os.sep + prof + ".js"
+        else:
+            path = inspect.getfile(profile)
         f = open(path, "r", encoding="utf-8")
         text = f.read()
         f.close()
-        self.__logic_profile_links[profile] = self.paste2_upload("OBF3 Logic Profile: " + profile, text)
-        return self.__logic_profile_links[profile]
+        self.__logic_profile_links[prof] = self.paste2_upload("OBF3 Logic Profile: " + prof, text)
+        return self.__logic_profile_links[prof]
 
     def logic_profile_download(self, url):
         text = self.paste2_download(url)
         if text:
             description = text.pop(0)
             profile = description.split()[-1]
-            if "OBF3 Logic Profile:" in description and "class " + profile + ":" in text:
-                f = open("logic_profiles" + os.sep + profile + ".py", "w", encoding="utf-8")
-                f.write("\n".join(text))
-                f.close()
-                self.load_logic_profile(profile)
+            if "OBF3 Logic Profile:" in description:
+                if "class " + profile + ":" in text:
+                    f = open("logic_profiles" + os.sep + profile + ".py", "w", encoding="utf-8")
+                    f.write("\n".join(text))
+                    f.close()
+                    self.load_logic_profile(profile)
+                else:
+                    f = open("logic_profiles" + os.sep + profile + ".js", "w", encoding="utf-8")
+                    f.write("\n".join(text))
+                    f.close()
+                    self.load_js_logic_profile(profile)
 
     def get_logic_profile_link(self, profile):
         if profile in self.__logic_profile_links and self.__logic_profile_links[profile]:
@@ -443,9 +471,16 @@ class Bot:
 
     # implements a logic profile
     def implement_logic_profile(self, profile):
-        profile = self.get_logic_profile(profile)(self)
-        if hasattr(profile, "on_personal_message") and callable(getattr(profile, "on_personal_message")):
-            self.on_personal_message(profile.on_personal_message)
+        profile = self.get_logic_profile(profile)
+        if profile:
+            if str(type(profile)) == "<class 'js2py.base.JsObjectWrapper'>":
+                profile["constructor"](self)
+                if "on_personal_message" in profile:
+                    self.on_personal_message(profile["on_personal_message"])
+            else:
+                profile = profile(self)
+                if hasattr(profile, "on_personal_message") and callable(getattr(profile, "on_personal_message")):
+                    self.on_personal_message(profile.on_personal_message)
 
     def format_username(self, username):
         return username.replace(" ", "_")
