@@ -190,12 +190,15 @@ class Bot:
         location = os.path.dirname(os.path.realpath(__file__)) + os.sep + "logic_profiles"
         os.path.isdir(location)
         for file in os.listdir(location):
-            if file[-3:] == ".py":
-                m = importlib.import_module("logic_profiles." + file[:-3])
-                for name, obj in inspect.getmembers(m):
-                    if inspect.isclass(obj):
-                        self.__logic_profiles[obj.__name__] = obj
-                        self.__logic_profile_links[obj.__name__] = ""
+            self.load_logic_profile(file)
+
+    def load_logic_profile(self, file):
+        if file[-3:] == ".py":
+            m = importlib.import_module("logic_profiles." + file[:-3])
+            for name, obj in inspect.getmembers(m):
+                if inspect.isclass(obj):
+                    self.__logic_profiles[obj.__name__] = obj
+                    self.__logic_profile_links[obj.__name__] = ""
 
     def del_logic_profile(self, profile):
         if profile in self.__logic_profiles:
@@ -347,6 +350,7 @@ class Bot:
                 f = open("logic_profiles" + os.sep + profile + ".py", "w", encoding="utf-8")
                 f.write("\n".join(text))
                 f.close()
+                self.load_logic_profile(profile + ".py")
 
     def get_logic_profile_link(self, profile):
         if profile in self.__logic_profile_links and self.__logic_profile_links[profile]:
