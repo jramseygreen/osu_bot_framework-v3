@@ -236,7 +236,8 @@ class Bot:
             if not self.verbose:
                 print("-- connected to " + self.__host + ":" + str(self.__port) + " successfully --")
             self.__listen()
-            self.__controller.start()
+            if self.__controller.get_host():
+                self.__controller.start()
 
         except:
             self.log("There was an error connecting to " + self.__host + ":" + str(self.__port))

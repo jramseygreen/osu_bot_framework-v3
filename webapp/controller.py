@@ -376,3 +376,6 @@ class Controller:
     def stop(self):
         self.__ws.stop()
         self.__webapp_sock.close()
+
+    def get_host(self):
+        return self.__host
