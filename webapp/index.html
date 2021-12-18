@@ -2239,11 +2239,7 @@
         app.make_room["logic_profile"] = "";
         app.make_room["invite_list"] = [];
         app.make_room["size"] = 16;
-        if (/^[\u0000-\u007f]*$/.test(payload["title"]) && /^[\u0000-\u007f]*$/.test(payload["password"])) {
-            send(JSON.stringify(payload));
-        } else {
-            alert("Sorry, special characters are not currently supported!");
-        }
+        send(JSON.stringify(payload));
     }
 
     function join_channel(form) {
@@ -2252,11 +2248,7 @@
             "channel": form.elements.join_form_channel.value,
         };
         if (payload["channel"] !== "" ) {
-            if (/^[\u0000-\u007f]*$/.test(payload["channel"])) {
-                send(JSON.stringify(payload));
-            } else {
-                alert("Sorry, special characters are not currently supported!");
-            }
+            send(JSON.stringify(payload));
         }
         form.reset();
     }
@@ -2285,11 +2277,7 @@
             "channel": channel,
             "message": message
         };
-        if (/^[\u0000-\u007f]*$/.test(payload["message"])) {
-            send(JSON.stringify(payload));
-        } else {
-            alert("Sorry, special characters are not currently supported!");
-        }
+        send(JSON.stringify(payload));
     }
 
     function close_room() {
@@ -2306,11 +2294,7 @@
             "channel": app.channel,
             "title": form.elements.title_input.value
         };
-        if (/^[\u0000-\u007f]*$/.test(payload["title"])) {
-            send(JSON.stringify(payload));
-        } else {
-            alert("Sorry, special characters are not currently supported!");
-        }
+        send(JSON.stringify(payload));
         form.reset();
     }
 
@@ -2415,11 +2399,7 @@
             "message": form.elements.broadcast_message.value.trim()
         };
         if (payload["message"] !== "" && payload["secs"] !== "") {
-            if (/^[\u0000-\u007f]*$/.test(payload["message"])) {
-                send(JSON.stringify(payload));
-        } else {
-            alert("Sorry, special characters are not currently supported!");
-        }
+            send(JSON.stringify(payload));
         }
         form.elements.broadcast_message.value = "";
     }
@@ -2453,11 +2433,7 @@
             "channel": app.channel,
             "artist": form.elements.artist_whitelist_input.value.trim()
         };
-        if (/^[\u0000-\u007f]*$/.test(payload["artist"])) {
-            send(JSON.stringify(payload));
-        } else {
-            alert("Sorry, special characters are not currently supported!");
-        }
+        send(JSON.stringify(payload));
         form.elements.artist_whitelist_input.value = "";
     }
 
@@ -2467,11 +2443,7 @@
             "channel": app.channel,
             "artist": form.elements.artist_blacklist_input.value.trim()
         };
-        if (/^[\u0000-\u007f]*$/.test(payload["artist"])) {
-            send(JSON.stringify(payload));
-        } else {
-            alert("Sorry, special characters are not currently supported!");
-        }
+        send(JSON.stringify(payload));
         form.elements.artist_blacklist_input.value = "";
     }
 
@@ -2481,11 +2453,7 @@
             "channel": app.channel,
             "creator": form.elements.creator_whitelist_input.value.trim()
         };
-        if (/^[\u0000-\u007f]*$/.test(payload["creator"])) {
-            send(JSON.stringify(payload));
-        } else {
-            alert("Sorry, special characters are not currently supported!");
-        }
+        send(JSON.stringify(payload));
         form.elements.creator_whitelist_input.value = "";
     }
 
@@ -2495,11 +2463,7 @@
             "channel": app.channel,
             "creator": form.elements.creator_blacklist_input.value.trim()
         };
-        if (/^[\u0000-\u007f]*$/.test(payload["creator"])) {
-            send(JSON.stringify(payload));
-        } else {
-            alert("Sorry, special characters are not currently supported!");
-        }
+        send(JSON.stringify(payload));
         form.elements.creator_blacklist_input.value = "";
     }
 
@@ -2509,11 +2473,7 @@
             "channel": app.channel,
             "beatmapID": form.elements.beatmap_blacklist_input.value.trim()
         };
-        if (/^[\u0000-\u007f]*$/.test(payload["beatmapID"])) {
-            send(JSON.stringify(payload));
-        } else {
-            alert("Sorry, special characters are not currently supported!");
-        }
+        send(JSON.stringify(payload));
         form.elements.beatmap_blacklist_input.value = "";
     }
 
@@ -2523,11 +2483,7 @@
             "channel": app.channel,
             "beatmapID": form.elements.beatmap_whitelist_input.value.trim()
         };
-        if (/^[\u0000-\u007f]*$/.test(payload["beatmapID"])) {
-            send(JSON.stringify(payload));
-        } else {
-            alert("Sorry, special characters are not currently supported!");
-        }
+        send(JSON.stringify(payload));
         form.elements.beatmap_whitelist_input.value = "";
     }
 
@@ -2587,11 +2543,7 @@
             "channel": app.channel,
             "password": form.elements.password_input.value
         };
-        if (/^[\u0000-\u007f]*$/.test(payload["password"])) {
-            send(JSON.stringify(payload));
-        } else {
-            alert("Sorry, special characters are not currently supported!");
-        }
+        send(JSON.stringify(payload));
         form.elements.password_input.value = "";
     }
 
@@ -2659,12 +2611,8 @@
     }
 
     function add_invite_list(form) {
-        if (/^[\u0000-\u007f]*$/.test(form.elements.invite_players_input.value)) {
-            if (form.elements.invite_players_input.value !== "" && !app.make_room.invite_list.includes(form.elements.invite_players_input.value)) {
-                app.make_room.invite_list.push(form.elements.invite_players_input.value);
-            }
-        } else {
-            alert("Sorry, special characters are not currently supported!");
+        if (form.elements.invite_players_input.value !== "" && !app.make_room.invite_list.includes(form.elements.invite_players_input.value)) {
+            app.make_room.invite_list.push(form.elements.invite_players_input.value);
         }
         form.elements.invite_players_input.value = "";
     }

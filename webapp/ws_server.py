@@ -80,7 +80,7 @@ class ws_server:
             i += 1
             j += 1
 
-        return "".join(chr(byte) for byte in decoded)
+        return bytes(decoded).decode("utf-8")
 
     def __client_thread(self, conn):
         self.__clients.append(conn)
