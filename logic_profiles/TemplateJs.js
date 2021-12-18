@@ -1,9 +1,9 @@
 LogicProfile = {
     constructor: function (bot, channel) {
-        this.bot = bot;
-        this.channel = channel;
+        LogicProfile.bot = bot;
+        LogicProfile.channel = channel;
 
-        channel.set_command("!command", this.on_command, "!command description");
+        channel.set_command("!command", LogicProfile.on_command, "!command description");
     },
     
     on_command: function (message) {
