@@ -1,8 +1,6 @@
 import json
-import os
 import socket
 import threading
-import time
 
 import requests
 
