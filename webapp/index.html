@@ -2102,6 +2102,7 @@
                 send(JSON.stringify(payload));
             },
             del_logic_profile: function(profile) {
+                app.logic_profile_manager_profile = "Select Logic Profile";
                 if (confirm("Are you sure you want to permanently delete the " + profile + " logic profile?")) {
                     payload = {
                         "command": "del_logic_profile",
@@ -2717,6 +2718,7 @@
     }
 
     function refresh_logic_profiles() {
+        app.logic_profile_manager_profile = "Select Logic Profile";
         payload = {
             "command": "refresh_logic_profiles"
         };
