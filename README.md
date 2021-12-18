@@ -16,9 +16,16 @@ A powerful framework to create and manage bots for osu
 
 ## Please! If you like this software consider donating to me so that I can continue to develop it. [Paypal](https://www.paypal.com/paypalme/joshuargreen)
 
-Coming soon:
-- (BETA) Full webapp GUI
-- Easily transferrable logic profiles
-- Javascript logic profiles
+#### Features
+- Join and create game rooms
+- Join any public channel
+- Download, share and create logic profiles with ease
+- Write logic profiles in either Python or Javascript
+- Full webapp GUI with end-to-end AES256 CBC Encryption
+- Full chat functionality
+- Automatic beatmap download from Chimu.moe
+- Search for beatmaps through Chimu.moe
+- Command management system
+- Message broadcasts on a timer in any channel
 
 my osu username is qqzzy
