@@ -23,7 +23,7 @@ class Controller:
         self.crypto = crypto.CryptoWrapper(bot.get_password())
 
     def __on_message(self, conn, msg):
-        if msg == "é":
+        if msg == "é" or msg == "\x03é":
             return
 
         if self.bot.is_authenticate():
