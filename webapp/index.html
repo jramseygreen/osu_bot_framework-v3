@@ -1726,7 +1726,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
     var host = "ws://localhost:9876/";
@@ -1758,10 +1758,10 @@
             }
             message = e.data;
             if (message === "authenticate" && !app.authenticated) {
-                console.log('Server: ' + message);
+                // console.log('Server: ' + message);
                 app.authenticate = true;
                 if (document.cookie !== "" && document.cookie !== "-") {
-                    console.log("cookies: " + document.cookie);
+                    // console.log("cookies: " + document.cookie);
                     cookies = {};
                     try {
                         cookies = JSON.parse(document.cookie);
@@ -1777,7 +1777,7 @@
                 return;
             }
             if (message === "success") {
-                console.log('Server: ' + message);
+                // console.log('Server: ' + message);
                 app.authenticated = true;
                 if (app.remember_me) {
                     document.cookie = JSON.stringify({"bot_password": app.bot_password, "time": new Date().getDate()});
@@ -1790,7 +1790,7 @@
                     return;
                 }
             }
-            console.log('Server: ' + message);
+            // console.log('Server: ' + message);
             buffer = {};
             try {
                 buffer = JSON.parse(message);
@@ -1955,13 +1955,13 @@
             mod_select: [],
             map_status: [],
             map_status_select: [],
-            ar_range: [],
-            od_range: [],
-            cs_range: [],
-            hp_range: [],
-            bpm_range: [],
-            length_range: [],
-            diff_range: [],
+            ar_range: [0, 10],
+            od_range: [0, 10],
+            cs_range: [1, 10],
+            hp_range: [0, 10],
+            bpm_range: [0, -1],
+            length_range: [0, -1],
+            diff_range: [0, -1],
             current_username: "",
             current_user_profile: {
                 "avatar_url": "",
