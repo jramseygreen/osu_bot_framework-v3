@@ -1,4 +1,4 @@
-TemplateJs = {
+LogicProfile = {
     constructor: function (bot, channel) {
         this.bot = bot;
         this.channel = channel;
@@ -7,7 +7,7 @@ TemplateJs = {
     },
     
     on_command: function (message) {
-        return;
+        LogicProfile.channel.send_message(message.username + " executed !command");
     },
 
     // runs when a personal message is received
