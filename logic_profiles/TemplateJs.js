@@ -1,4 +1,4 @@
-Template = {
+TemplateJs = {
     constructor: function (bot, channel) {
         this.bot = bot;
         this.channel = channel;
