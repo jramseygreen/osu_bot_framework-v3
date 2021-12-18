@@ -21,6 +21,7 @@ class Controller:
         self.__webapp_port = webapp_port
         self.__user_num = 20
         self.__current_user_profile = {"username": "", "avatar_url": "", "country_code": "gb", "statistics": {"level": {"current": 0}, "global_rank": 0, "pp": 0, "hit_accuracy": 0, "play_count": 0}}
+        self.__making_room = False
         self.crypto = crypto.CryptoWrapper(bot.get_password())
 
     def __on_message(self, conn, msg):
@@ -94,7 +95,9 @@ class Controller:
             if data["message"]:
                 self.bot.send_personal_message(data["channel"], data["message"])
         elif data["command"] == "make_room":
+            self.__making_room = True
             self.bot.make_room(title=data["title"], password=data["password"], game_mode=data["game_mode"], scoring_type=data["scoring_type"], team_type=data["team_type"], logic_profile=data["logic_profile"], invite_list=data["invite_list"], beatmapID=data["beatmapID"], size=data["size"])
+            self.__making_room = False
         elif data["command"] == "join":
             self.bot.join(data["channel"])
         elif data["command"] == "part":
@@ -360,6 +363,7 @@ class Controller:
         data["bot_username"] = self.bot.get_username()
         data["redownload_owned_beatmaps"] = self.bot.chimu.is_redownload()
         data["osu_directory"] = self.bot.get_osu_directory()
+        data["making_room"] = self.__making_room
         self.send_message(json.dumps(data), conn)
 
     def set_ws_port(self, port):

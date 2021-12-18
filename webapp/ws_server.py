@@ -87,7 +87,9 @@ class ws_server:
         try:
             while True:
                 msg = conn.recv(2046)
-                self.__on_message_function(conn, self.__ws_decode(msg))
+                x = threading.Thread(target=self.__on_message_function, args=(conn, self.__ws_decode(msg),))
+                x.setDaemon(True)
+                x.start()
         except:
             self.__clients.remove(conn)
             conn.close()
@@ -101,11 +103,14 @@ class ws_server:
             self.__sock.bind((self.__host, self.__port))
             self.__sock.listen()
             while self.__running:
-                conn, addr = self.__sock.accept()
-                self.__handshake(conn)
-                x = threading.Thread(target=self.__client_thread, args=(conn,))
-                x.setDaemon(True)
-                x.start()
+                try:
+                    conn, addr = self.__sock.accept()
+                    self.__handshake(conn)
+                    x = threading.Thread(target=self.__client_thread, args=(conn,))
+                    x.setDaemon(True)
+                    x.start()
+                except OSError:
+                    return
 
     def send(self, conn, message):
         conn.send(self.__ws_encode(message))
