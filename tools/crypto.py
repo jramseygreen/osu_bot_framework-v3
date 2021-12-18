@@ -47,7 +47,7 @@ class CryptoWrapper:
             key = key_iv[:32]
             iv = key_iv[32:]
             aes = AES.new(key, AES.MODE_CBC, iv)
-            decrypted = self.__unpad(aes.decrypt(encrypted[16:])).decode()
+            decrypted = self.__unpad(aes.decrypt(encrypted[16:])).decode("utf-8")
         except:
             pass
         return decrypted
