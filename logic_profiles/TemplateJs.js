@@ -114,4 +114,4 @@ TemplateJs = {
     on_rule_violation: function (error) {
         return;
     }
-}
+};
