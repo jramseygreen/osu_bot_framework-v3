@@ -107,6 +107,9 @@
                             </button>
                         </span>
                     </li>
+                    <li>
+                        <div v-show="making_room" class="spinner-grow text-light"></div>
+                    </li>
                 </ul>
             </div>
             <hr>
@@ -1795,6 +1798,7 @@
                 return;
             }
             if (message !== JSON.stringify(app.buffer)) {
+                app.making_room = false;
                 app.buffer = buffer;
                 app.channels = Object.keys(buffer["channels"]);
                 app.personal_messages = buffer["pm"];
@@ -1803,6 +1807,7 @@
                 app.bot_username = buffer["bot_username"];
                 app.redownload_owned_beatmaps = buffer["redownload_owned_beatmaps"];
                 app.osu_directory = buffer["osu_directory"];
+                app.making_room = buffer["making_room"];
                 if (app.make_room.invite_list.includes("")) {
                     app.make_room.invite_list = [app.bot_username];
                 }
@@ -1993,7 +1998,8 @@
             redownload_owned_beatmaps: false,
             osu_directory: "",
             beatmap_whitelist: [],
-            beatmap_blacklist: []
+            beatmap_blacklist: [],
+            making_room: false,
         },
         methods: {
             set_current_username: function (username) {
@@ -2213,6 +2219,7 @@
     }
 
     function make_room(form) {
+        app.making_room = true;
         payload = {
             "command": "make_room",
             "title": form.elements.make_room_title.value,
