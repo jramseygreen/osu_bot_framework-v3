@@ -1,9 +1,3 @@
-import json
-import random
-import time
-
-import requests
-
 class AutoSong:
     def __init__(self, bot, channel):
         self.bot = bot
