@@ -182,7 +182,7 @@ class Channel:
         for broadcast in self._bot.get_broadcast_controller().get_broadcasts(self._channel):
             self._bot.get_broadcast_controller().del_broadcast(broadcast["id"])
         for broadcast in data["broadcasts"]:
-            self._bot.get_broadcast_controller().add_broadcast(broadcast["channel"], broadcast["message"], broadcast["secs"])
+            self._bot.get_broadcast_controller().add_broadcast(self._channel, broadcast["message"], broadcast["secs"])
 
     def get_logic(self):
         return {"on_message": self.__on_message_method, "on_personal_message": self.__on_personal_message_method, "on_join": self.__on_join_method, "on_part": self.__on_part_method}
