@@ -118,8 +118,17 @@ class Channel:
         return self._bot.get_broadcast_controller().add_broadcast(self._channel, message, secs)
 
     def del_broadcast(self, id):
-        if self._bot.get_broadcast_controller().has_id(id):
+        if self.has_broadcast(id):
             self._bot.del_broadcast(id)
+
+    def has_broadcast(self, id):
+        for broadcast in self.get_broadcasts():
+            if broadcast["id"] == int(id):
+                return True
+        return False
+
+    def get_broadcasts(self):
+        return self._bot.get_broadcast_controller().get_broadcasts(self._channel)
 
     def get_on_personal_message_method(self):
         return self.__on_personal_message_method
