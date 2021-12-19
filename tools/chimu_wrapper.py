@@ -50,7 +50,9 @@ class Chimu:
             return self.fetch_beatmapset(beatmap["ParentSetId"])
 
     # return list of beatmapsets based on query + provided attributes
-    def search(self, query="", pages=5, **attributes):
+    def search(self, query="", pages=5, js_attributes=None, **attributes):
+        if js_attributes:
+            attributes = js_attributes
         # construct urls
         start = 0
         if "offset" in attributes:
@@ -137,11 +139,13 @@ class Chimu:
             beatmapsetID = beatmap["ParentSetId"]
             self.download_beatmapset(beatmapsetID, path, with_video, auto_open, blocking)
 
-    def fetch_random_beatmap(self, channel=None, **attributes):
+    def fetch_random_beatmap(self, channel=None, js_attributes=None, **attributes):
         # grab attributes from channel object
         if "beatmap_whitelist" in attributes:
             if attributes["beatmap_whitelist"]:
                 return self.fetch_beatmap(int(random.choice(attributes["beatmap_whitelist"])))
+        if js_attributes:
+            attributes = js_attributes
         query = ""
         if "query" in attributes:
             query = attributes["query"]
