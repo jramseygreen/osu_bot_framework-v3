@@ -7,7 +7,7 @@ import sys
 import threading
 from datetime import datetime
 
-from tools import js2py
+import js2py
 from tools.broadcast_controller import BroadcastController
 from channel import Channel
 from tools.chimu_wrapper import Chimu
