@@ -2599,6 +2599,7 @@
             "range": [form.elements.min_length.value.trim(), form.elements.max_length.value.trim()]
         };
         send(JSON.stringify(payload));
+        send(JSON.stringify(payload));
     }
 
     function set_diff_range(form) {
@@ -2680,6 +2681,7 @@
         };
         send(JSON.stringify(payload));
         document.getElementById("logic_profile_download_input").value = "";
+        app.logic_profile_manager_profile = "Select Logic Profile"
     }
 </script>
 
