@@ -547,10 +547,10 @@ class Bot:
     def add_player_blacklist(self, username):
         if username.replace(" ", "_") not in self.get_formatted_player_blacklist():
             self.__player_blacklist.append(username)
-            channels = self.__channels.copy()
-            for channel in channels:
-                if channels[channel].is_game():
-                    channels[channel].add_player_blacklist(username)
+        channels = self.__channels.copy()
+        for channel in channels:
+            if channels[channel].is_game():
+                channels[channel].add_player_blacklist(username)
 
     def del_player_blacklist(self, username):
         if username.replace(" ", "_") in self.get_formatted_player_blacklist():
