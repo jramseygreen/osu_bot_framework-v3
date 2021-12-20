@@ -63,17 +63,7 @@ class Controller:
                         if len(message_arr) >= 2:
                             command = " ".join(message_arr[:2]).strip()
                             args = message_arr[2:]
-                            if command == "!mp addref":
-                                for arg in args:
-                                    if arg not in channel.get_referees():
-                                        channel.add_referee(arg)
-                            elif command == "!mp removeref":
-                                for username in args:
-                                    if username != channel.get_creator().replace(" ", "_") and username in channel.get_referees():
-                                        channel.del_referee(username)
-                                        if username == self.bot.get_username():
-                                            self.bot.part(data["channel"])
-                            elif command == "!mp password":
+                            if command == "!mp password":
                                 channel.set_invite_link(channel.get_invite_link().replace(channel.get_password(), ""))
                                 if args:
                                     channel._password = args[0]

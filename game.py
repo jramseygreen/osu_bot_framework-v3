@@ -12,6 +12,7 @@ from requests.structures import CaseInsensitiveDict
 class Game(Channel):
     def __init__(self, bot, channel, verbose):
         super().__init__(bot, channel, verbose)
+        self._making_room = False
         self.__creator = ""
         self.__invite_link = ""
         self.__slots = {i: {"username": "", "team": "", "score": {}} for i in range(16)}
@@ -26,7 +27,7 @@ class Game(Channel):
         self._password = ""
         self.__title = ""
         self.__welcome_message = ""
-        self.__referees = [bot.get_username()]
+        self.__referees = []
         self.__config_link = ""
         self.__config_text = ""
         self.__custom_config_text = ""
@@ -265,6 +266,14 @@ class Game(Channel):
             elif "Changed match to size " in message["content"]:
                 args = message["content"].split()
                 self.__size = int(args[-1])
+            elif "to the match referees" in message["content"]:
+                self.add_referee(message["content"].split(" ", 1)[1].replace(" to the match referees", ""))
+            elif "from the match referees" in message["content"]:
+                self.add_referee(message["content"].split(" ", 1)[1].replace(" from the match referees", ""))
+            elif self._making_room and message["content"] != "Match referees:":
+                self.add_referee(self._bot.fetch_user_profile(message["content"])["username"])
+                if message["content"].lower() == self.__creator.lower():
+                    self._making_room = False
 
         elif self.has_referee(message["username"]):
             message_arr = message["content"].lower().split(" ")
@@ -272,16 +281,6 @@ class Game(Channel):
                 command = " ".join(message_arr[:2]).strip()
                 args = message_arr[2:]
                 if message["username"] == self.__creator.replace(" ", "_"):
-                    if command == "!mp addref":
-                        for arg in args:
-                            if arg not in self.__referees:
-                                self.add_referee(arg)
-                    elif command == "!mp removeref":
-                        for username in args:
-                            if username != self.__creator.replace(" ", "_") and username in self.__referees:
-                                self.del_referee(username)
-                                if username == self._bot.get_username():
-                                    self._bot.part(self._channel)
                     self.get_config_link()
                 if command == "!mp password":
                     self.__invite_link = self.__invite_link.replace(self._password, "")
@@ -848,10 +847,12 @@ class Game(Channel):
     def add_referee(self, username):
         if username not in self.__referees:
             self.__referees.append(username)
+            self.get_config_link()
 
     def del_referee(self, username):
         if username in self.__referees:
             self.__referees.remove(username)
+            self.get_config_link()
 
     def get_referees(self):
         return self.__referees
@@ -873,13 +874,14 @@ class Game(Channel):
 
     # grabs existing users, the room creator, and adds creator to referee list
     def get_existing_attributes(self):
+        self._making_room = True
         for user in self.__match_history["users"]:
             if self.has_user(user["username"].replace(" ", "_")):
                 self._users.remove(user["username"].replace(" ", "_"))
                 self.add_user(user["username"])
 
         self.__creator = self._bot.fetch_user_profile(self.__match_history["events"][0]["user_id"])["username"]
-        self.add_referee(self.__creator)
+        self.send_message("!mp listrefs")
         self.send_message("!mp settings")
 
     def set_beatmap(self, beatmap):
