@@ -793,6 +793,15 @@ class Game(Channel):
             return "red"
         return ""
 
+    def set_team(self, username, colour):
+        colour = colour.lower()
+        if colour in ["red", "blue"]:
+            self.send_message("!mp team " + username.replace(" ", "_") + " " + colour)
+
+    def move(self, username, slot_num):
+        if str(slot_num).isnumeric() and 0 <= int(slot_num) < 16:
+            self.send_message("!mp move " + username.replace(" ", "_") + " " + str(slot_num))
+
     def get_host(self):
         return self.__host
 
