@@ -267,13 +267,21 @@ class Game(Channel):
                 args = message["content"].split()
                 self.__size = int(args[-1])
             elif "to the match referees" in message["content"]:
-                self.add_referee(message["content"].split(" ", 1)[1].replace(" to the match referees", ""))
+                username = message["content"].split(" ", 1)[1].replace(" to the match referees", "")
+                if username not in self.__referees:
+                    self.__referees.append(username)
+                    self.get_config_link()
             elif "from the match referees" in message["content"]:
-                self.add_referee(message["content"].split(" ", 1)[1].replace(" from the match referees", ""))
+                username = message["content"].split(" ", 1)[1].replace(" from the match referees", "")
+                if username in self.__referees:
+                    self.__referees.remove(username)
+                    self.get_config_link()
             elif self._making_room and message["content"] != "Match referees:":
                 user_profile = self._bot.fetch_user_profile(message["content"])
                 if user_profile:
-                    self.add_referee(user_profile["username"])
+                    if user_profile["username"] not in self.__referees:
+                        self.__referees.append(user_profile["username"])
+                        self.get_config_link()
                 if message["content"].replace(" ", "_").lower() == self.__creator.replace(" ", "_").lower():
                     self._making_room = False
 
@@ -847,14 +855,10 @@ class Game(Channel):
         return self._password != ""
 
     def add_referee(self, username):
-        if username not in self.__referees:
-            self.__referees.append(username)
-            self.get_config_link()
+        self.send_message("!mp addref " + username)
 
     def del_referee(self, username):
-        if username in self.__referees:
-            self.__referees.remove(username)
-            self.get_config_link()
+        self.send_message("!mp removeref " + username)
 
     def get_referees(self):
         return self.__referees
