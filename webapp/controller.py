@@ -150,16 +150,19 @@ class Controller:
             if channel:
                 channel.del_broadcast(data["broadcast_id"])
         elif data["command"] == "add_player_blacklist":
-            channel = self.bot.get_channel(data["channel"])
-            if channel and channel.is_game():
-                if data["global"]:
-                    self.bot.add_player_blacklist(data["username"])
-                else:
+            if data["global"]:
+                self.bot.add_player_blacklist(data["username"])
+            else:
+                channel = self.bot.get_channel(data["channel"])
+                if channel and channel.is_game():
                     channel.add_player_blacklist(data["username"])
+
         elif data["command"] == "del_player_blacklist":
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
                 channel.del_player_blacklist(data["username"])
+        elif data["command"] == "del_global_player_blacklist":
+            self.bot.del_player_blacklist(data["username"])
         elif data["command"] == "del_artist_whitelist":
             channel = self.bot.get_channel(data["channel"])
             if channel and channel.is_game():
@@ -365,6 +368,7 @@ class Controller:
         data["redownload_owned_beatmaps"] = self.bot.chimu.is_redownload()
         data["osu_directory"] = self.bot.get_osu_directory()
         data["making_room"] = self.__making_room
+        data["global_player_blacklist"] = self.bot.get_player_blacklist()
         self.send_message(json.dumps(data), conn)
 
     def set_ws_port(self, port):

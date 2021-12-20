@@ -417,11 +417,14 @@
         <!--        start page-->
         <div v-if="channel === ''" class="col-10">
             <div class="card text-white bg-dark" style="height: 100vh;">
+                <div>
+                    <button class="btn btn-secondary rounded-pill btn-sm float-start ms-3 mt-1" data-bs-toggle="modal" data-bs-target="#globalPLayerBlacklistModal">Global Player Blacklist</button>
+                </div>
                 <div class="text-center">
                     <h2 class="card-header border-secondary">
                         <button class="btn btn-secondary rounded-pill btn-sm float-start" data-bs-toggle="modal" data-bs-target="#logicProfileManagerModal">Manage Logic Profiles</button>
                         Welcome to Osu Bot Framework v3!
-                        <button class="btn btn-secondary rounded-pill btn-sm float-end" title="Clear any saved password cookies" onclick="clear_cookies();">Clear cookies</button>
+                        <button class="btn btn-warning rounded-pill btn-sm float-end" title="Clear any saved password cookies" onclick="clear_cookies();">Clear cookies</button>
                     </h2>
                     <img src="https://github.com/jramseygreen/osu_bot_framework-v3/blob/main/webapp/assets/images/logo_blue.png?raw=true"
                          width="600" height="600" class="mt-4">
@@ -452,6 +455,44 @@
                         <div class="col-7 card bg-dark border-secondary">
                             <span class="text-start"> Get started by making a game room or joining a channel.</span>
                         </div>
+                    </div>
+
+<!--                    global player blacklist Modal-->
+                    <div class="modal fade" id="globalPLayerBlacklistModal" tabindex="-1" aria-labelledby="globalPLayerBlacklistLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title text-dark" id="globalPLayerBlacklistLabel">Global player blacklist</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <div class="container mx-auto">
+                                <table class="table table-sm table-secondary table-striped" style="display: block; height: 30vh; overflow-y: scroll;">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-11">Username</th>
+                                            <th class="col-1 text-danger">🗑️</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="username in global_player_blacklist">
+                                            <td>{{username}}</td>
+                                            <td><button class="badge badge-sm bg-danger" @click="del_global_player_blacklist(username)">X</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                              </div>
+                            <hr>
+                            <div class="input-group text-start">
+                                <input id="global_player_blacklist_input" type="text" class="input-group-text col-11" placeholder="Player to globally blacklist...">
+                                <button class="btn btn-primary col-1" onclick="add_global_player_blacklist()">+</button>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- logicProfileManager Modal -->
@@ -1807,6 +1848,7 @@
                 app.redownload_owned_beatmaps = buffer["redownload_owned_beatmaps"];
                 app.osu_directory = buffer["osu_directory"];
                 app.making_room = buffer["making_room"];
+                app.global_player_blacklist = buffer["global_player_blacklist"];
                 if (app.make_room.invite_list.includes("")) {
                     app.make_room.invite_list = [app.bot_username];
                 }
@@ -1982,6 +2024,7 @@
             creator_whitelist: [],
             creator_blacklist: [],
             player_blacklist: [],
+            global_player_blacklist: [],
             beatmap_checker: false,
             allow_unsubmitted: true,
             allow_convert: true,
@@ -2119,6 +2162,13 @@
                 };
                 send(JSON.stringify(payload));
             },
+            del_global_player_blacklist: function (username) {
+                payload = {
+                    "command": "del_global_player_blacklist",
+                    "username": username
+                };
+                send(JSON.stringify(payload));
+            }
         }
     })
 
@@ -2682,6 +2732,17 @@
         send(JSON.stringify(payload));
         document.getElementById("logic_profile_download_input").value = "";
         app.logic_profile_manager_profile = "Select Logic Profile";
+    }
+
+    function add_global_player_blacklist() {
+        username = document.getElementById("global_player_blacklist_input").value;
+        payload = {
+            "command": "add_player_blacklist",
+            "global": true,
+            "username": username
+        };
+        send(JSON.stringify(payload));
+        document.getElementById("global_player_blacklist_input").value = "";
     }
 </script>
 
