@@ -336,7 +336,7 @@ class Bot:
         channel = self.__channels[self.__new_tournament]
         self.__new_tournament = ""
         self.__make_room_lock.release()
-        while not channel.get_title():
+        while not channel.get_title() or channel._making_room:
             pass
         channel.set_allow_convert(allow_convert)
         channel.set_password(password)
