@@ -762,6 +762,12 @@ class Game(Channel):
             if self.__slots[i]["username"]:
                 return i
 
+    def get_next_full_slot(self, offset=0):
+        return self.__slots[self.get_next_full_slot_num(offset)]
+
+    def get_next_empty_slot(self, offset=0):
+        return self.__slots[self.get_next_empty_slot_num(offset)]
+
     def clear_teams(self):
         for slot in self.__slots:
             self.__slots[slot]["team"] = ""
