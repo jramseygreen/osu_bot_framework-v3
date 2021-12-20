@@ -202,7 +202,6 @@ class Game(Channel):
                 for item in line:
                     if "https://" in item:
                         line.remove(item)
-
                 self.__beatmap_name = " ".join(line)
             elif "Host is changing map..." == message["content"]:
                 self.abort_start_timer()
