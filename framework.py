@@ -226,6 +226,17 @@ class Bot:
             del self.__logic_profiles[prof]
             del self.__logic_profile_links[prof]
 
+    def __console_listen(self, running=False):
+        if not running:
+            x = threading.Thread(target=self.__console_listen, args=(True,))
+            x.setDaemon(True)
+            x.start()
+        else:
+            while True:
+                command = input().lower()
+                if command.strip("();") in ["quit", "exit", "stop"]:
+                    self.exit_handler()
+
     # attempts to connect to osu using the provided credentials
     def start(self):
         # grab logic options
@@ -255,6 +266,8 @@ class Bot:
             self.__listen()
             if self.__controller.get_host():
                 self.__controller.start()
+            # start console input
+            self.__console_listen()
 
         except:
             self.log("There was an error connecting to " + self.__host + ":" + str(self.__port))
