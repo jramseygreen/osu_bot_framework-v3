@@ -1316,6 +1316,20 @@
                                                                     Kick Player
                                                                 </button>
                                                             </div>
+                                                            <div v-show="room_creator !== current_username && bot_username === room_creator.replace(' ', '_')">
+                                                                <div v-show="users.includes(current_username) && !referees.includes(current_username)" class="card border-0 bg-secondary">
+                                                                    <button class="btn btn-dark mb-4"
+                                                                            data-bs-dismiss="modal" onclick="add_ref();">
+                                                                        Add as referee
+                                                                    </button>
+                                                                </div>
+                                                                <div v-show="referees.includes(current_username)" class="card border-0 bg-secondary">
+                                                                    <button class="btn btn-dark mb-4"
+                                                                            data-bs-dismiss="modal" onclick="del_ref();">
+                                                                        Remove referee
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                             <div class="card border-0 bg-secondary">
                                                                 <button class="btn btn-danger mb-4"
                                                                         data-bs-dismiss="modal" onclick="add_player_blacklist(null);">
@@ -1864,6 +1878,7 @@
                         app.title += " - " + buffer["channels"][app.channel]["title"];
                         app.config_link = buffer["channels"][app.channel]["config_link"];
                         app.host = buffer["channels"][app.channel]["host"];
+                        app.room_creator = buffer["channels"][app.channel]["creator"];
                         app.referees = buffer["channels"][app.channel]["referees"];
                         app.in_progress = buffer["channels"][app.channel]["in_progress"];
                         app.beatmap = buffer["channels"][app.channel]["beatmap"];
@@ -2037,6 +2052,7 @@
             auto_download: {},
             bot_username: "",
             bot_password: "",
+            room_creator: "",
             redownload_owned_beatmaps: false,
             osu_directory: "",
             beatmap_whitelist: [],
@@ -2743,6 +2759,24 @@
         };
         send(JSON.stringify(payload));
         document.getElementById("global_player_blacklist_input").value = "";
+    }
+
+    function add_ref() {
+        payload = {
+            "command": "channel_message",
+            "channel": app.channel,
+            "message": "!mp addref " + app.current_username
+        }
+        send(JSON.stringify(payload));
+    }
+
+    function del_ref() {
+                payload = {
+            "command": "channel_message",
+            "channel": app.channel,
+            "message": "!mp removeref " + app.current_username
+        }
+        send(JSON.stringify(payload));
     }
 </script>
 
