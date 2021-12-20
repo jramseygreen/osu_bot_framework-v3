@@ -428,9 +428,12 @@ class Bot:
             r = requests.get(url)
             return json.loads(r.text.split('<script id="json-user" type="application/json">\n            ', 1)[1].split("\n", 1)[0])
         except:
-            url = "https://osu.ppy.sh/users/" + username.replace("_", "%20")
-            r = requests.get(url)
-            return json.loads(r.text.split('<script id="json-user" type="application/json">\n            ', 1)[1].split("\n", 1)[0])
+            try:
+                url = "https://osu.ppy.sh/users/" + username.replace("_", "%20")
+                r = requests.get(url)
+                return json.loads(r.text.split('<script id="json-user" type="application/json">\n            ', 1)[1].split("\n", 1)[0])
+            except:
+                return {}
 
     def set_websocket_port(self, port):
         if not self.__started:

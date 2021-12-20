@@ -271,8 +271,10 @@ class Game(Channel):
             elif "from the match referees" in message["content"]:
                 self.add_referee(message["content"].split(" ", 1)[1].replace(" from the match referees", ""))
             elif self._making_room and message["content"] != "Match referees:":
-                self.add_referee(self._bot.fetch_user_profile(message["content"])["username"])
-                if message["content"].lower() == self.__creator.lower():
+                user_profile = self._bot.fetch_user_profile(message["content"])
+                if user_profile:
+                    self.add_referee(user_profile["username"])
+                if message["content"].replace(" ", "_").lower() == self.__creator.replace(" ", "_").lower():
                     self._making_room = False
 
         elif self.has_referee(message["username"]):
