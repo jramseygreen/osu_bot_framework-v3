@@ -441,10 +441,11 @@ class Bot:
         username = str(username)
         if "_" in username and " " not in username:
             for channel in self.__channels.values():
-                for user in channel.get_users():
-                    if user.replace("_", " ") == username.replace("_", " "):
-                        username = user
-                        break
+                if channel.is_game():
+                    for user in channel.get_users():
+                        if user.replace("_", " ") == username.replace("_", " "):
+                            username = user
+                            break
 
         username = username.replace(" ", "%20")
         url = "https://osu.ppy.sh/users/" + username
