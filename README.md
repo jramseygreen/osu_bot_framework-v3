@@ -29,6 +29,7 @@ Features
 - Search for beatmaps through Chimu.moe
 - Command management system
 - Message broadcasts on a timer in any channel
+- Much more!
 
 #### Credits
 | Contributer | Osu profile                   | Github profile                   | contribution                                                                    |
