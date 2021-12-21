@@ -233,9 +233,12 @@ class Bot:
             x.start()
         else:
             while True:
-                command = input().lower()
-                if command.strip("();") in ["quit", "exit", "stop"]:
-                    self.exit_handler()
+                try:
+                    command = input().lower()
+                    if command.strip("();") in ["quit", "exit", "stop"]:
+                        self.exit_handler()
+                except:
+                    return
 
     # attempts to connect to osu using the provided credentials
     def start(self):
