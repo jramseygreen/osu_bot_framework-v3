@@ -119,8 +119,6 @@ class Game(Channel):
                 slot_num = int(message["content"].split("slot ", 1)[1].split(".", 1)[0].split(" ")[0]) - 1
                 self.set_slot(slot_num, {"username": username, "team": team, "score": {}})
                 self.add_user(username)
-                if self.has_referee(username):
-                    self.add_referee(username)
             elif "left the game" in message["content"]:
                 username = message["content"][:message["content"].find("left") - 1]
                 self.del_user(username)
