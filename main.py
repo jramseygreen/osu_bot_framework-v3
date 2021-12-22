@@ -8,7 +8,6 @@ from config.startup import startup
 
 
 # initialisation + grab credentials
-os.system("title osu bot framework v3")
 f = open("config" + os.sep + "bot_config.conf", "r")
 config = json.loads(f.read())
 f.close()
