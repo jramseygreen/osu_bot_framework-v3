@@ -12,7 +12,8 @@ This software has been designed to be as accessible as possible, whether you are
 
 #### Unix
 - Install Python 3 with `apt install python3` or similar for your distro
-- Install the required libraries with `python3 -m pip -r install requirements.txt`
+- Install pip with `apt install python3-pip` (if not bundled with the python 3 installation)  
+- Install the required libraries with `python3 -m pip install -r requirements.txt`
 - Execute launch.sh
 
 ### If you are just looking for an auto host rotate bot, you can download [simple-AHR](https://github.com/jramseygreen/osu_bot_framework-v3/releases/tag/ahr)
