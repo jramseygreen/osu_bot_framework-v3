@@ -71,7 +71,7 @@ class HighRollers:
 
     def set_roll_time(self, message):
         if self.channel.has_referee(message["username"]):
-            args = message.split(" ")
+            args = message["content"].split(" ")
             if len(args) == 2 and args[1].isnumeric():
                 self.roll_time = int(args[1])
                 self.channel.send_message("Set rolling time to " + args[1] + " seconds")
