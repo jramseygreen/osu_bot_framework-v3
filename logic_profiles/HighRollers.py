@@ -29,6 +29,7 @@ class HighRollers:
     def on_match_finish(self):
         self.rolls = {}
         self.rolls_in_progress = True
+        self.channel.clear_host()
 
         self.channel.send_message("You have " + str(self.roll_time) + " seconds to !roll for host...")
         for i in reversed(range(self.roll_time)):
