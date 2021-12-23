@@ -26,7 +26,7 @@ class HighRollers:
     def on_part(self, username):
         if username in self.rolls:
             del self.rolls[username]
-        if self.channel.is_host(username):
+        if self.channel.is_host(username) and not self.channel.in_progress():
             self.on_clear_host()
 
     def on_match_finish(self):
