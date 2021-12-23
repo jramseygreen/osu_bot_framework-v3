@@ -279,7 +279,7 @@ class Game(Channel):
                     if user_profile["username"] not in self.__referees:
                         self.__referees.append(user_profile["username"])
                         self.get_config_link()
-                if message["content"].replace(" ", "_").lower() == self.__creator.replace(" ", "_").lower() and :
+                if message["content"].replace(" ", "_").lower() == self.__creator.replace(" ", "_").lower():
                     self._making_room = False
 
         elif self.has_referee(message["username"]):
