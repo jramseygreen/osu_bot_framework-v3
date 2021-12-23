@@ -633,13 +633,13 @@ class Game(Channel):
         elif self.__beatmap_creator_blacklist or self.__beatmap_creator_whitelist or self.__artist_blacklist or self.__artist_whitelist or self.__beatmap_blacklist or self.__beatmap_whitelist:
             beatmapset = self.__fetch_beatmapset(beatmap["id"])
             if self.__beatmap_creator_whitelist and beatmapset["creator"].lower() not in self.__beatmap_creator_whitelist and all([x not in beatmap["version"].lower() for x in self.__beatmap_creator_whitelist]):
-                error = {"type": "creator_whitelist", "message": "The beatmap creator is not whitelisted. The whitelist is: '" + "', '".join(self.__beatmap_creator_whitelist) + "'"}
+                error = {"type": "creator_whitelist", "message": "The selected beatmap's creator is not whitelisted. The whitelist is: '" + "', '".join(self.__beatmap_creator_whitelist) + "'"}
             elif self.__beatmap_creator_blacklist and beatmapset["creator"].lower() in self.__beatmap_creator_blacklist or any([x in beatmap["version"].lower() for x in self.__beatmap_creator_blacklist]):
-                error = {"type": "creator_blacklist", "message": "The beatmap creator is blacklisted. The blacklist is: '" + "', '".join(self.__beatmap_creator_blacklist) + "'"}
+                error = {"type": "creator_blacklist", "message": "The selected beatmap's creator is blacklisted. The blacklist is: '" + "', '".join(self.__beatmap_creator_blacklist) + "'"}
             elif self.__artist_whitelist and beatmapset["artist"].lower() not in self.__artist_whitelist:
-                error = {"type": "artist_whitelist", "message": "The beatmap artist is not whitelisted. The whitelist is: '" + "', '".join(self.__artist_whitelist) + "'"}
+                error = {"type": "artist_whitelist", "message": "The selected beatmap's artist is not whitelisted. The whitelist is: '" + "', '".join(self.__artist_whitelist) + "'"}
             elif self.__artist_blacklist and beatmapset["artist"].lower() in self.__artist_blacklist:
-                error = {"type": "artist_blacklist", "message": "The beatmap artist is blacklisted. The blacklist is: '" + "', '".join(self.__artist_blacklist) + "'"}
+                error = {"type": "artist_blacklist", "message": "The selected beatmap's artist is blacklisted. The blacklist is: '" + "', '".join(self.__artist_blacklist) + "'"}
             elif self.__beatmap_blacklist and str(beatmap["id"]) in self.__beatmap_blacklist:
                 blacklist = []
                 for beatmapID in self.__beatmap_blacklist:
