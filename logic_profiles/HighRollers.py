@@ -30,8 +30,6 @@ class HighRollers:
             self.on_clear_host()
 
     def on_match_finish(self):
-        self.rolls = {}
-        self.rolls_in_progress = True
         self.channel.clear_host()
 
     def on_match_abort(self):
@@ -50,6 +48,8 @@ class HighRollers:
                 self.channel.send_message(user + " only your first !roll counts!")
 
     def on_clear_host(self):
+        self.rolls = {}
+        self.rolls_in_progress = True
         self.channel.send_message("You have " + str(self.roll_time) + " seconds to !roll for host...")
         for i in reversed(range(self.roll_time)):
             time.sleep(1)

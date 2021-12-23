@@ -239,7 +239,7 @@ class Game(Channel):
                 self.__locked = False
             elif "Room name:" in message["content"]:
                 self.__title = message["content"].replace("Room name: ", "").split(",", 1)[0]
-            elif "osu.ppy.sh/u/" in message["content"]:
+            elif message["content"].split(" ", 1)[0] == "Slot" and "osu.ppy.sh/u/" in message["content"]:
                 slot = int(message["content"].split(" ", 2)[1]) - 1
                 username = ""
                 host = False
@@ -279,7 +279,7 @@ class Game(Channel):
                     if user_profile["username"] not in self.__referees:
                         self.__referees.append(user_profile["username"])
                         self.get_config_link()
-                if message["content"].replace(" ", "_").lower() == self.__creator.replace(" ", "_").lower():
+                if message["content"].replace(" ", "_").lower() == self.__creator.replace(" ", "_").lower() and :
                     self._making_room = False
 
         elif self.has_referee(message["username"]):
