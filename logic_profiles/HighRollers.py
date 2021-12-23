@@ -26,12 +26,30 @@ class HighRollers:
     def on_part(self, username):
         if username in self.rolls:
             del self.rolls[username]
+        if self.channel.is_host(username):
+            self.on_clear_host()
 
     def on_match_finish(self):
         self.rolls = {}
         self.rolls_in_progress = True
         self.channel.clear_host()
 
+    def on_match_abort(self):
+        self.on_match_finish()
+
+    def on_message(self, message):
+        if message["username"] == "BanchoBot" and " rolls " in message["content"] and self.rolls_in_progress:
+            user = message["content"][:message["content"].find("rolls")].strip()
+            if user not in self.rolls:
+                points = int(message["content"].replace(user + " rolls ", "").split(" ", 1)[0])
+                if points <= 100:
+                    self.rolls[user] = points
+                else:
+                    self.channel.send_message(user + " you may only type '!roll'")
+            else:
+                self.channel.send_message(user + " only your first !roll counts!")
+
+    def on_clear_host(self):
         self.channel.send_message("You have " + str(self.roll_time) + " seconds to !roll for host...")
         for i in reversed(range(self.roll_time)):
             time.sleep(1)
@@ -53,21 +71,6 @@ class HighRollers:
         else:
             self.channel.send_message("Nobody rolled! Picking random host...")
             self.channel.set_host(random.choice(self.channel.get_users()))
-
-    def on_match_abort(self):
-        self.on_match_finish()
-
-    def on_message(self, message):
-        if message["username"] == "BanchoBot" and " rolls " in message["content"] and self.rolls_in_progress:
-            user = message["content"][:message["content"].find("rolls")].strip()
-            if user not in self.rolls:
-                points = int(message["content"].replace(user + " rolls ", "").split(" ", 1)[0])
-                if points <= 100:
-                    self.rolls[user] = points
-                else:
-                    self.channel.send_message(user + " you may only type '!roll'")
-            else:
-                self.channel.send_message(user + " only your first !roll counts!")
 
     def set_roll_time(self, message):
         if self.channel.has_referee(message["username"]):
