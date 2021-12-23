@@ -11,6 +11,11 @@ class HighRollers:
         self.rolls = {}
         self.rolls_in_progress = False
 
+        channel.set_command("!randmap", self.channel.common_commands.randmap, "Searches for a random map matching the room configuration")
+        channel.set_command("!fight", self.channel.common_commands.fight, "Fight another user! Victories stack.")
+        channel.set_command("R̲e̲f̲e̲r̲e̲e̲ C̲o̲m̲m̲a̲n̲d̲s̲", "")
+        channel.set_command("*roll_time", self.set_roll_time, "Set the rolling period in seconds if you are a referee. e.g. *roll_time 60")
+
     def on_join(self, username):
         if self.channel.get_users() == [username]:
             self.rolls = {}
@@ -47,6 +52,9 @@ class HighRollers:
             self.channel.send_message("Nobody rolled! Picking random host...")
             self.channel.set_host(random.choice(self.channel.get_users()))
 
+    def on_match_abort(self):
+        self.on_match_finish()
+
     def on_message(self, message):
         if message["username"] == "BanchoBot" and " rolls " in message["content"] and self.rolls_in_progress:
             user = message["content"][:message["content"].find("rolls")].strip()
@@ -58,3 +66,10 @@ class HighRollers:
                     self.channel.send_message(user + " you may only type '!roll'")
             else:
                 self.channel.send_message(user + " only your first !roll counts!")
+
+    def set_roll_time(self, message):
+        if self.channel.has_referee(message["username"]):
+            args = message.split(" ")
+            if len(args) == 2 and args[1].isnumeric():
+                self.roll_time = int(args[1])
+                self.channel.send_message("Set rolling time to " + args[1])
