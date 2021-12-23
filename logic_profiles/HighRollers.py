@@ -12,9 +12,9 @@ class HighRollers:
         self.rolls_in_progress = False
 
         channel.set_command("!randmap", self.channel.common_commands.randmap, "Searches for a random map matching the room configuration")
-        channel.set_command("!fight", self.channel.common_commands.fight, "Fight another user! Victories stack.")
+        channel.set_command("!fight", self.channel.common_commands.fight, "Fight another user! e.g. '!fight peppy'. Victories stack.")
         channel.set_command("R̲e̲f̲e̲r̲e̲e̲ C̲o̲m̲m̲a̲n̲d̲s̲", "")
-        channel.set_command("*roll_time", self.set_roll_time, "Set the rolling period in seconds if you are a referee. e.g. *roll_time 60")
+        channel.set_command("*roll_time", self.set_roll_time, "Set the rolling period in seconds if you are a referee. e.g. '*roll_time 60'")
         channel.set_custom_config("At the end of each match, !roll to decide the next host!\nThe current rolling time is: " + str(self.roll_time) + " seconds\n")
 
     def on_join(self, username):
