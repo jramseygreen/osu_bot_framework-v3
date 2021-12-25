@@ -1255,7 +1255,7 @@
                                                     <span v-show="slot.team === 'blue' && channel.includes('mp_')"
                                                           :slot="slot" title="Blue Team"
                                                           class="badge bg-primary text-light">Blue</span>
-                                                    <span v-show="referees.includes(slot.username.replace(/ /g, '_')) && channel.includes('mp_')"
+                                                    <span v-show="referees.includes(slot.username) && channel.includes('mp_')"
                                                           :slot="slot" title="Referee"
                                                           class="badge bg-dark text-success">🛡️</span>
                                                 </td>
