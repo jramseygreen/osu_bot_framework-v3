@@ -579,12 +579,7 @@ class CommonCommands:
         self.channel.change_beatmap(self.channel.get_beatmap()["id"])
 
     def update_beatmap(self, message):
-        if not self.beatmap_updated:
-            self.beatmap_updated = True
-            self.channel.set_beatmap(self.channel.get_beatmap())
-            while not self.channel.in_progress():
-                time.sleep(1)
-            self.beatmap_updated = False
+        self.channel.set_beatmap(self.channel.get_beatmap())
 
     def allow_convert(self, message):
         if self.channel.has_referee(message["username"]):
