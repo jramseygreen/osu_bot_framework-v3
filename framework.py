@@ -454,12 +454,18 @@ class Bot:
         url = "https://osu.ppy.sh/users/" + username
         try:
             r = requests.get(url)
-            return json.loads(html.unescape(r.text).split('"user":')[13].split('}"\n', 1)[0])
+            count = 0
+            # for a in html.unescape(r.text).split('"user":'):
+            #     print(str(count) + ": " + a)
+            #     count += 1
+            #
+            # print()
+            return json.loads(html.unescape(r.text).split('"user":')[-1].split('}"\n', 1)[0])
         except:
             try:
                 url = "https://osu.ppy.sh/users/" + username.replace("_", "%20")
                 r = requests.get(url)
-                return json.loads(html.unescape(r.text).split('"user":')[13].split('}"\n', 1)[0])
+                return json.loads(html.unescape(r.text).split('"user":')[-1].split('}"\n', 1)[0])
             except:
                 return {}
 
