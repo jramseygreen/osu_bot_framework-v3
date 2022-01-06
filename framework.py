@@ -8,6 +8,8 @@ import threading
 from datetime import datetime
 
 import js2py
+from requests.structures import CaseInsensitiveDict
+
 from tools.broadcast_controller import BroadcastController
 from channel import Channel
 from tools.chimu_wrapper import Chimu
@@ -15,7 +17,8 @@ from game import Game
 from socket_wrapper import Sock
 from tools.logger import Logger
 from webapp.controller import Controller
-import requests
+#import requests
+import cloudscraper
 
 
 class Bot:
@@ -451,12 +454,12 @@ class Bot:
         url = "https://osu.ppy.sh/users/" + username
         try:
             r = requests.get(url)
-            return json.loads(r.text.split('<script id="json-user" type="application/json">\n            ', 1)[1].split("\n", 1)[0])
+            return json.loads(html.unescape(r.text).split('"user":')[13].split('}"\n', 1)[0])
         except:
             try:
                 url = "https://osu.ppy.sh/users/" + username.replace("_", "%20")
                 r = requests.get(url)
-                return json.loads(r.text.split('<script id="json-user" type="application/json">\n            ', 1)[1].split("\n", 1)[0])
+                return json.loads(html.unescape(r.text).split('"user":')[13].split('}"\n', 1)[0])
             except:
                 return {}
 
@@ -637,3 +640,5 @@ class Bot:
 
     def is_authenticate(self):
         return self.__authenticate
+
+requests = cloudscraper.create_scraper()
