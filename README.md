@@ -16,8 +16,6 @@ This software has been designed to be as accessible as possible, whether you are
 - Install the required libraries with `python3 -m pip install -r requirements.txt`
 - Execute launch.sh
 
-### If you are just looking for an auto host rotate bot, you can download [simple-AHR](https://github.com/jramseygreen/osu_bot_framework-v3/releases/tag/ahr)
-
 ## Please! If you like this software consider donating to me so that I can continue to develop it. [Paypal](https://www.paypal.com/paypalme/joshuargreen)
 
 Features
